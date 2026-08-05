@@ -1,0 +1,16 @@
+generator client {
+  provider            = "prisma-client"
+  output            = "../apps/backend/src/generated/prisma"
+  importFileExtension = ""
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+}
