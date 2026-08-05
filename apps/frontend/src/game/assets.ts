@@ -1,14 +1,24 @@
 import type { AssetRegistry } from "./types";
 
 /**
- * Emoji placeholders for the MVP. To swap to final illustrations,
- * replace the `emoji` value with an `image` entry (`type: "image", src: "..."`)
- * using the same `assetId`. No component code needs to change.
+ * Asset registry for the game.
+ *
+ * Each entry maps an `assetId` (used by `levels.ts`) to either an emoji
+ * placeholder or an image asset. The `aspectRatio` field helps the board lay
+ * out scenes and characters without stretching.
+ *
+ * To add a new visual asset for a level, append one entry here and reference
+ * its `assetId` in `levels.ts`. No component code needs to change.
  */
 export const assetRegistry: AssetRegistry = {
   "scene:classroom": {
     type: "emoji",
     emoji: "🏫",
+    aspectRatio: 16 / 9,
+  },
+  "scene:park": {
+    type: "emoji",
+    emoji: "🌳",
     aspectRatio: 16 / 9,
   },
   "char:mairin": {
@@ -24,6 +34,16 @@ export const assetRegistry: AssetRegistry = {
   "char:peer": {
     type: "emoji",
     emoji: "👦",
+    aspectRatio: 1,
+  },
+  "char:friend-wheelchair": {
+    type: "emoji",
+    emoji: "🧑‍🦽",
+    aspectRatio: 1,
+  },
+  "char:friend-bench": {
+    type: "emoji",
+    emoji: "🧒",
     aspectRatio: 1,
   },
 };
