@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import type { Ending, ValidationResult } from "../game/types";
 
 interface EndDialogProps {
@@ -17,6 +17,8 @@ export function EndDialog({
   onRetry,
 }: EndDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -39,10 +41,15 @@ export function EndDialog({
   }
 
   return (
-    <dialog ref={dialogRef} className="end-dialog">
+    <dialog
+      ref={dialogRef}
+      className="end-dialog"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
+    >
       <div className="end-dialog-content">
-        <h2>{ending.title}</h2>
-        <p>{ending.description}</p>
+        <h2 id={titleId}>{ending.title}</h2>
+        <p id={descriptionId}>{ending.description}</p>
         {result?.correct ? (
           <button type="button" className="end-button" onClick={onAdvance}>
             {isFinalLevel ? "Completado" : "Avanzar"}
