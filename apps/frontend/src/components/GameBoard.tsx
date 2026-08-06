@@ -4,7 +4,6 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  pointerWithin,
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { useEffect, useMemo, useReducer, useState } from "react";
@@ -21,6 +20,7 @@ import type {
 import { ElementArea } from "./ElementArea";
 import { EndDialog } from "./EndDialog";
 import { SceneSlot } from "./SceneSlot";
+import { inflatedPointerWithin } from "./collisionDetection";
 
 const INITIAL_LEVEL_INDEX = 0;
 
@@ -48,13 +48,6 @@ export function GameBoard() {
     createInitialBoard,
   );
   const [result, setResult] = useState<ValidationResult | null>(null);
-
-  // Reset the board whenever the level changes.
-  useEffect(() => {
-    dispatch({ type: "LOAD_LEVEL", level });
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setResult(null);
-  }, [level]);
 
   // Trigger validation as soon as every slot is filled.
   useEffect(() => {
@@ -130,7 +123,13 @@ export function GameBoard() {
 
   const handleAdvance = () => {
     if (levelIndex < levels.length - 1) {
-      setLevelIndex((index) => index + 1);
+      const nextIndex = levelIndex + 1;
+      const nextLevel = levels[nextIndex] ?? levels[0];
+      // Load the next level's board in the SAME update as the index change.
+      // Loading it in an effect would render the new level against the old
+      // board for one frame and crash on the missing scene slot.
+      setLevelIndex(nextIndex);
+      dispatch({ type: "LOAD_LEVEL", level: nextLevel });
     }
     setResult(null);
   };
@@ -143,7 +142,7 @@ export function GameBoard() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={pointerWithin}
+      collisionDetection={inflatedPointerWithin}
       onDragEnd={handleDragEnd}
     >
       <main className="game-board">
