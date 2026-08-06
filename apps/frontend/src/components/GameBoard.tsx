@@ -49,13 +49,6 @@ export function GameBoard() {
   );
   const [result, setResult] = useState<ValidationResult | null>(null);
 
-  // Reset the board whenever the level changes.
-  useEffect(() => {
-    dispatch({ type: "LOAD_LEVEL", level });
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setResult(null);
-  }, [level]);
-
   // Trigger validation as soon as every slot is filled.
   useEffect(() => {
     if (result || !isLevelComplete(board)) {
@@ -130,7 +123,13 @@ export function GameBoard() {
 
   const handleAdvance = () => {
     if (levelIndex < levels.length - 1) {
-      setLevelIndex((index) => index + 1);
+      const nextIndex = levelIndex + 1;
+      const nextLevel = levels[nextIndex] ?? levels[0];
+      // Load the next level's board in the SAME update as the index change.
+      // Loading it in an effect would render the new level against the old
+      // board for one frame and crash on the missing scene slot.
+      setLevelIndex(nextIndex);
+      dispatch({ type: "LOAD_LEVEL", level: nextLevel });
     }
     setResult(null);
   };
