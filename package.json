@@ -1,0 +1,26 @@
+{
+  "name": "hn26",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "backend": "pnpm --filter backend",
+    "frontend": "pnpm --filter frontend",
+    "db:generate": "prisma generate --schema=prisma/schema.prisma",
+    "db:push": "prisma db push --schema=prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=prisma/schema.prisma",
+    "db:studio": "prisma studio --schema=prisma/schema.prisma",
+    "db:seed": "prisma db seed --schema=prisma/schema.prisma",
+    "docker:dev": "docker compose -f docker-compose.yml -f docker/compose/dev.yml up -d",
+    "docker:prod": "docker compose -f docker-compose.yml -f docker/compose/prod.yml up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@prisma/client": "7.8.0",
+    "prisma": "7.8.0",
+    "typescript": "^5.7.0"
+  }
+}
