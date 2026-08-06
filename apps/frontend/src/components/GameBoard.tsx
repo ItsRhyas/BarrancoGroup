@@ -4,7 +4,6 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  pointerWithin,
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { useEffect, useMemo, useReducer, useState } from "react";
@@ -21,6 +20,7 @@ import type {
 import { ElementArea } from "./ElementArea";
 import { EndDialog } from "./EndDialog";
 import { SceneSlot } from "./SceneSlot";
+import { inflatedPointerWithin } from "./collisionDetection";
 
 const INITIAL_LEVEL_INDEX = 0;
 
@@ -143,7 +143,7 @@ export function GameBoard() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={pointerWithin}
+      collisionDetection={inflatedPointerWithin}
       onDragEnd={handleDragEnd}
     >
       <main className="game-board">
