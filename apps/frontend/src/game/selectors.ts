@@ -1,5 +1,9 @@
-import type { BoardState, CharacterSlotDef, Level } from "./types";
+import type { BoardState } from "./types";
 
+/**
+ * Returns true when every scene slot has a placed scene and every nested
+ * character slot has a placed character. Used to gate validation.
+ */
 export function isLevelComplete(board: BoardState): boolean {
   for (const slot of Object.values(board)) {
     if (slot.sceneId === null) {
@@ -12,22 +16,4 @@ export function isLevelComplete(board: BoardState): boolean {
     }
   }
   return true;
-}
-
-/**
- * Returns the character slot definitions that are currently active for a
- * scene slot. Active slots come from the scene the player actually placed,
- * so the engine remains generic even if the player chose an unexpected scene.
- */
-export function getActiveCharacterSlots(
-  level: Level,
-  board: BoardState,
-  sceneSlotId: string,
-): CharacterSlotDef[] {
-  const sceneId = board[sceneSlotId]?.sceneId;
-  if (!sceneId) {
-    return [];
-  }
-  const scene = level.scenes.find((s) => s.id === sceneId);
-  return scene?.characterSlots ?? [];
 }
