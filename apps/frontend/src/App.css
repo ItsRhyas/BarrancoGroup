@@ -279,7 +279,7 @@
   color: #9ca3af;
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
+@media (max-width: 768px) and (orientation: portrait) and (pointer: coarse) {
   .rotate-device {
     display: grid;
   }
