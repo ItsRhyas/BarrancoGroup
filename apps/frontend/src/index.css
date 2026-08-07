@@ -51,19 +51,24 @@
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  width: min(100vw, calc(100svh * 16 / 9));
+  max-height: 100svh;
+  aspect-ratio: 16 / 9;
+  position: relative;
   display: flex;
   flex-direction: column;
+  text-align: center;
   box-sizing: border-box;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.35);
 }
 
 body {
   margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  background: #05060a;
+  overflow: hidden;
 }
 
 h1,
