@@ -60,13 +60,17 @@
   container-name: stage;
 }
 
+html,
+body {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   display: grid;
   place-items: center;
   min-height: 100svh;
   background: #05060a;
-  overflow: hidden;
 }
 
 h1,

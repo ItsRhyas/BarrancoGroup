@@ -251,3 +251,33 @@
     display: grid;
   }
 }
+
+/* Small mobile-landscape stages: tighten spacing and cap narrative lines. */
+@container stage (max-height: 375px) {
+  .game-board {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .board-area {
+    gap: 8px;
+  }
+
+  .game-header p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .element-area {
+    padding-top: 8px;
+  }
+}
+
+/* Galaxy Fold cover and similar tiny stages: shrink scene slot further. */
+@container stage (max-height: 320px) {
+  .scene-slot {
+    max-width: 46cqh;
+  }
+}
