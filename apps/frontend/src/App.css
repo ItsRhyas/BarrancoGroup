@@ -263,6 +263,33 @@
   }
 }
 
+.game-board-top {
+  display: flex;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+.back-button {
+  font-size: clamp(13px, 2.22cqh, 16px);
+  font-family: var(--heading);
+  font-weight: 500;
+  padding: clamp(8px, 1.67cqh, 12px) clamp(16px, 3.33cqh, 24px);
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-border);
+    outline-offset: 2px;
+  }
+}
+
 .chapter-select {
   display: flex;
   flex-direction: column;
