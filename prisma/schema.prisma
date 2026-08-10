@@ -1,6 +1,6 @@
 generator client {
   provider            = "prisma-client"
-  output            = "../apps/backend/src/generated/prisma"
+  output              = "../apps/backend/src/generated/prisma"
   importFileExtension = ""
 }
 
@@ -8,9 +8,149 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
+enum SlotType {
+  SCENE
+  CHARACTER
+}
+
+enum EndingType {
+  CORRECT
+  INCORRECT
+}
+
+model Level {
+  id          String            @id
+  title       String
+  narrative   String
+  order       Int               @default(0)
+  active      Boolean           @default(true)
+  sceneSlots  SceneSlot[]
+  items       LevelItem[]
+  placements  ExpectedPlacement[]
+  endings     Ending[]
+  attempts    Attempt[]
+
+  @@map("levels")
+}
+
+model Scene {
+  id             String          @id
+  assetId        String
+  label          String
+  characterSlots CharacterSlot[]
+  items          LevelItem[]
+
+  @@map("scenes")
+}
+
+model Character {
+  id      String      @id
+  assetId String
+  label   String
+  items   LevelItem[]
+
+  @@map("characters")
+}
+
+model LevelItem {
+  id          String    @id @default(uuid())
+  levelId     String
+  sceneId     String?
+  characterId String?
+  available   Boolean   @default(true)
+  position    Int       @default(0)
+  level       Level     @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  scene       Scene?    @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([levelId])
+  @@index([sceneId])
+  @@index([characterId])
+  @@map("level_items")
+}
+
+model SceneSlot {
+  id       String @id
+  levelId  String
+  label    String
+  level    Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@index([levelId])
+  @@map("scene_slots")
+}
+
+model CharacterSlot {
+  id       String @id
+  sceneId  String
+  anchorX  Float
+  anchorY  Float
+  scene    Scene  @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+
+  @@index([sceneId])
+  @@map("character_slots")
+}
+
+model ExpectedPlacement {
+  id       String   @id @default(uuid())
+  levelId  String
+  slotType SlotType
+  slotKey  String
+  targetId String
+  position Int      @default(0)
+  level    Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@unique([levelId, slotType, slotKey])
+  @@index([levelId])
+  @@map("expected_placements")
+}
+
+model Ending {
+  id           String      @id
+  levelId      String
+  type         EndingType
+  title        String
+  description  String
+  imageAssetId String?
+  level        Level       @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@index([levelId])
+  @@map("endings")
+}
+
+model GameSession {
+  id           String    @id @default(uuid())
+  sessionToken String    @unique
+  createdAt    DateTime  @default(now())
+  attempts     Attempt[]
+
+  @@map("game_sessions")
+}
+
+model Attempt {
+  id            String        @id @default(uuid())
+  sessionId     String
+  levelId       String
+  success       Boolean
+  attemptNumber Int
+  attemptItems  AttemptItem[]
+  completedAt   DateTime      @default(now())
+  session       GameSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  level         Level         @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, levelId, attemptNumber])
+  @@index([levelId])
+  @@map("attempts")
+}
+
+model AttemptItem {
+  id         String   @id @default(uuid())
+  attemptId  String
+  slotType   SlotType
+  slotKey    String
+  targetId   String
+  position   Int      @default(0)
+  attempt    Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@map("attempt_items")
 }
