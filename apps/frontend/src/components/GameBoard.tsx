@@ -143,6 +143,7 @@ export function GameBoard() {
     <DndContext
       sensors={sensors}
       collisionDetection={inflatedPointerWithin}
+      autoScroll={false}
       onDragEnd={handleDragEnd}
     >
       <main className="game-board">
