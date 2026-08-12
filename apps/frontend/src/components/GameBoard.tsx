@@ -22,7 +22,9 @@ import { EndDialog } from "./EndDialog";
 import { SceneSlot } from "./SceneSlot";
 import { inflatedPointerWithin } from "./collisionDetection";
 
-const INITIAL_LEVEL_INDEX = 0;
+interface GameBoardProps {
+  levelIndex: number;
+}
 
 function resolveCharacterAssetId(
   level: Level,
@@ -39,8 +41,8 @@ function isDragType(value: unknown): value is DragType {
   return value === "scene" || value === "character";
 }
 
-export function GameBoard() {
-  const [levelIndex, setLevelIndex] = useState(INITIAL_LEVEL_INDEX);
+export function GameBoard({ levelIndex: initialLevelIndex }: GameBoardProps) {
+  const [levelIndex, setLevelIndex] = useState(initialLevelIndex);
   const level = useMemo(() => levels[levelIndex] ?? levels[0], [levelIndex]);
   const [board, dispatch] = useReducer(
     boardReducer,

@@ -215,6 +215,134 @@
   }
 }
 
+.start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: clamp(16px, 4.44cqh, 32px);
+  padding: clamp(16px, 4.44cqh, 32px);
+  box-sizing: border-box;
+}
+
+.start-screen-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 2.78cqh, 20px);
+  width: 100%;
+  max-width: clamp(280px, 55.56cqh, 400px);
+}
+
+.start-button {
+  width: 100%;
+  font-size: clamp(16px, 3.33cqh, 24px);
+  font-family: var(--heading);
+  font-weight: 500;
+  padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-border);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    background: var(--border);
+    color: var(--text);
+    cursor: not-allowed;
+  }
+}
+
+.chapter-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: clamp(20px, 5.56cqh, 40px);
+  padding: clamp(16px, 4.44cqh, 32px);
+  box-sizing: border-box;
+}
+
+.chapter-select-title {
+  font-size: clamp(24px, 4.44cqh, 36px);
+  margin: 0;
+  color: var(--text-h);
+}
+
+.chapter-cards {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(16px, 3.33cqh, 24px);
+  width: 100%;
+}
+
+.chapter-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2.22cqh, 16px);
+  flex: 1 1 0;
+  max-width: clamp(200px, 41.67cqh, 300px);
+  padding: clamp(16px, 3.33cqh, 24px);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg);
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    border-color: var(--accent-border);
+    background: var(--accent-bg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-border);
+    outline-offset: 2px;
+  }
+}
+
+.chapter-card-number {
+  display: grid;
+  place-items: center;
+  width: clamp(36px, 6.67cqh, 48px);
+  height: clamp(36px, 6.67cqh, 48px);
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: clamp(18px, 3.33cqh, 24px);
+  font-weight: 500;
+}
+
+.chapter-card-title {
+  font-size: clamp(18px, 3.33cqh, 24px);
+  margin: 0;
+  color: var(--text-h);
+}
+
+.chapter-card-narrative {
+  font-size: clamp(13px, 2.22cqh, 16px);
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .rotate-device {
   display: none;
   position: fixed;
