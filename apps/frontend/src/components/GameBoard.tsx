@@ -24,6 +24,9 @@ import { inflatedPointerWithin } from "./collisionDetection";
 
 interface GameBoardProps {
   levelIndex: number;
+  onBack: () => void;
+  onAdvance: () => void;
+  onComplete: () => void;
 }
 
 function resolveCharacterAssetId(
@@ -41,8 +44,12 @@ function isDragType(value: unknown): value is DragType {
   return value === "scene" || value === "character";
 }
 
-export function GameBoard({ levelIndex: initialLevelIndex }: GameBoardProps) {
-  const [levelIndex, setLevelIndex] = useState(initialLevelIndex);
+export function GameBoard({
+  levelIndex,
+  onBack,
+  onAdvance,
+  onComplete,
+}: GameBoardProps) {
   const level = useMemo(() => levels[levelIndex] ?? levels[0], [levelIndex]);
   const [board, dispatch] = useReducer(
     boardReducer,
@@ -124,16 +131,11 @@ export function GameBoard({ levelIndex: initialLevelIndex }: GameBoardProps) {
   };
 
   const handleAdvance = () => {
-    if (levelIndex < levels.length - 1) {
-      const nextIndex = levelIndex + 1;
-      const nextLevel = levels[nextIndex] ?? levels[0];
-      // Load the next level's board in the SAME update as the index change.
-      // Loading it in an effect would render the new level against the old
-      // board for one frame and crash on the missing scene slot.
-      setLevelIndex(nextIndex);
-      dispatch({ type: "LOAD_LEVEL", level: nextLevel });
-    }
-    setResult(null);
+    onAdvance();
+  };
+
+  const handleComplete = () => {
+    onComplete();
   };
 
   const handleRetry = () => {
@@ -149,6 +151,17 @@ export function GameBoard({ levelIndex: initialLevelIndex }: GameBoardProps) {
       onDragEnd={handleDragEnd}
     >
       <main className="game-board">
+        <div className="game-board-top">
+          <button
+            type="button"
+            className="back-button"
+            aria-label="Volver a capítulos"
+            onClick={onBack}
+          >
+            Volver a capítulos
+          </button>
+        </div>
+
         <header className="game-header">
           <h1>{level.title}</h1>
           <p>{level.narrative}</p>
@@ -178,6 +191,7 @@ export function GameBoard({ levelIndex: initialLevelIndex }: GameBoardProps) {
           endings={level.endings}
           isFinalLevel={levelIndex === levels.length - 1}
           onAdvance={handleAdvance}
+          onComplete={handleComplete}
           onRetry={handleRetry}
         />
       </main>

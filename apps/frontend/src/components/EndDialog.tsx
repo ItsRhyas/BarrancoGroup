@@ -6,6 +6,7 @@ interface EndDialogProps {
   endings: Ending[];
   isFinalLevel: boolean;
   onAdvance: () => void;
+  onComplete: () => void;
   onRetry: () => void;
 }
 
@@ -14,6 +15,7 @@ export function EndDialog({
   endings,
   isFinalLevel,
   onAdvance,
+  onComplete,
   onRetry,
 }: EndDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -51,9 +53,23 @@ export function EndDialog({
         <h2 id={titleId}>{ending.title}</h2>
         <p id={descriptionId}>{ending.description}</p>
         {result?.correct ? (
-          <button type="button" className="end-button" onClick={onAdvance}>
-            {isFinalLevel ? "Completado" : "Avanzar"}
-          </button>
+          isFinalLevel ? (
+            <button
+              type="button"
+              className="end-button"
+              onClick={onComplete}
+            >
+              Completado
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="end-button"
+              onClick={onAdvance}
+            >
+              Avanzar
+            </button>
+          )
         ) : (
           <button type="button" className="end-button" onClick={onRetry}>
             Reintentar

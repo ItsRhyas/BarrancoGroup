@@ -35,6 +35,18 @@ function App() {
     setScreen({ kind: "game" });
   }, []);
 
+  const backToSelect = useCallback(() => {
+    setScreen({ kind: "chapter-select" });
+  }, []);
+
+  const advanceLevel = useCallback(() => {
+    setSelectedLevel((prev) => prev + 1);
+  }, []);
+
+  const completeGame = useCallback(() => {
+    setScreen({ kind: "chapter-select" });
+  }, []);
+
   return (
     <div className="stage">
       {screen.kind === "start" && (
@@ -47,6 +59,9 @@ function App() {
         <GameBoard
           key={selectedLevel}
           levelIndex={selectedLevel}
+          onBack={backToSelect}
+          onAdvance={advanceLevel}
+          onComplete={completeGame}
         />
       )}
       <RotateDevice />
