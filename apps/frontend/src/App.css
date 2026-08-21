@@ -263,22 +263,29 @@
   }
 }
 
-.game-board-top {
-  display: flex;
-  justify-content: flex-start;
-  flex-shrink: 0;
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
 }
 
-.back-button {
-  font-size: clamp(13px, 2.22cqh, 16px);
-  font-family: var(--heading);
-  font-weight: 500;
-  padding: clamp(8px, 1.67cqh, 12px) clamp(16px, 3.33cqh, 24px);
-  border-radius: 8px;
-  border: none;
-  background: var(--accent);
-  color: white;
+.overlay-button {
+  position: absolute;
+  pointer-events: auto;
+  top: clamp(8px, 1.67cqh, 16px);
+  width: clamp(36px, 6.67cqh, 48px);
+  height: clamp(36px, 6.67cqh, 48px);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: clamp(16px, 3.33cqh, 24px);
   cursor: pointer;
+  padding: 0;
+  line-height: 1;
 
   &:hover {
     filter: brightness(1.05);
@@ -288,6 +295,14 @@
     outline: 2px solid var(--accent-border);
     outline-offset: 2px;
   }
+}
+
+.overlay-back {
+  left: clamp(8px, 1.67cqh, 16px);
+}
+
+.overlay-fullscreen {
+  right: clamp(8px, 1.67cqh, 16px);
 }
 
 .chapter-select {

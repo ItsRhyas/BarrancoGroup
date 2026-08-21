@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { ChapterSelect } from "./components/ChapterSelect";
 import { GameBoard } from "./components/GameBoard";
+import { Overlay } from "./components/Overlay";
 import { RotateDevice } from "./components/RotateDevice";
 import { StartScreen } from "./components/StartScreen";
 import {
@@ -64,9 +65,15 @@ function App() {
     setScreen({ kind: "game" });
   }, []);
 
-  const backToSelect = useCallback(() => {
-    setScreen({ kind: "chapter-select" });
-  }, []);
+  const goBack = useCallback(() => {
+    if (screen.kind === "game") {
+      setScreen({ kind: "chapter-select" });
+    } else if (screen.kind === "chapter-select") {
+      setScreen({ kind: "start" });
+    }
+  }, [screen.kind]);
+
+  const canGoBack = screen.kind !== "start";
 
   const advanceLevel = useCallback(() => {
     setSelectedLevel((prev) => prev + 1);
@@ -82,33 +89,35 @@ function App() {
   }, []);
 
   return (
-    <div className="stage">
-      {screen.kind === "start" && (
-        <StartScreen
-          onNewGame={startNew}
-          onContinue={continueGame}
-          resumeTarget={resumeTarget}
-        />
-      )}
-      {screen.kind === "chapter-select" && (
-        <ChapterSelect
-          onSelectChapter={selectChapter}
-          completedChapters={completedChapters}
-          totalLevels={levels.length}
-        />
-      )}
-      {screen.kind === "game" && (
-        <GameBoard
-          key={selectedLevel}
-          levelIndex={selectedLevel}
-          onBack={backToSelect}
-          onAdvance={advanceLevel}
-          onComplete={completeGame}
-          onChapterCompleted={handleChapterCompleted}
-        />
-      )}
-      <RotateDevice />
-    </div>
+    <>
+      <div className="stage">
+        {screen.kind === "start" && (
+          <StartScreen
+            onNewGame={startNew}
+            onContinue={continueGame}
+            resumeTarget={resumeTarget}
+          />
+        )}
+        {screen.kind === "chapter-select" && (
+          <ChapterSelect
+            onSelectChapter={selectChapter}
+            completedChapters={completedChapters}
+            totalLevels={levels.length}
+          />
+        )}
+        {screen.kind === "game" && (
+          <GameBoard
+            key={selectedLevel}
+            levelIndex={selectedLevel}
+            onAdvance={advanceLevel}
+            onComplete={completeGame}
+            onChapterCompleted={handleChapterCompleted}
+          />
+        )}
+        <RotateDevice />
+      </div>
+      <Overlay canGoBack={canGoBack} onBack={goBack} />
+    </>
   );
 }
 
