@@ -1,12 +1,15 @@
-import { readLastChapter } from "../lib/session";
-
 interface StartScreenProps {
   onNewGame: () => void;
   onContinue: () => void;
+  resumeTarget: number | null;
 }
 
-export function StartScreen({ onNewGame, onContinue }: StartScreenProps) {
-  const canContinue = readLastChapter() !== null;
+export function StartScreen({
+  onNewGame,
+  onContinue,
+  resumeTarget,
+}: StartScreenProps) {
+  const canContinue = resumeTarget !== null;
 
   return (
     <section className="start-screen" aria-label="Pantalla de inicio">
