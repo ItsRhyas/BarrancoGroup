@@ -27,6 +27,7 @@ interface GameBoardProps {
   onBack: () => void;
   onAdvance: () => void;
   onComplete: () => void;
+  onChapterCompleted?: (index: number) => void;
 }
 
 function resolveCharacterAssetId(
@@ -49,6 +50,7 @@ export function GameBoard({
   onBack,
   onAdvance,
   onComplete,
+  onChapterCompleted,
 }: GameBoardProps) {
   const level = useMemo(() => levels[levelIndex] ?? levels[0], [levelIndex]);
   const [board, dispatch] = useReducer(
@@ -64,9 +66,12 @@ export function GameBoard({
       return;
     }
     const nextResult = validate(board, level.expected, level.endings);
+    if (nextResult.correct) {
+      onChapterCompleted?.(levelIndex);
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setResult(nextResult);
-  }, [board, level, result]);
+  }, [board, level, result, levelIndex, onChapterCompleted]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

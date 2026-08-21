@@ -370,6 +370,26 @@
   overflow: hidden;
 }
 
+.chapter-card--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chapter-card--locked:hover,
+.chapter-card--locked:focus-visible {
+  border-color: var(--border);
+  background: var(--bg);
+}
+
+.chapter-card--completed .chapter-card-number {
+  background: var(--accent-border);
+}
+
+.chapter-card-indicator {
+  font-size: clamp(18px, 3.33cqh, 24px);
+  line-height: 1;
+}
+
 .rotate-device {
   display: none;
   position: fixed;
