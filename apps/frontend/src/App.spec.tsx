@@ -4,7 +4,6 @@ import App from "./App";
 
 interface MockGameBoardProps {
   levelIndex: number;
-  onBack: () => void;
   onAdvance: () => void;
   onComplete: () => void;
   onChapterCompleted?: (index: number) => void;
@@ -14,9 +13,6 @@ vi.mock("./components/GameBoard", () => ({
   GameBoard: (props: MockGameBoardProps) => (
     <div data-testid="game-board">
       <span data-testid="level-index">{props.levelIndex}</span>
-      <button type="button" onClick={props.onBack}>
-        Volver a capítulos
-      </button>
       <button
         type="button"
         onClick={() => {
@@ -86,13 +82,50 @@ describe("App", () => {
     expect(screen.getByTestId("level-index").textContent).toBe("1");
   });
 
+  it("does not render a back button on the start screen", () => {
+    render(<App />);
+    expect(
+      screen.queryByRole("button", { name: /Volver/i, hidden: true }),
+    ).toBeNull();
+  });
+
+  it("returns to chapter select from the game preserving the selected level", () => {
+    localStorage.setItem("mairin:completedChapters", "[0]");
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /Un juego para todos/i }),
+    );
+    expect(screen.getByTestId("level-index").textContent).toBe("1");
+    fireEvent.click(
+      screen.getByRole("button", { name: /Volver/i, hidden: true }),
+    );
+    expect(
+      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+    ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: /Un juego para todos/i }),
+    );
+    expect(screen.getByTestId("level-index").textContent).toBe("1");
+  });
+
+  it("returns to start from chapter select", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+    expect(
+      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
+    expect(screen.getByRole("button", { name: /Nuevo juego/i })).toBeTruthy();
+  });
+
   it("returns to chapter select from the game", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
       screen.getByRole("button", { name: /El saludo de Mairin/i }),
     );
-    fireEvent.click(screen.getByRole("button", { name: /Volver a capítulos/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
     expect(
       screen.getByRole("heading", { name: /Elige un capítulo/i }),
     ).toBeTruthy();
@@ -132,7 +165,7 @@ describe("App", () => {
 
     expect(localStorage.getItem("mairin:completedChapters")).toBe("[0]");
 
-    fireEvent.click(screen.getByRole("button", { name: /Volver a capítulos/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
     const unlockedCard = screen.getByRole("button", {
       name: /Un juego para todos/i,
     }) as HTMLButtonElement;
@@ -146,7 +179,7 @@ describe("App", () => {
       screen.getByRole("button", { name: /El saludo de Mairin/i }),
     );
     fireEvent.click(screen.getByRole("button", { name: /Avanzar/i }));
-    fireEvent.click(screen.getByRole("button", { name: /Volver a capítulos/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
     fireEvent.click(
       screen.getByRole("button", { name: /El saludo de Mairin/i }),
     );
@@ -167,7 +200,7 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: /Avanzar/i }));
 
-    fireEvent.click(screen.getByRole("button", { name: /Volver a capítulos/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
     const unlockedCard = screen.getByRole("button", {
       name: /Un juego para todos/i,
     }) as HTMLButtonElement;

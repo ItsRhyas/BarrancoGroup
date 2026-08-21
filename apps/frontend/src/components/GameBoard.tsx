@@ -24,7 +24,6 @@ import { inflatedPointerWithin } from "./collisionDetection";
 
 interface GameBoardProps {
   levelIndex: number;
-  onBack: () => void;
   onAdvance: () => void;
   onComplete: () => void;
   onChapterCompleted?: (index: number) => void;
@@ -47,7 +46,6 @@ function isDragType(value: unknown): value is DragType {
 
 export function GameBoard({
   levelIndex,
-  onBack,
   onAdvance,
   onComplete,
   onChapterCompleted,
@@ -156,17 +154,6 @@ export function GameBoard({
       onDragEnd={handleDragEnd}
     >
       <main className="game-board">
-        <div className="game-board-top">
-          <button
-            type="button"
-            className="back-button"
-            aria-label="Volver a capítulos"
-            onClick={onBack}
-          >
-            Volver a capítulos
-          </button>
-        </div>
-
         <header className="game-header">
           <h1>{level.title}</h1>
           <p>{level.narrative}</p>
