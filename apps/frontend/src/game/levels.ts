@@ -55,6 +55,7 @@ export const levels: Level[] = [
         title: "¡Muy bien!",
         description:
           "Mairin saludó al maestro con respeto. El aula se llenó de armonía y todos aprendieron juntos.",
+        imageAssetId: "ending:correct-1",
       },
       {
         id: "ending:incorrect-1",
@@ -62,6 +63,7 @@ export const levels: Level[] = [
         title: "Inténtalo de nuevo",
         description:
           "La escena no refleja respeto. Piensa en quién debería estar junto a Mairin en el aula.",
+        imageAssetId: "ending:incorrect-1",
       },
     ],
   },
@@ -104,6 +106,7 @@ export const levels: Level[] = [
         title: "¡Equidad en acción!",
         description:
           "Mairin adaptó el juego para que su amigo con silla de ruedas también participara. Jugar juntos es más divertido cuando todos tienen lugar.",
+        imageAssetId: "ending:correct-2",
       },
       {
         id: "ending:incorrect-2",
@@ -111,6 +114,7 @@ export const levels: Level[] = [
         title: "Inténtalo de nuevo",
         description:
           "La escena no muestra equidad. Recuerda: todos merecen participar, incluso si necesitamos adaptar el juego.",
+        imageAssetId: "ending:incorrect-2",
       },
     ],
   },

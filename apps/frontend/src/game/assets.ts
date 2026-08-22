@@ -46,4 +46,24 @@ export const assetRegistry: AssetRegistry = {
     emoji: "🧒",
     aspectRatio: 1,
   },
+  "ending:correct-1": {
+    type: "emoji",
+    emoji: "⭐",
+    aspectRatio: 1,
+  },
+  "ending:correct-2": {
+    type: "emoji",
+    emoji: "🎉",
+    aspectRatio: 1,
+  },
+  "ending:incorrect-1": {
+    type: "emoji",
+    emoji: "🔄",
+    aspectRatio: 1,
+  },
+  "ending:incorrect-2": {
+    type: "emoji",
+    emoji: "🤔",
+    aspectRatio: 1,
+  },
 };

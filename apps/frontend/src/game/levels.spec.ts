@@ -30,6 +30,21 @@ describe("level data integrity", () => {
         expect(incorrect.length).toBeGreaterThanOrEqual(1);
       });
 
+      it("references registered assets for every ending with an imageAssetId", () => {
+        for (const ending of level.endings) {
+          if (ending.imageAssetId) {
+            expect(assetRegistry[ending.imageAssetId]).toBeDefined();
+          }
+        }
+      });
+
+      it("resolves the correct ending asset", () => {
+        const correctEnding = level.endings.find((e) => e.type === "correct");
+        expect(correctEnding).toBeDefined();
+        expect(correctEnding!.imageAssetId).toBeDefined();
+        expect(assetRegistry[correctEnding!.imageAssetId!]).toBeDefined();
+      });
+
       it("expected scenes reference existing scene slots and scenes", () => {
         for (const [slotId, sceneId] of Object.entries(level.expected.scenes)) {
           expect(level.sceneSlots.some((s) => s.id === slotId)).toBe(true);
