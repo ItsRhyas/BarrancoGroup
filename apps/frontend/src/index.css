@@ -14,6 +14,10 @@
   --danger-bg: rgba(239, 68, 68, 0.1);
   --danger-border: rgba(239, 68, 68, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
+  --mustard: #C9A227;
+  --mustard-soft: #E4C76B;
+  --bg-beige: #F4F0E6;
+  --text-unavailable: #9CA3AF;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
