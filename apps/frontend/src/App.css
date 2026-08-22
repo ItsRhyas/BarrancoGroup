@@ -54,6 +54,12 @@
     border-color: var(--accent);
     background: var(--accent-bg);
   }
+
+  @media (hover: hover) {
+    &:hover:not(.is-over) {
+      border-color: var(--accent-border);
+    }
+  }
 }
 
 .scene-slot-placeholder {
@@ -108,6 +114,12 @@
     background: var(--accent-bg);
   }
 
+  @media (hover: hover) {
+    &:hover:not(.is-over) {
+      border-color: var(--accent);
+    }
+  }
+
   .asset-emoji {
     font-size: clamp(16px, 4.44cqh, 32px);
   }
@@ -153,6 +165,14 @@
 
   &:active {
     cursor: grabbing;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
   }
 
   .asset-emoji {
@@ -238,13 +258,19 @@
   align-self: center;
   font-weight: 500;
 
-  &:hover {
-    filter: brightness(1.05);
+  &:active {
+    transform: scale(0.97);
   }
 
   &:focus-visible {
     outline: 2px solid var(--accent-border);
     outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(1.05);
+    }
   }
 }
 
@@ -296,8 +322,8 @@
   color: white;
   cursor: pointer;
 
-  &:hover {
-    filter: brightness(1.05);
+  &:active:not(:disabled) {
+    transform: scale(0.97);
   }
 
   &:focus-visible {
@@ -309,6 +335,12 @@
     background: var(--border);
     color: var(--text);
     cursor: not-allowed;
+  }
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      filter: brightness(1.05);
+    }
   }
 }
 
@@ -323,8 +355,8 @@
   position: absolute;
   pointer-events: auto;
   top: clamp(8px, 1.67cqh, 16px);
-  width: clamp(36px, 6.67cqh, 48px);
-  height: clamp(36px, 6.67cqh, 48px);
+  width: clamp(44px, 6.67cqh, 48px);
+  height: clamp(44px, 6.67cqh, 48px);
   display: grid;
   place-items: center;
   border: 1px solid var(--border);
@@ -336,13 +368,19 @@
   padding: 0;
   line-height: 1;
 
-  &:hover {
-    filter: brightness(1.05);
+  &:active {
+    transform: scale(0.97);
   }
 
   &:focus-visible {
     outline: 2px solid var(--accent-border);
     outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(1.05);
+    }
   }
 }
 
@@ -395,14 +433,20 @@
   cursor: pointer;
   text-align: center;
 
-  &:hover {
-    border-color: var(--accent-border);
-    background: var(--accent-bg);
+  &:active:not(.chapter-card--locked) {
+    transform: scale(0.97);
   }
 
   &:focus-visible {
     outline: 2px solid var(--accent-border);
     outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    &:hover:not(.chapter-card--locked) {
+      border-color: var(--accent-border);
+      background: var(--accent-bg);
+    }
   }
 }
 
@@ -439,7 +483,6 @@
   cursor: not-allowed;
 }
 
-.chapter-card--locked:hover,
 .chapter-card--locked:focus-visible {
   border-color: var(--border);
   background: var(--bg);
