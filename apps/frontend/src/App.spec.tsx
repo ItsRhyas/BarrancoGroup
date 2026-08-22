@@ -55,7 +55,7 @@ describe("App", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     expect(
-      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+      screen.getByRole("heading", { name: /Capítulos/i }),
     ).toBeTruthy();
   });
 
@@ -101,7 +101,7 @@ describe("App", () => {
       screen.getByRole("button", { name: /Volver/i, hidden: true }),
     );
     expect(
-      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+      screen.getByRole("heading", { name: /Capítulos/i }),
     ).toBeTruthy();
     fireEvent.click(
       screen.getByRole("button", { name: /Un juego para todos/i }),
@@ -113,7 +113,7 @@ describe("App", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     expect(
-      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+      screen.getByRole("heading", { name: /Capítulos/i }),
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
     expect(screen.getByRole("button", { name: /Nuevo juego/i })).toBeTruthy();
@@ -127,7 +127,7 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: /Volver/i, hidden: true }));
     expect(
-      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+      screen.getByRole("heading", { name: /Capítulos/i }),
     ).toBeTruthy();
   });
 
@@ -140,7 +140,7 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: /Completado/i }));
     expect(
-      screen.getByRole("heading", { name: /Elige un capítulo/i }),
+      screen.getByRole("heading", { name: /Capítulos/i }),
     ).toBeTruthy();
   });
 

@@ -4,7 +4,38 @@ import { ChapterSelect } from "./ChapterSelect";
 import { levels } from "../game/levels";
 
 describe("ChapterSelect", () => {
-  it("renders one card for each level", () => {
+  it("renders the title block heading and subtitle", () => {
+    const { container } = render(
+      <ChapterSelect
+        onSelectChapter={vi.fn()}
+        completedChapters={[]}
+        totalLevels={levels.length}
+      />,
+    );
+    expect(
+      screen.getByRole("heading", { name: /Capítulos/i }),
+    ).toBeTruthy();
+    expect(
+      container.querySelector(".chapter-select__title-block p")?.textContent,
+    ).toBe("Elige un capítulo");
+  });
+
+  it("renders the decorative background image", () => {
+    const { container } = render(
+      <ChapterSelect
+        onSelectChapter={vi.fn()}
+        completedChapters={[]}
+        totalLevels={levels.length}
+      />,
+    );
+    const bg = container.querySelector(".chapter-select__bg");
+    expect(bg).not.toBeNull();
+    expect(bg?.getAttribute("src")).toContain("chapter-select-bg.svg");
+    expect(bg?.getAttribute("alt")).toBe("");
+    expect(bg?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("renders one frame button for each level", () => {
     render(
       <ChapterSelect
         onSelectChapter={vi.fn()}
@@ -12,13 +43,22 @@ describe("ChapterSelect", () => {
         totalLevels={levels.length}
       />,
     );
-    const cards = screen.getAllByRole("button", {
-      name: /El saludo de Mairin|Un juego para todos/i,
-    });
-    expect(cards.length).toBe(levels.length);
+    expect(screen.getAllByRole("button")).toHaveLength(levels.length);
   });
 
-  it("calls onSelectChapter with the index of an unlocked card", () => {
+  it("does not render the narrative summary", () => {
+    const { container } = render(
+      <ChapterSelect
+        onSelectChapter={vi.fn()}
+        completedChapters={[]}
+        totalLevels={levels.length}
+      />,
+    );
+    expect(container.querySelector(".chapter-card-narrative")).toBeNull();
+    expect(screen.queryByText(levels[0].narrative)).toBeNull();
+  });
+
+  it("calls onSelectChapter with the index of an unlocked frame", () => {
     const onSelectChapter = vi.fn();
     render(
       <ChapterSelect
@@ -33,7 +73,7 @@ describe("ChapterSelect", () => {
     expect(onSelectChapter).toHaveBeenCalledWith(0);
   });
 
-  it("locks cards that are not yet unlocked", () => {
+  it("locks frames that are not yet unlocked", () => {
     render(
       <ChapterSelect
         onSelectChapter={vi.fn()}
@@ -41,14 +81,15 @@ describe("ChapterSelect", () => {
         totalLevels={levels.length}
       />,
     );
-    const lockedCard = screen.getByRole("button", {
+    const lockedFrame = screen.getByRole("button", {
       name: /Un juego para todos/i,
     }) as HTMLButtonElement;
-    expect(lockedCard.disabled).toBe(true);
-    expect(lockedCard.getAttribute("aria-disabled")).toBe("true");
+    expect(lockedFrame.disabled).toBe(true);
+    expect(lockedFrame.getAttribute("aria-disabled")).toBe("true");
+    expect(lockedFrame.classList.contains("chapter-frame--locked")).toBe(true);
   });
 
-  it("does not call onSelectChapter when a locked card is clicked", () => {
+  it("does not call onSelectChapter when a locked frame is clicked", () => {
     const onSelectChapter = vi.fn();
     render(
       <ChapterSelect
@@ -63,7 +104,7 @@ describe("ChapterSelect", () => {
     expect(onSelectChapter).not.toHaveBeenCalled();
   });
 
-  it("marks completed cards with a check indicator", () => {
+  it("marks completed frames with a check indicator", () => {
     render(
       <ChapterSelect
         onSelectChapter={vi.fn()}
@@ -71,10 +112,10 @@ describe("ChapterSelect", () => {
         totalLevels={levels.length}
       />,
     );
-    const completedCard = screen.getByRole("button", {
+    const completedFrame = screen.getByRole("button", {
       name: /El saludo de Mairin/i,
     });
-    expect(completedCard.classList.contains("chapter-card--completed")).toBe(
+    expect(completedFrame.classList.contains("chapter-frame--completed")).toBe(
       true,
     );
   });
@@ -87,9 +128,9 @@ describe("ChapterSelect", () => {
         totalLevels={levels.length}
       />,
     );
-    const unlockedCard = screen.getByRole("button", {
+    const unlockedFrame = screen.getByRole("button", {
       name: /Un juego para todos/i,
     }) as HTMLButtonElement;
-    expect(unlockedCard.disabled).toBe(false);
+    expect(unlockedFrame.disabled).toBe(false);
   });
 });

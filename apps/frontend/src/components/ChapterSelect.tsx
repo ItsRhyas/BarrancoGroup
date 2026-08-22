@@ -14,8 +14,17 @@ export function ChapterSelect({
 }: ChapterSelectProps) {
   return (
     <section className="chapter-select" aria-label="Selección de capítulo">
-      <h2 className="chapter-select-title">Elige un capítulo</h2>
-      <div className="chapter-cards">
+      <img
+        className="chapter-select__bg"
+        src="/images/chapter-select-bg.svg"
+        alt=""
+        aria-hidden="true"
+      />
+      <div className="chapter-select__title-block">
+        <h2>Capítulos</h2>
+        <p>Elige un capítulo</p>
+      </div>
+      <div className="chapter-select__frames">
         {levels.map((level, index) => {
           const unlocked = isChapterUnlocked(index, completedChapters, totalLevels);
           const completed = completedChapters.includes(index);
@@ -26,27 +35,38 @@ export function ChapterSelect({
               key={level.id}
               type="button"
               className={[
-                "chapter-card",
-                locked && "chapter-card--locked",
-                completed && "chapter-card--completed",
+                "chapter-frame",
+                locked && "chapter-frame--locked",
+                completed && "chapter-frame--completed",
               ]
                 .filter(Boolean)
                 .join(" ")}
               onClick={() => onSelectChapter(index)}
               disabled={locked}
               aria-disabled={locked}
+              aria-label={level.title}
             >
-              <span className="chapter-card-number" aria-hidden="true">
-                {locked ? (
-                  <span className="chapter-card-indicator">🔒</span>
-                ) : completed ? (
-                  <span className="chapter-card-indicator">✓</span>
-                ) : (
-                  index + 1
+              <span className="chapter-frame__image">
+                <img
+                  src={`/images/chapter-${index + 1}-portrait.svg`}
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span className="chapter-frame__number" aria-hidden="true">
+                  {index + 1}
+                </span>
+                {locked && (
+                  <span className="chapter-frame__overlay" aria-hidden="true">
+                    🔒
+                  </span>
+                )}
+                {completed && (
+                  <span className="chapter-frame__overlay" aria-hidden="true">
+                    ✓
+                  </span>
                 )}
               </span>
-              <h3 className="chapter-card-title">{level.title}</h3>
-              <p className="chapter-card-narrative">{level.narrative}</p>
+              <span className="chapter-frame__title">{level.title}</span>
             </button>
           );
         })}
