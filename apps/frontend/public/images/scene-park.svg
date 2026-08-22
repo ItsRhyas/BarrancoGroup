@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <!-- Sky and grass -->
+  <rect width="1600" height="900" fill="#dff6ff"/>
+  <rect x="0" y="520" width="1600" height="380" fill="#90c66c"/>
+  <rect x="0" y="520" width="1600" height="24" fill="#7ab558"/>
+
+  <!-- Clouds -->
+  <g fill="#fff">
+    <circle cx="220" cy="160" r="48"/>
+    <circle cx="280" cy="150" r="56"/>
+    <circle cx="340" cy="160" r="48"/>
+    <circle cx="1200" cy="140" r="40"/>
+    <circle cx="1250" cy="130" r="52"/>
+    <circle cx="1300" cy="140" r="40"/>
+  </g>
+
+  <!-- Trees -->
+  <g>
+    <rect x="180" y="420" width="36" height="160" fill="#8b6f47"/>
+    <circle cx="198" cy="380" r="90" fill="#4a8b3c"/>
+  </g>
+  <g>
+    <rect x="450" y="460" width="32" height="120" fill="#8b6f47"/>
+    <circle cx="466" cy="420" r="72" fill="#5aa84a"/>
+  </g>
+  <g>
+    <rect x="1100" y="440" width="40" height="140" fill="#8b6f47"/>
+    <circle cx="1120" cy="390" r="84" fill="#4a8b3c"/>
+  </g>
+  <g>
+    <rect x="1380" y="480" width="30" height="100" fill="#8b6f47"/>
+    <circle cx="1395" cy="445" r="60" fill="#5aa84a"/>
+  </g>
+
+  <!-- Bench -->
+  <g fill="#c49a6c">
+    <rect x="760" y="600" width="280" height="24" rx="4"/>
+    <rect x="760" y="640" width="280" height="16" rx="4"/>
+    <rect x="790" y="656" width="16" height="60"/>
+    <rect x="994" y="656" width="16" height="60"/>
+  </g>
+
+  <!-- Playground accent -->
+  <circle cx="280" cy="720" r="40" fill="#aa3bff" opacity="0.85"/>
+  <rect x="260" y="710" width="40" height="8" rx="4" fill="#fff"/>
+  <rect x="276" y="694" width="8" height="40" rx="4" fill="#fff"/>
+</svg>

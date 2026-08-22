@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Star rays -->
+  <circle cx="256" cy="256" r="180" fill="#10b981" opacity="0.15"/>
+  <!-- Star -->
+  <polygon points="256,96 298,204 414,204 320,272 352,384 256,320 160,384 192,272 98,204 214,204" fill="#10b981"/>
+  <!-- Inner highlight -->
+  <polygon points="256,140 284,214 362,214 296,260 318,334 256,292 194,334 216,260 150,214 228,214" fill="#34d399"/>
+  <!-- Center spark -->
+  <circle cx="256" cy="252" r="32" fill="#fff"/>
+</svg>

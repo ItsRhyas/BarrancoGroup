@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Hair back -->
+  <circle cx="256" cy="200" r="110" fill="#5a3e2b"/>
+  <!-- Face -->
+  <circle cx="256" cy="210" r="82" fill="#f5d0b5"/>
+  <!-- Hair front -->
+  <path d="M186 170 Q256 120 326 170 Q326 120 256 110 Q186 120 186 170" fill="#5a3e2b"/>
+  <!-- Eyes -->
+  <circle cx="230" cy="205" r="8" fill="#2d2a26"/>
+  <circle cx="282" cy="205" r="8" fill="#2d2a26"/>
+  <!-- Smile -->
+  <path d="M236 240 Q256 258 276 240" fill="none" stroke="#c17a61" stroke-width="6" stroke-linecap="round"/>
+  <!-- Dress -->
+  <path d="M196 300 L316 300 L346 460 L166 460 Z" fill="#aa3bff"/>
+  <!-- Arms -->
+  <rect x="170" y="300" width="28" height="110" rx="14" fill="#f5d0b5"/>
+  <rect x="314" y="300" width="28" height="110" rx="14" fill="#f5d0b5"/>
+  <!-- Legs -->
+  <rect x="220" y="460" width="28" height="52" fill="#f5d0b5"/>
+  <rect x="264" y="460" width="28" height="52" fill="#f5d0b5"/>
+</svg>

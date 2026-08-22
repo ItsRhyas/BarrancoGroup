@@ -31,6 +31,7 @@ export function AssetView({ assetId, label, className = "" }: AssetViewProps) {
       src={asset.src}
       alt={label ?? assetId}
       aria-label={label ?? assetId}
+      draggable={false}
       style={
         asset.aspectRatio
           ? { aspectRatio: String(asset.aspectRatio) }

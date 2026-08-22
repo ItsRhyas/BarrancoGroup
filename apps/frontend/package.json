@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:levels": "node scripts/build-levels.ts",
+    "build:levels": "node scripts/build-levels.ts --strict-images",
     "predev": "npm run build:levels",
     "prebuild": "npm run build:levels",
     "lint": "eslint .",
-    "test": "vitest run",
+    "test": "vitest run && vitest run --config vitest.scripts.config.ts",
     "test:watch": "vitest",
     "preview": "vite preview"
   },
