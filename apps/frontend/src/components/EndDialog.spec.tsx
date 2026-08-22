@@ -177,4 +177,88 @@ describe("EndDialog", () => {
     fireEvent.click(screen.getByRole("button", { name: /Reintentar/i }));
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
+
+  it("renders the matched ending description for a correct result", () => {
+    render(
+      <EndDialog
+        result={correctResult}
+        endings={endings}
+        isFinalLevel={false}
+        onAdvance={vi.fn()}
+        onComplete={vi.fn()}
+        onRetry={vi.fn()}
+      />,
+    );
+    expect(screen.getByText(correctEnding.description)).toBeTruthy();
+  });
+
+  it("renders the matched ending description for an incorrect result", () => {
+    render(
+      <EndDialog
+        result={incorrectResult}
+        endings={endings}
+        isFinalLevel={false}
+        onAdvance={vi.fn()}
+        onComplete={vi.fn()}
+        onRetry={vi.fn()}
+      />,
+    );
+    expect(screen.getByText(incorrectEnding.description)).toBeTruthy();
+  });
+
+  it("exposes accessible labels tied to the header and description", () => {
+    render(
+      <EndDialog
+        result={correctResult}
+        endings={endings}
+        isFinalLevel={false}
+        onAdvance={vi.fn()}
+        onComplete={vi.fn()}
+        onRetry={vi.fn()}
+      />,
+    );
+    const dialog = document.querySelector(".end-dialog");
+    expect(dialog).toBeTruthy();
+
+    const headerId = dialog?.getAttribute("aria-labelledby");
+    const descriptionId = dialog?.getAttribute("aria-describedby");
+    expect(headerId).toBeTruthy();
+    expect(descriptionId).toBeTruthy();
+
+    const header = headerId ? document.getElementById(headerId) : null;
+    const description = descriptionId
+      ? document.getElementById(descriptionId)
+      : null;
+    expect(header).toBeTruthy();
+    expect(description).toBeTruthy();
+    expect(header?.textContent).toBe("Vas por buen camino");
+    expect(description?.textContent).toBe(correctEnding.description);
+  });
+
+  it("closes the dialog when the result is cleared", () => {
+    const { rerender } = render(
+      <EndDialog
+        result={correctResult}
+        endings={endings}
+        isFinalLevel={false}
+        onAdvance={vi.fn()}
+        onComplete={vi.fn()}
+        onRetry={vi.fn()}
+      />,
+    );
+    const dialog = document.querySelector(".end-dialog") as HTMLDialogElement;
+    expect(dialog.open).toBe(true);
+
+    rerender(
+      <EndDialog
+        result={null}
+        endings={endings}
+        isFinalLevel={false}
+        onAdvance={vi.fn()}
+        onComplete={vi.fn()}
+        onRetry={vi.fn()}
+      />,
+    );
+    expect(dialog.open).toBe(false);
+  });
 });
