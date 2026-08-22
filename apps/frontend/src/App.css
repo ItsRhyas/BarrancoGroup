@@ -311,17 +311,56 @@
 }
 
 .start-screen {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
   gap: clamp(16px, 4.44cqh, 32px);
-  padding: clamp(16px, 4.44cqh, 32px);
+  padding: clamp(40px, 11.1cqh, 80px) clamp(16px, 4.44cqh, 32px)
+    clamp(16px, 4.44cqh, 32px);
   box-sizing: border-box;
 }
 
+.start-screen__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  background-color: var(--bg-beige);
+  pointer-events: none;
+}
+
+.start-screen__title-block {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1.11cqh, 8px);
+  padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
+  border-radius: 12px;
+  background: rgba(244, 240, 230, 0.55);
+
+  h1 {
+    margin: 0;
+    font-size: clamp(48px, 12cqh, 96px);
+    letter-spacing: -1.68px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: clamp(18px, 3.33cqh, 24px);
+    letter-spacing: 0.05em;
+  }
+}
+
 .start-screen-actions {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -332,34 +371,35 @@
 
 .start-button {
   width: 100%;
-  font-size: clamp(16px, 3.33cqh, 24px);
+  font-size: clamp(18px, 3.89cqh, 28px);
   font-family: var(--heading);
   font-weight: 500;
-  padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
-  border-radius: 12px;
+  padding: clamp(6px, 1.39cqh, 10px) 0;
   border: none;
-  background: var(--accent);
-  color: white;
+  border-radius: 0;
+  background: transparent;
+  color: var(--mustard);
   cursor: pointer;
-
-  &:active:not(:disabled) {
-    transform: scale(0.97);
-  }
+  text-decoration: none;
 
   &:focus-visible {
     outline: 2px solid var(--accent-border);
     outline-offset: 2px;
   }
 
-  &:disabled {
-    background: var(--border);
-    color: var(--text);
+  &[data-state="unavailable"] {
+    color: var(--text-unavailable);
     cursor: not-allowed;
   }
 
   @media (hover: hover) {
-    &:hover:not(:disabled) {
-      filter: brightness(1.05);
+    &[data-state="available"]:hover {
+      color: var(--mustard-soft);
+      text-decoration: underline;
+    }
+
+    &[data-state="unavailable"]:hover {
+      text-decoration: none;
     }
   }
 }
