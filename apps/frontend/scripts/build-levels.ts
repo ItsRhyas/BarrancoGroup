@@ -5,14 +5,25 @@ import matter from "gray-matter";
 import { chapterSchema } from "./build-levels.schema.ts";
 import type { AssetEntry, AssetRegistry, Level } from "../src/game/types.ts";
 
-const root = path.resolve(import.meta.dirname, "..");
-const storyDir = path.join(root, "content", "story");
-const outPath = path.join(root, "src", "game", "levels.generated.ts");
-const imagesDir = path.join(root, "public", "images");
+export interface BuildOptions {
+  storyDir: string;
+  imagesDir: string;
+  outPath: string;
+  strictImages: boolean;
+}
+
+export class BuildError extends Error {
+  code: number;
+
+  constructor(message: string, code = 1) {
+    super(message);
+    this.name = "BuildError";
+    this.code = code;
+  }
+}
 
 function fail(message: string, code = 1): never {
-  console.error(message);
-  process.exit(code);
+  throw new BuildError(message, code);
 }
 
 function warn(message: string): void {
@@ -259,6 +270,7 @@ function validateLevel(level: Level, source: string): void {
 
 function checkImageFiles(
   assetIds: Iterable<string>,
+  imagesDir: string,
   strictImages: boolean,
 ): void {
   const missing = new Set<string>();
@@ -274,10 +286,12 @@ function checkImageFiles(
 
   const sorted = [...missing].sort((a, b) => a.localeCompare(b));
   if (strictImages) {
-    fail(`build: missing image files:\n${sorted.map((f) => `  - ${f}`).join("\n")}`);
+    fail(
+      `build: missing image files:\n${sorted.map((f) => `  - ${f}`).join("\n")}`,
+    );
   }
   warn(
-    `build: ${missing.size} referenced image file(s) are missing (slice 1 allows this); pass --strict-images to fail. Missing:\n${sorted
+    `build: ${missing.size} referenced image file(s) are missing; pass --strict-images to fail. Missing:\n${sorted
       .map((f) => `  - ${f}`)
       .join("\n")}`,
   );
@@ -293,7 +307,10 @@ function buildAssetRegistry(levels: Level[]): AssetRegistry {
   return registry;
 }
 
-function readChapter(file: string): { order: number; level: Level } {
+function readChapter(
+  file: string,
+  storyDir: string,
+): { order: number; level: Level } {
   const filePath = path.join(storyDir, file);
   let raw: string;
   try {
@@ -329,8 +346,8 @@ function readChapter(file: string): { order: number; level: Level } {
   return { order: chapter.order ?? 0, level };
 }
 
-function main(): void {
-  const strictImages = process.argv.includes("--strict-images");
+export function buildLevels(options: BuildOptions): string {
+  const { storyDir, imagesDir, outPath, strictImages } = options;
 
   if (!fs.existsSync(storyDir)) {
     fail(`Story directory not found: ${storyDir}`, 2);
@@ -338,7 +355,7 @@ function main(): void {
 
   const files = fs
     .readdirSync(storyDir)
-    .filter((file) => file.endsWith(".md"))
+    .filter((file) => file.startsWith("chapter-") && file.endsWith(".md"))
     .sort((a, b) => a.localeCompare(b));
 
   if (files.length === 0) {
@@ -346,7 +363,7 @@ function main(): void {
   }
 
   const chapters = files.map((file) => {
-    const { order, level } = readChapter(file);
+    const { order, level } = readChapter(file, storyDir);
     return { source: file, order, level };
   });
 
@@ -363,7 +380,7 @@ function main(): void {
   }
 
   const registry = buildAssetRegistry(levels);
-  checkImageFiles(Object.keys(registry), strictImages);
+  checkImageFiles(Object.keys(registry), imagesDir, strictImages);
 
   const serializedLevels = levels.map(serializeLevel).join("\n");
   const output =
@@ -382,6 +399,26 @@ function main(): void {
   console.log(
     `Generated ${outPath} (${levels.length} levels, ${Object.keys(registry).length} assets)`,
   );
+  return output;
+}
+
+function main(): void {
+  const strictImages = process.argv.includes("--strict-images");
+  const root = path.resolve(import.meta.dirname, "..");
+  try {
+    buildLevels({
+      storyDir: path.join(root, "content", "story"),
+      imagesDir: path.join(root, "public", "images"),
+      outPath: path.join(root, "src", "game", "levels.generated.ts"),
+      strictImages,
+    });
+  } catch (error) {
+    if (error instanceof BuildError) {
+      console.error(error.message);
+      process.exit(error.code);
+    }
+    throw error;
+  }
 }
 
 main();
