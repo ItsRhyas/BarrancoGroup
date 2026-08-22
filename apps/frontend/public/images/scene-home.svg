@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Casa">
+  <rect width="1600" height="900" fill="#f3e5ab"/>
+  <rect x="600" y="400" width="400" height="300" fill="#d7aefb"/>
+  <polygon points="550,400 800,200 1050,400" fill="#b085f5"/>
+  <text x="800" y="800" text-anchor="middle" font-size="48" fill="#5d4037">Casa</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

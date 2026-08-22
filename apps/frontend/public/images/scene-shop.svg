@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Tienda">
+  <rect width="1600" height="900" fill="#fce4ec"/>
+  <rect x="500" y="350" width="600" height="400" fill="#f48fb1"/>
+  <rect x="550" y="400" width="200" height="200" fill="#fff"/>
+  <rect x="850" y="400" width="200" height="200" fill="#fff"/>
+  <text x="800" y="200" text-anchor="middle" font-size="48" fill="#880e4f">Tienda</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

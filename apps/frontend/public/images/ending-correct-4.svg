@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Comunidad unida">
+  <circle cx="256" cy="256" r="240" fill="#b3e5fc"/>
+  <circle cx="256" cy="220" r="90" fill="#4fc3f7"/>
+  <path d="M200 300 Q256 380 312 300" stroke="#01579b" stroke-width="12" fill="none"/>
+  <text x="256" y="470" text-anchor="middle" font-size="36" fill="#01579b">¡Comunidad unida!</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

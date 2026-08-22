@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Calle">
+  <rect width="1600" height="900" fill="#e0f7fa"/>
+  <rect x="0" y="650" width="1600" height="250" fill="#bdbdbd"/>
+  <rect x="100" y="300" width="200" height="350" fill="#ffcc80"/>
+  <rect x="1300" y="250" width="200" height="400" fill="#ffab91"/>
+  <text x="800" y="150" text-anchor="middle" font-size="48" fill="#37474f">Calle</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

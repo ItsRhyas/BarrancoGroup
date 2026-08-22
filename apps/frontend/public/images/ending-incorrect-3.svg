@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Inténtalo de nuevo">
+  <circle cx="256" cy="256" r="240" fill="#ffccbc"/>
+  <circle cx="256" cy="220" r="90" fill="#ffab91"/>
+  <path d="M220 320 Q256 280 292 320" stroke="#bf360c" stroke-width="12" fill="none"/>
+  <text x="256" y="470" text-anchor="middle" font-size="36" fill="#bf360c">Inténtalo de nuevo</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Mercado">
+  <rect width="1600" height="900" fill="#fff8e1"/>
+  <rect x="200" y="500" width="300" height="200" fill="#ffcc80"/>
+  <rect x="650" y="500" width="300" height="200" fill="#a5d6a7"/>
+  <rect x="1100" y="500" width="300" height="200" fill="#90caf9"/>
+  <text x="800" y="250" text-anchor="middle" font-size="48" fill="#5d4037">Mercado</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

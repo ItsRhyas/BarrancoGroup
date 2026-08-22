@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Patio de juegos">
+  <rect width="1600" height="900" fill="#e8f5e9"/>
+  <rect x="0" y="700" width="1600" height="200" fill="#a5d6a7"/>
+  <rect x="600" y="450" width="400" height="250" fill="#ffcc80"/>
+  <circle cx="800" cy="350" r="100" fill="#ef9a9a"/>
+  <text x="800" y="180" text-anchor="middle" font-size="48" fill="#1b5e20">Patio de juegos</text>
+  <!-- TODO: replace with final illustration -->
+</svg>
