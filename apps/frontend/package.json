@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:levels": "node scripts/build-levels.ts",
+    "predev": "npm run build:levels",
+    "prebuild": "npm run build:levels",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -32,10 +35,12 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
+    "gray-matter": "^4.0.3",
     "jsdom": "^30.0.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.62.0",
     "vite": "^8.1.1",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "zod": "^4.4.3"
   }
 }
