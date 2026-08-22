@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <!-- Walls and floor -->
+  <rect width="1600" height="900" fill="#f4f3ec"/>
+  <rect x="0" y="520" width="1600" height="380" fill="#e8e4d9"/>
+  <rect x="0" y="520" width="1600" height="24" fill="#d4cfc3"/>
+
+  <!-- Window -->
+  <rect x="140" y="120" width="320" height="220" fill="#dff6ff"/>
+  <rect x="130" y="110" width="340" height="240" fill="none" stroke="#8b6f47" stroke-width="16"/>
+  <line x1="300" y1="110" x2="300" y2="350" stroke="#8b6f47" stroke-width="10"/>
+  <line x1="130" y1="230" x2="470" y2="230" stroke="#8b6f47" stroke-width="10"/>
+
+  <!-- Blackboard -->
+  <rect x="620" y="140" width="560" height="280" rx="8" fill="#2d2a26"/>
+  <rect x="604" y="124" width="592" height="312" rx="12" fill="none" stroke="#8b6f47" stroke-width="20"/>
+  <rect x="580" y="440" width="640" height="16" fill="#8b6f47"/>
+
+  <!-- Desks -->
+  <g fill="#c49a6c">
+    <rect x="260" y="640" width="200" height="80" rx="8"/>
+    <rect x="580" y="640" width="200" height="80" rx="8"/>
+    <rect x="900" y="640" width="200" height="80" rx="8"/>
+    <rect x="1220" y="640" width="200" height="80" rx="8"/>
+  </g>
+  <g fill="#a67c52">
+    <rect x="300" y="720" width="24" height="100"/>
+    <rect x="396" y="720" width="24" height="100"/>
+    <rect x="620" y="720" width="24" height="100"/>
+    <rect x="716" y="720" width="24" height="100"/>
+    <rect x="940" y="720" width="24" height="100"/>
+    <rect x="1036" y="720" width="24" height="100"/>
+    <rect x="1260" y="720" width="24" height="100"/>
+    <rect x="1356" y="720" width="24" height="100"/>
+  </g>
+
+  <!-- Accent detail: clock -->
+  <circle cx="1300" cy="260" r="50" fill="#fff" stroke="#aa3bff" stroke-width="8"/>
+  <line x1="1300" y1="230" x2="1300" y2="260" stroke="#08060d" stroke-width="6" stroke-linecap="round"/>
+  <line x1="1300" y1="260" x2="1320" y2="275" stroke="#08060d" stroke-width="6" stroke-linecap="round"/>
+</svg>
