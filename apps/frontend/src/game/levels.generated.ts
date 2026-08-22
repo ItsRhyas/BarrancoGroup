@@ -58,6 +58,7 @@ export const levels: Level[] = [
     narrative: "En el parque, Mairin quiere que todos puedan jugar. Coloca la escena y los personajes que muestran equidad.",
     sceneSlots: [
       { id: "slot-scene-2", label: "Parque" },
+      { id: "slot-scene-2b", label: "Patio de juegos" },
     ],
     scenes: [
       {
@@ -70,17 +71,30 @@ export const levels: Level[] = [
           { id: "char-slot-c", anchorX: 80, anchorY: 60 },
         ],
       },
+      {
+        id: "scene:playground",
+        assetId: "scene:playground",
+        label: "Patio de juegos",
+        characterSlots: [
+          { id: "ch2-playground-a", anchorX: 25, anchorY: 55 },
+          { id: "ch2-playground-b", anchorX: 75, anchorY: 55 },
+        ],
+      },
     ],
     characters: [
       { id: "char:mairin", assetId: "char:mairin", label: "Mairin" },
       { id: "char:friend-wheelchair", assetId: "char:friend-wheelchair", label: "Amigo con silla" },
       { id: "char:friend-bench", assetId: "char:friend-bench", label: "Amigo en la banca" },
+      { id: "char:friend-standing", assetId: "char:friend-standing", label: "Amigo de pie" },
     ],
     expected: {
       scenes: {
         "slot-scene-2": "scene:park",
+        "slot-scene-2b": "scene:playground",
       },
       characters: {
+        "ch2-playground-a": "char:mairin",
+        "ch2-playground-b": "char:friend-standing",
         "char-slot-a": "char:mairin",
         "char-slot-b": "char:friend-wheelchair",
         "char-slot-c": "char:friend-bench",
@@ -104,12 +118,262 @@ export const levels: Level[] = [
       },
     ],
   },
+  {
+    id: "level-3",
+    title: "Capítulo 3",
+    narrative: "Mairin aprende que compartir con quienes nos rodea hace más fuertes los lazos familiares.",
+    sceneSlots: [
+      { id: "slot-scene-3a", label: "Casa" },
+      { id: "slot-scene-3b", label: "Calle" },
+    ],
+    scenes: [
+      {
+        id: "scene:home",
+        assetId: "scene:home",
+        label: "Casa",
+        characterSlots: [
+          { id: "ch3-home-a", anchorX: 30, anchorY: 60 },
+          { id: "ch3-home-b", anchorX: 70, anchorY: 60 },
+        ],
+      },
+      {
+        id: "scene:street",
+        assetId: "scene:street",
+        label: "Calle",
+        characterSlots: [
+          { id: "ch3-street-a", anchorX: 25, anchorY: 55 },
+          { id: "ch3-street-b", anchorX: 75, anchorY: 55 },
+        ],
+      },
+    ],
+    characters: [
+      { id: "char:mairin", assetId: "char:mairin", label: "Mairin" },
+      { id: "char:ch3-parent", assetId: "char:ch3-parent", label: "Papá" },
+      { id: "char:ch3-sibling", assetId: "char:ch3-sibling", label: "Hermano" },
+      { id: "char:ch3-friend", assetId: "char:ch3-friend", label: "Amiga" },
+    ],
+    expected: {
+      scenes: {
+        "slot-scene-3a": "scene:home",
+        "slot-scene-3b": "scene:street",
+      },
+      characters: {
+        "ch3-home-a": "char:ch3-parent",
+        "ch3-home-b": "char:mairin",
+        "ch3-street-a": "char:ch3-sibling",
+        "ch3-street-b": "char:ch3-friend",
+      },
+      correctEndingId: "ending:correct-3",
+    },
+    endings: [
+      {
+        id: "ending:correct-3",
+        type: "correct",
+        title: "¡Buena elección!",
+        description: "Mairin compartió con su familia y amigos. Todos se sintieron incluidos.",
+        imageAssetId: "ending:correct-3",
+      },
+      {
+        id: "ending:incorrect-3",
+        type: "incorrect",
+        title: "Inténtalo de nuevo",
+        description: "La escena no muestra inclusión familiar. Piensa en quién debería acompañar a Mairin.",
+        imageAssetId: "ending:incorrect-3",
+      },
+    ],
+  },
+  {
+    id: "level-4",
+    title: "Capítulo 4",
+    narrative: "Mairin recorre el barrio y descubre que cada persona tiene un papel importante en la comunidad.",
+    sceneSlots: [
+      { id: "slot-scene-4a", label: "Mercado" },
+      { id: "slot-scene-4b", label: "Tienda" },
+      { id: "slot-scene-4c", label: "Plaza" },
+    ],
+    scenes: [
+      {
+        id: "scene:market",
+        assetId: "scene:market",
+        label: "Mercado",
+        characterSlots: [
+          { id: "ch4-market-a", anchorX: 20, anchorY: 60 },
+          { id: "ch4-market-b", anchorX: 80, anchorY: 60 },
+        ],
+      },
+      {
+        id: "scene:shop",
+        assetId: "scene:shop",
+        label: "Tienda",
+        characterSlots: [
+          { id: "ch4-shop-a", anchorX: 35, anchorY: 55 },
+          { id: "ch4-shop-b", anchorX: 65, anchorY: 55 },
+        ],
+      },
+      {
+        id: "scene:plaza",
+        assetId: "scene:plaza",
+        label: "Plaza",
+        characterSlots: [
+          { id: "ch4-plaza-a", anchorX: 30, anchorY: 60 },
+          { id: "ch4-plaza-b", anchorX: 70, anchorY: 60 },
+        ],
+      },
+    ],
+    characters: [
+      { id: "char:mairin", assetId: "char:mairin", label: "Mairin" },
+      { id: "char:ch4-vendor", assetId: "char:ch4-vendor", label: "Vendedor" },
+      { id: "char:ch4-neighbor", assetId: "char:ch4-neighbor", label: "Vecina" },
+    ],
+    expected: {
+      scenes: {
+        "slot-scene-4a": "scene:market",
+        "slot-scene-4b": "scene:shop",
+        "slot-scene-4c": "scene:plaza",
+      },
+      characters: {
+        "ch4-market-a": "char:ch4-vendor",
+        "ch4-market-b": "char:mairin",
+        "ch4-plaza-a": "char:ch4-vendor",
+        "ch4-plaza-b": "char:ch4-neighbor",
+        "ch4-shop-a": "char:ch4-neighbor",
+        "ch4-shop-b": "char:mairin",
+      },
+      correctEndingId: "ending:correct-4",
+    },
+    endings: [
+      {
+        id: "ending:correct-4",
+        type: "correct",
+        title: "¡Comunidad unida!",
+        description: "Mairin conoció a sus vecinos y valoró el trabajo de todos en el barrio.",
+        imageAssetId: "ending:correct-4",
+      },
+      {
+        id: "ending:incorrect-4",
+        type: "incorrect",
+        title: "Inténtalo de nuevo",
+        description: "La escena no refleja respeto por la comunidad. ¿Quiénes hacen parte del barrio?",
+        imageAssetId: "ending:incorrect-4",
+      },
+    ],
+  },
+  {
+    id: "level-5",
+    title: "Capítulo 5",
+    narrative: "Mairin descubre que escuchar a quienes tienen más experiencia nos ayuda a tomar mejores decisiones.",
+    sceneSlots: [
+      { id: "slot-scene-5a", label: "Jardín" },
+      { id: "slot-scene-5b", label: "Cuarto" },
+      { id: "slot-scene-5c", label: "Escenario" },
+    ],
+    scenes: [
+      {
+        id: "scene:garden",
+        assetId: "scene:garden",
+        label: "Jardín",
+        characterSlots: [
+          { id: "ch5-garden-a", anchorX: 25, anchorY: 55 },
+          { id: "ch5-garden-b", anchorX: 75, anchorY: 55 },
+        ],
+      },
+      {
+        id: "scene:room",
+        assetId: "scene:room",
+        label: "Cuarto",
+        characterSlots: [
+          { id: "ch5-room-a", anchorX: 40, anchorY: 60 },
+          { id: "ch5-room-b", anchorX: 60, anchorY: 60 },
+        ],
+      },
+      {
+        id: "scene:stage",
+        assetId: "scene:stage",
+        label: "Escenario",
+        characterSlots: [
+          { id: "ch5-stage-a", anchorX: 30, anchorY: 55 },
+          { id: "ch5-stage-b", anchorX: 70, anchorY: 55 },
+        ],
+      },
+    ],
+    characters: [
+      { id: "char:mairin", assetId: "char:mairin", label: "Mairin" },
+      { id: "char:ch5-grandparent", assetId: "char:ch5-grandparent", label: "Abuelo" },
+    ],
+    expected: {
+      scenes: {
+        "slot-scene-5a": "scene:garden",
+        "slot-scene-5b": "scene:room",
+        "slot-scene-5c": "scene:stage",
+      },
+      characters: {
+        "ch5-garden-a": "char:mairin",
+        "ch5-garden-b": "char:ch5-grandparent",
+        "ch5-room-a": "char:mairin",
+        "ch5-room-b": "char:ch5-grandparent",
+        "ch5-stage-a": "char:mairin",
+        "ch5-stage-b": "char:ch5-grandparent",
+      },
+      correctEndingId: "ending:correct-5",
+    },
+    endings: [
+      {
+        id: "ending:correct-5",
+        type: "correct",
+        title: "¡Valores en acción!",
+        description: "Mairin honró la sabiduría de su abuelo y compartió sus enseñanzas con otros.",
+        imageAssetId: "ending:correct-5",
+      },
+      {
+        id: "ending:incorrect-5",
+        type: "incorrect",
+        title: "Inténtalo de nuevo",
+        description: "La escena no muestra respeto por las personas mayores. ¿Quién acompaña a Mairin?",
+        imageAssetId: "ending:incorrect-5",
+      },
+    ],
+  },
 ];
 
 export const assetRegistry: AssetRegistry = {
+  "char:ch3-friend": {
+    type: "image",
+    src: "/images/char-ch3-friend.svg",
+    aspectRatio: 1,
+  },
+  "char:ch3-parent": {
+    type: "image",
+    src: "/images/char-ch3-parent.svg",
+    aspectRatio: 1,
+  },
+  "char:ch3-sibling": {
+    type: "image",
+    src: "/images/char-ch3-sibling.svg",
+    aspectRatio: 1,
+  },
+  "char:ch4-neighbor": {
+    type: "image",
+    src: "/images/char-ch4-neighbor.svg",
+    aspectRatio: 1,
+  },
+  "char:ch4-vendor": {
+    type: "image",
+    src: "/images/char-ch4-vendor.svg",
+    aspectRatio: 1,
+  },
+  "char:ch5-grandparent": {
+    type: "image",
+    src: "/images/char-ch5-grandparent.svg",
+    aspectRatio: 1,
+  },
   "char:friend-bench": {
     type: "image",
     src: "/images/char-friend-bench.svg",
+    aspectRatio: 1,
+  },
+  "char:friend-standing": {
+    type: "image",
+    src: "/images/char-friend-standing.svg",
     aspectRatio: 1,
   },
   "char:friend-wheelchair": {
@@ -142,6 +406,21 @@ export const assetRegistry: AssetRegistry = {
     src: "/images/ending-correct-2.svg",
     aspectRatio: 1,
   },
+  "ending:correct-3": {
+    type: "image",
+    src: "/images/ending-correct-3.svg",
+    aspectRatio: 1,
+  },
+  "ending:correct-4": {
+    type: "image",
+    src: "/images/ending-correct-4.svg",
+    aspectRatio: 1,
+  },
+  "ending:correct-5": {
+    type: "image",
+    src: "/images/ending-correct-5.svg",
+    aspectRatio: 1,
+  },
   "ending:incorrect-1": {
     type: "image",
     src: "/images/ending-incorrect-1.svg",
@@ -152,14 +431,74 @@ export const assetRegistry: AssetRegistry = {
     src: "/images/ending-incorrect-2.svg",
     aspectRatio: 1,
   },
+  "ending:incorrect-3": {
+    type: "image",
+    src: "/images/ending-incorrect-3.svg",
+    aspectRatio: 1,
+  },
+  "ending:incorrect-4": {
+    type: "image",
+    src: "/images/ending-incorrect-4.svg",
+    aspectRatio: 1,
+  },
+  "ending:incorrect-5": {
+    type: "image",
+    src: "/images/ending-incorrect-5.svg",
+    aspectRatio: 1,
+  },
   "scene:classroom": {
     type: "image",
     src: "/images/scene-classroom.svg",
     aspectRatio: 1.7777777777777777,
   },
+  "scene:garden": {
+    type: "image",
+    src: "/images/scene-garden.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:home": {
+    type: "image",
+    src: "/images/scene-home.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:market": {
+    type: "image",
+    src: "/images/scene-market.svg",
+    aspectRatio: 1.7777777777777777,
+  },
   "scene:park": {
     type: "image",
     src: "/images/scene-park.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:playground": {
+    type: "image",
+    src: "/images/scene-playground.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:plaza": {
+    type: "image",
+    src: "/images/scene-plaza.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:room": {
+    type: "image",
+    src: "/images/scene-room.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:shop": {
+    type: "image",
+    src: "/images/scene-shop.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:stage": {
+    type: "image",
+    src: "/images/scene-stage.svg",
+    aspectRatio: 1.7777777777777777,
+  },
+  "scene:street": {
+    type: "image",
+    src: "/images/scene-street.svg",
     aspectRatio: 1.7777777777777777,
   },
 };
