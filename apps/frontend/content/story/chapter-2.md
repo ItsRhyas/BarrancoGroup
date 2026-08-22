@@ -5,6 +5,8 @@ order: 2
 sceneSlots:
   - id: slot-scene-2
     label: Parque
+  - id: slot-scene-2b
+    label: Patio de juegos
 scenes:
   - id: scene:park
     assetId: scene:park
@@ -19,6 +21,16 @@ scenes:
       - id: char-slot-c
         anchorX: 80
         anchorY: 60
+  - id: scene:playground
+    assetId: scene:playground
+    label: Patio de juegos
+    characterSlots:
+      - id: ch2-playground-a
+        anchorX: 25
+        anchorY: 55
+      - id: ch2-playground-b
+        anchorX: 75
+        anchorY: 55
 characters:
   - id: char:mairin
     assetId: char:mairin
@@ -29,13 +41,19 @@ characters:
   - id: char:friend-bench
     assetId: char:friend-bench
     label: Amigo en la banca
+  - id: char:friend-standing
+    assetId: char:friend-standing
+    label: Amigo de pie
 expected:
   scenes:
     slot-scene-2: scene:park
+    slot-scene-2b: scene:playground
   characters:
     char-slot-a: char:mairin
     char-slot-b: char:friend-wheelchair
     char-slot-c: char:friend-bench
+    ch2-playground-a: char:mairin
+    ch2-playground-b: char:friend-standing
   correctEndingId: ending:correct-2
 endings:
   - id: ending:correct-2

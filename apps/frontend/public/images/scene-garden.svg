@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Jardín">
+  <rect width="1600" height="900" fill="#f1f8e9"/>
+  <rect x="0" y="700" width="1600" height="200" fill="#c5e1a5"/>
+  <circle cx="400" cy="500" r="120" fill="#81c784"/>
+  <circle cx="1200" cy="500" r="120" fill="#81c784"/>
+  <circle cx="800" cy="450" r="150" fill="#66bb6a"/>
+  <text x="800" y="180" text-anchor="middle" font-size="48" fill="#33691e">Jardín</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

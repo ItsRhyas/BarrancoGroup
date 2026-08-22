@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Cuarto">
+  <rect width="1600" height="900" fill="#e3f2fd"/>
+  <rect x="300" y="300" width="1000" height="500" fill="#bbdefb"/>
+  <rect x="500" y="500" width="300" height="200" fill="#90caf9"/>
+  <rect x="900" y="450" width="250" height="250" fill="#64b5f6"/>
+  <text x="800" y="200" text-anchor="middle" font-size="48" fill="#0d47a1">Cuarto</text>
+  <!-- TODO: replace with final illustration -->
+</svg>
