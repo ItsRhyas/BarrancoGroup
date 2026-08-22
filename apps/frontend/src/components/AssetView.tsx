@@ -30,6 +30,7 @@ export function AssetView({ assetId, label, className = "" }: AssetViewProps) {
       className={`asset-image ${className}`}
       src={asset.src}
       alt={label ?? assetId}
+      aria-label={label ?? assetId}
       style={
         asset.aspectRatio
           ? { aspectRatio: String(asset.aspectRatio) }
