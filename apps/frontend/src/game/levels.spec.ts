@@ -3,8 +3,8 @@ import { levels } from "./levels";
 import { assetRegistry } from "./assets";
 
 describe("level data integrity", () => {
-  it("defines at least two fully playable levels", () => {
-    expect(levels.length).toBeGreaterThanOrEqual(2);
+  it("defines five fully playable levels", () => {
+    expect(levels.length).toBe(5);
   });
 
   for (const level of levels) {

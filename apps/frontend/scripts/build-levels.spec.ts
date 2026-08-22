@@ -98,7 +98,7 @@ function makeTempDirs(): {
 }
 
 describe("buildLevels happy path", () => {
-  it("parses current chapters and emits two levels with eleven assets", () => {
+  it("parses current chapters and emits five levels with thirty-three assets", () => {
     const output = buildLevels({
       storyDir: realStoryDir,
       imagesDir: realImagesDir,
@@ -106,10 +106,10 @@ describe("buildLevels happy path", () => {
       strictImages: true,
     });
     expect(output).toContain('id: "level-1"');
-    expect(output).toContain('id: "level-2"');
+    expect(output).toContain('id: "level-5"');
     expect(output).toContain("scene:classroom");
     expect(output).toContain("scene:park");
-    expect(output.match(/type: "image"/g) ?? []).toHaveLength(11);
+    expect(output.match(/type: "image"/g) ?? []).toHaveLength(33);
   });
 
   it("produces output identical to the committed generated file", () => {
@@ -198,7 +198,7 @@ describe("buildLevels failure modes", () => {
         outPath,
         strictImages: true,
       }),
-    ).toThrow("do not match expected.characters keys");
+    ).toThrow("references unknown character slot");
   });
 
   it("fails when a character anchor is out of range", () => {

@@ -3,6 +3,11 @@ import { isLevelComplete } from "./selectors";
 import { createInitialBoard, boardReducer } from "./reducer";
 import { levels } from "./levels";
 
+function expectedSceneForSlot(level: (typeof levels)[number], slotId: string) {
+  const sceneId = level.expected.scenes[slotId];
+  return level.scenes.find((s) => s.id === sceneId)!;
+}
+
 describe("isLevelComplete", () => {
   for (const level of levels) {
     describe(`level ${level.id}`, () => {
@@ -10,54 +15,60 @@ describe("isLevelComplete", () => {
         expect(isLevelComplete(createInitialBoard(level))).toBe(false);
       });
 
-      it("is false when only the scene is placed", () => {
-        const sceneSlotId = level.sceneSlots[0].id;
+      it("is false when only the scenes are placed", () => {
         let state = createInitialBoard(level);
-        state = boardReducer(state, {
-          type: "PLACE_SCENE",
-          sceneSlotId,
-          sceneId: level.scenes[0].id,
-          characterSlotIds: level.scenes[0].characterSlots.map((s) => s.id),
-        });
+        for (const sceneSlot of level.sceneSlots) {
+          const scene = expectedSceneForSlot(level, sceneSlot.id);
+          state = boardReducer(state, {
+            type: "PLACE_SCENE",
+            sceneSlotId: sceneSlot.id,
+            sceneId: scene.id,
+            characterSlotIds: scene.characterSlots.map((s) => s.id),
+          });
+        }
         expect(isLevelComplete(state)).toBe(false);
       });
 
       it("is false when one character slot is still empty", () => {
-        const sceneSlotId = level.sceneSlots[0].id;
-        const charSlots = level.scenes[0].characterSlots;
         let state = createInitialBoard(level);
-        state = boardReducer(state, {
-          type: "PLACE_SCENE",
-          sceneSlotId,
-          sceneId: level.scenes[0].id,
-          characterSlotIds: charSlots.map((s) => s.id),
-        });
+        for (const sceneSlot of level.sceneSlots) {
+          const scene = expectedSceneForSlot(level, sceneSlot.id);
+          state = boardReducer(state, {
+            type: "PLACE_SCENE",
+            sceneSlotId: sceneSlot.id,
+            sceneId: scene.id,
+            characterSlotIds: scene.characterSlots.map((s) => s.id),
+          });
+        }
+        const firstSlot = level.sceneSlots[0];
+        const firstScene = expectedSceneForSlot(level, firstSlot.id);
         state = boardReducer(state, {
           type: "PLACE_CHARACTER",
-          sceneSlotId,
-          charSlotId: charSlots[0].id,
+          sceneSlotId: firstSlot.id,
+          charSlotId: firstScene.characterSlots[0].id,
           characterId: "char:mairin",
         });
         expect(isLevelComplete(state)).toBe(false);
       });
 
       it("is true when every slot is filled", () => {
-        const sceneSlotId = level.sceneSlots[0].id;
-        const charSlots = level.scenes[0].characterSlots;
         let state = createInitialBoard(level);
-        state = boardReducer(state, {
-          type: "PLACE_SCENE",
-          sceneSlotId,
-          sceneId: level.scenes[0].id,
-          characterSlotIds: charSlots.map((s) => s.id),
-        });
-        for (let i = 0; i < charSlots.length; i++) {
+        for (const sceneSlot of level.sceneSlots) {
+          const scene = expectedSceneForSlot(level, sceneSlot.id);
           state = boardReducer(state, {
-            type: "PLACE_CHARACTER",
-            sceneSlotId,
-            charSlotId: charSlots[i].id,
-            characterId: `char:${i}`,
+            type: "PLACE_SCENE",
+            sceneSlotId: sceneSlot.id,
+            sceneId: scene.id,
+            characterSlotIds: scene.characterSlots.map((s) => s.id),
           });
+          for (const charSlot of scene.characterSlots) {
+            state = boardReducer(state, {
+              type: "PLACE_CHARACTER",
+              sceneSlotId: sceneSlot.id,
+              charSlotId: charSlot.id,
+              characterId: level.expected.characters[charSlot.id],
+            });
+          }
         }
         expect(isLevelComplete(state)).toBe(true);
       });
