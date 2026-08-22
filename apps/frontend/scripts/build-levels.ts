@@ -195,15 +195,17 @@ function validateLevel(level: Level, source: string): void {
       );
     }
 
-    const expectedCharSlotIds = new Set(
-      Object.entries(level.expected.characters)
-        .filter(([, characterId]) =>
-          level.characters.some((c) => c.id === characterId),
-        )
-        .map(([charSlotId]) => charSlotId),
-    );
     const sceneCharSlotIds = new Set(
       scene.characterSlots.map((slot) => slot.id),
+    );
+    const expectedCharSlotIds = new Set(
+      Object.entries(level.expected.characters)
+        .filter(
+          ([charSlotId, characterId]) =>
+            sceneCharSlotIds.has(charSlotId) &&
+            level.characters.some((c) => c.id === characterId),
+        )
+        .map(([charSlotId]) => charSlotId),
     );
 
     const sortedExpected = [...expectedCharSlotIds].sort((a, b) =>
