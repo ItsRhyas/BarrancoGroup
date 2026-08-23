@@ -38,19 +38,24 @@ function assetIdToSrc(assetId: string): string {
   return `/images/${assetIdToFilename(assetId)}`;
 }
 
-function inferAssetEntry(assetId: string): AssetEntry {
+type AssetRole = "icon" | "char" | "scene" | "ending";
+
+function inferAssetEntry(assetId: string, role: AssetRole): AssetEntry {
   const src = assetIdToSrc(assetId);
-  if (assetId.startsWith("scene:")) {
-    return { type: "image", src, aspectRatio: 16 / 9 };
-  }
-  if (assetId.startsWith("char:")) {
+  if (role === "icon") {
     return { type: "image", src, aspectRatio: 1 };
   }
-  if (assetId.startsWith("ending:")) {
+  if (role === "char") {
+    return { type: "image", src, aspectRatio: 1 };
+  }
+  if (role === "scene") {
+    return { type: "image", src, aspectRatio: 16 / 9 };
+  }
+  if (role === "ending") {
     return { type: "image", src, aspectRatio: 1 };
   }
   throw new Error(
-    `Unrecognized assetId prefix for "${assetId}" (expected scene:, char:, or ending:)`,
+    `Unrecognized asset role for "${assetId}" (expected icon, char, scene, or ending)`,
   );
 }
 
@@ -110,11 +115,27 @@ function serializeLevel(level: Level): string {
 
   lines.push(`    scenes: [`);
   for (const scene of level.scenes) {
-    lines.push(`      {`);
-    lines.push(`        id: ${tsString(scene.id)},`);
-    lines.push(`        assetId: ${tsString(scene.assetId)},`);
-    lines.push(`        label: ${tsString(scene.label)},`);
-    lines.push(`        characterSlots: [`);
+    const hasOptionalSceneAssets =
+      scene.iconAssetId !== undefined || scene.sceneAssetId !== undefined;
+    if (hasOptionalSceneAssets) {
+      lines.push(`      {`);
+      lines.push(`        id: ${tsString(scene.id)},`);
+      lines.push(`        assetId: ${tsString(scene.assetId)},`);
+      lines.push(`        label: ${tsString(scene.label)},`);
+      if (scene.iconAssetId) {
+        lines.push(`        iconAssetId: ${tsString(scene.iconAssetId)},`);
+      }
+      if (scene.sceneAssetId) {
+        lines.push(`        sceneAssetId: ${tsString(scene.sceneAssetId)},`);
+      }
+      lines.push(`        characterSlots: [`);
+    } else {
+      lines.push(`      {`);
+      lines.push(`        id: ${tsString(scene.id)},`);
+      lines.push(`        assetId: ${tsString(scene.assetId)},`);
+      lines.push(`        label: ${tsString(scene.label)},`);
+      lines.push(`        characterSlots: [`);
+    }
     for (const slot of scene.characterSlots) {
       lines.push(
         `          { id: ${tsString(slot.id)}, anchorX: ${slot.anchorX}, anchorY: ${slot.anchorY} },`,
@@ -127,9 +148,23 @@ function serializeLevel(level: Level): string {
 
   lines.push(`    characters: [`);
   for (const character of level.characters) {
-    lines.push(
-      `      { id: ${tsString(character.id)}, assetId: ${tsString(character.assetId)}, label: ${tsString(character.label)} },`,
-    );
+    if (character.iconAssetId || character.sceneAssetId) {
+      lines.push(`      {`);
+      lines.push(`        id: ${tsString(character.id)},`);
+      lines.push(`        assetId: ${tsString(character.assetId)},`);
+      lines.push(`        label: ${tsString(character.label)},`);
+      if (character.iconAssetId) {
+        lines.push(`        iconAssetId: ${tsString(character.iconAssetId)},`);
+      }
+      if (character.sceneAssetId) {
+        lines.push(`        sceneAssetId: ${tsString(character.sceneAssetId)},`);
+      }
+      lines.push(`      },`);
+    } else {
+      lines.push(
+        `      { id: ${tsString(character.id)}, assetId: ${tsString(character.assetId)}, label: ${tsString(character.label)} },`,
+      );
+    }
   }
   lines.push(`    ],`);
 
@@ -158,20 +193,28 @@ function serializeLevel(level: Level): string {
   return lines.join("\n");
 }
 
-function collectAssetIds(level: Level): Set<string> {
-  const ids = new Set<string>();
+function collectAssetEntries(level: Level): Map<string, AssetEntry> {
+  const entries = new Map<string, AssetEntry>();
+  function add(assetId: string | undefined, role: AssetRole): void {
+    if (!assetId || entries.has(assetId)) {
+      return;
+    }
+    entries.set(assetId, inferAssetEntry(assetId, role));
+  }
   for (const scene of level.scenes) {
-    ids.add(scene.assetId);
+    add(scene.iconAssetId, "icon");
+    add(scene.sceneAssetId, "scene");
+    add(scene.assetId, "scene");
   }
   for (const character of level.characters) {
-    ids.add(character.assetId);
+    add(character.iconAssetId, "icon");
+    add(character.sceneAssetId, "char");
+    add(character.assetId, "char");
   }
   for (const ending of level.endings) {
-    if (ending.imageAssetId) {
-      ids.add(ending.imageAssetId);
-    }
+    add(ending.imageAssetId, "ending");
   }
-  return ids;
+  return entries;
 }
 
 function validateLevel(level: Level, source: string): void {
@@ -257,7 +300,7 @@ function validateLevel(level: Level, source: string): void {
     );
   }
 
-  for (const assetId of collectAssetIds(level)) {
+  for (const assetId of collectAssetEntries(level).keys()) {
     if (
       !assetId.startsWith("scene:") &&
       !assetId.startsWith("char:") &&
@@ -302,8 +345,8 @@ function checkImageFiles(
 function buildAssetRegistry(levels: Level[]): AssetRegistry {
   const registry: AssetRegistry = {};
   for (const level of levels) {
-    for (const assetId of collectAssetIds(level)) {
-      registry[assetId] = inferAssetEntry(assetId);
+    for (const [assetId, entry] of collectAssetEntries(level)) {
+      registry[assetId] = entry;
     }
   }
   return registry;

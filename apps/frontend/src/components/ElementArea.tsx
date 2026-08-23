@@ -17,6 +17,7 @@ export function ElementArea({ level }: ElementAreaProps) {
               id={scene.id}
               dragType="scene"
               assetId={scene.assetId}
+              iconAssetId={scene.iconAssetId}
               label={scene.label}
             />
           ))}
@@ -26,6 +27,7 @@ export function ElementArea({ level }: ElementAreaProps) {
               id={character.id}
               dragType="character"
               assetId={character.assetId}
+              iconAssetId={character.iconAssetId}
               label={character.label}
             />
           ))}

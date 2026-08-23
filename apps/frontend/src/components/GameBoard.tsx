@@ -37,7 +37,7 @@ function resolveCharacterAssetId(
     return null;
   }
   const character = level.characters.find((c) => c.id === characterId);
-  return character?.assetId ?? null;
+  return character?.sceneAssetId ?? character?.assetId ?? null;
 }
 
 function isDragType(value: unknown): value is DragType {

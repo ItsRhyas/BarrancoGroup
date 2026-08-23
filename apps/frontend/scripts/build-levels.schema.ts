@@ -11,6 +11,8 @@ export const sceneDefSchema = z.object({
   assetId: z.string().min(1),
   label: z.string().min(1),
   characterSlots: z.array(characterSlotDefSchema),
+  iconAssetId: z.string().min(1).optional(),
+  sceneAssetId: z.string().min(1).optional(),
 });
 
 export const sceneSlotDefSchema = z.object({
@@ -22,6 +24,8 @@ export const characterDefSchema = z.object({
   id: z.string().min(1),
   assetId: z.string().min(1),
   label: z.string().min(1),
+  iconAssetId: z.string().min(1).optional(),
+  sceneAssetId: z.string().min(1).optional(),
 });
 
 export const endingSchema = z.object({
