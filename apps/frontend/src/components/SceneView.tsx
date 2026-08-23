@@ -17,7 +17,7 @@ export function SceneView({
 }: SceneViewProps) {
   return (
     <div className="scene-view">
-      <AssetView assetId={scene.assetId} label={scene.label} className="scene-asset" />
+      <AssetView assetId={scene.sceneAssetId ?? scene.assetId} label={scene.label} className="scene-asset" />
       <div className="scene-slots-layer">
         {scene.characterSlots.map((charSlot) => (
           <CharacterSlot

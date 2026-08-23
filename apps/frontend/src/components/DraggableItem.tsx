@@ -7,10 +7,11 @@ interface DraggableItemProps {
   id: string;
   dragType: DragType;
   assetId: AssetId;
+  iconAssetId?: AssetId;
   label: string;
 }
 
-export function DraggableItem({ id, dragType, assetId, label }: DraggableItemProps) {
+export function DraggableItem({ id, dragType, assetId, iconAssetId, label }: DraggableItemProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id,
@@ -32,7 +33,7 @@ export function DraggableItem({ id, dragType, assetId, label }: DraggableItemPro
       role="button"
       aria-label={`Arrastrar ${label}`}
     >
-      <AssetView assetId={assetId} label={label} />
+      <AssetView assetId={iconAssetId ?? assetId} label={label} />
       <span className="draggable-label">{label}</span>
     </div>
   );
