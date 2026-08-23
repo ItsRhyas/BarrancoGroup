@@ -28,6 +28,8 @@ export interface SceneDef {
   assetId: AssetId;
   label: string;
   characterSlots: CharacterSlotDef[];
+  iconAssetId?: AssetId;
+  sceneAssetId?: AssetId;
 }
 
 export interface SceneSlotDef {
@@ -39,6 +41,8 @@ export interface CharacterDef {
   id: string;
   assetId: AssetId;
   label: string;
+  iconAssetId?: AssetId;
+  sceneAssetId?: AssetId;
 }
 
 export interface Ending {
