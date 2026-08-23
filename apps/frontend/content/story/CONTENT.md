@@ -87,3 +87,45 @@ Everything after the closing `---` becomes the level narrative. Keep it concise;
 4. Make sure `expected.characters` keys match the `characterSlots` ids in the expected scene.
 5. Add any new SVG files to `public/images/`.
 6. Run `pnpm --filter frontend run build:levels` and commit the regenerated `levels.generated.ts`.
+
+# Intro format
+
+The intro sequence is defined in `intro.md`. The build script reads this file, validates the frontmatter, and generates `src/game/intro.generated.ts`.
+
+## Structure
+
+```markdown
+---
+items:
+  - text: "La vida de las personas se divide en momentos clave que guardamos en cuadros"
+    image: /images/intro-1.svg
+  - text: "Cuando un cuadro se rompe, la historia se desmorona"
+    image: /images/intro-2.svg
+  - text: "Quieres ayudarnos a reconstruir esta historia?"
+    image: /images/intro-3.svg
+  - text: "Arrastra cada elemento adonde pertenece"
+    image: /images/intro-4.svg
+---
+
+Optional narrative body.
+```
+
+## Field reference
+
+| Field | Required | Description |
+|---|---|---|
+| `items` | yes | Non-empty array of intro slides. |
+| `items[].text` | yes | Phrase shown on the slide. |
+| `items[].image` | yes | Path to an SVG in `public/images/`. Must be unique across items and end in `.svg`. |
+
+## Images
+
+Each `image` value must point to an existing SVG file in `public/images/`. The path in the frontmatter is preserved as the runtime `src`, so use the public URL form `/images/intro-N.svg`.
+
+## How to edit the intro
+
+1. Open `content/story/intro.md`.
+2. Edit the `text` of any item, or add/remove/reorder items.
+3. Ensure every `image` references an existing `public/images/*.svg` file.
+4. Keep all `image` values unique.
+5. Run `pnpm --filter frontend run build:levels` and commit the regenerated `intro.generated.ts`.
