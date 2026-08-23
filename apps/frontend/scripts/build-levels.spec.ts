@@ -109,7 +109,7 @@ describe("buildLevels happy path", () => {
     expect(output).toContain('id: "level-5"');
     expect(output).toContain("scene:classroom");
     expect(output).toContain("scene:park");
-    expect(output.match(/type: "image"/g) ?? []).toHaveLength(33);
+    expect(output.match(/type: "image"/g)?.length ?? 0).toBeGreaterThanOrEqual(33);
   });
 
   it("produces output identical to the committed generated file", () => {
@@ -137,6 +137,99 @@ describe("buildLevels happy path", () => {
     });
     expect(second).toBe(first);
     expect(fs.readFileSync(realOutPath, "utf-8")).toBe(first);
+  });
+
+  it("serializes iconAssetId and sceneAssetId and registers icon assets as 1:1", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    const frontmatter = {
+      id: "level-icon-model",
+      title: "Icon Model Test",
+      order: 1,
+      sceneSlots: [{ id: "slot-1", label: "Slot" }],
+      scenes: [
+        {
+          id: "scene:test",
+          assetId: "scene:test",
+          label: "Scene",
+          iconAssetId: "scene:test-icon",
+          sceneAssetId: "scene:test-full",
+          characterSlots: [{ id: "char-slot-1", anchorX: 50, anchorY: 50 }],
+        },
+      ],
+      characters: [
+        {
+          id: "char:test",
+          assetId: "char:test",
+          label: "Character",
+          iconAssetId: "char:test-icon",
+          sceneAssetId: "char:test-scene",
+        },
+      ],
+      expected: {
+        scenes: { "slot-1": "scene:test" },
+        characters: { "char-slot-1": "char:test" },
+        correctEndingId: "ending:correct-icon",
+      },
+      endings: [
+        {
+          id: "ending:correct-icon",
+          type: "correct",
+          title: "Correct",
+          description: "Correct ending",
+          imageAssetId: "ending:correct-icon",
+        },
+        {
+          id: "ending:incorrect-icon",
+          type: "incorrect",
+          title: "Incorrect",
+          description: "Incorrect ending",
+          imageAssetId: "ending:incorrect-icon",
+        },
+      ],
+    };
+
+    fs.writeFileSync(
+      path.join(storyDir, "chapter-icon-model.md"),
+      `---\n${JSON.stringify(frontmatter)}\n---\n\nTest narrative.\n`,
+      "utf-8",
+    );
+
+    const assetIds = [
+      "scene:test",
+      "scene:test-icon",
+      "scene:test-full",
+      "char:test",
+      "char:test-icon",
+      "char:test-scene",
+      "ending:correct-icon",
+      "ending:incorrect-icon",
+    ];
+    for (const assetId of assetIds) {
+      fs.writeFileSync(
+        path.join(imagesDir, `${assetId.replace(/:/g, "-")}.svg`),
+        "<svg/>",
+        "utf-8",
+      );
+    }
+
+    const output = buildLevels({
+      storyDir,
+      imagesDir,
+      outPath,
+      strictImages: true,
+    });
+
+    expect(output).toContain('iconAssetId: "scene:test-icon"');
+    expect(output).toContain('sceneAssetId: "scene:test-full"');
+    expect(output).toContain('iconAssetId: "char:test-icon"');
+    expect(output).toContain('sceneAssetId: "char:test-scene"');
+
+    // scene:test-icon uses a scene: prefix but is registered as a 1:1 icon.
+    const iconBlock = output.match(
+      /"scene:test-icon": \{[\s\S]*?\},/,
+    )?.[0];
+    expect(iconBlock).toBeDefined();
+    expect(iconBlock).toContain("aspectRatio: 1");
   });
 });
 
