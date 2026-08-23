@@ -1,6 +1,7 @@
-import { describe, expect, it, beforeEach, vi } from "vitest";
+import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import App from "./App";
+import { __resetIntroStorage } from "./lib/session";
 
 interface MockGameBoardProps {
   levelIndex: number;
@@ -39,7 +40,16 @@ describe("App", () => {
   beforeEach(() => {
     sessionStorage.clear();
     localStorage.clear();
+    __resetIntroStorage();
   });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  function givenIntroSeen(): void {
+    localStorage.setItem("mairin:introSeen", "true");
+  }
 
   it("renders the start screen by default", () => {
     render(<App />);
@@ -52,6 +62,7 @@ describe("App", () => {
   });
 
   it("navigates from start to chapter select", () => {
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     expect(
@@ -60,6 +71,7 @@ describe("App", () => {
   });
 
   it("starts a chapter and persists the index", () => {
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
@@ -91,6 +103,7 @@ describe("App", () => {
 
   it("returns to chapter select from the game preserving the selected level", () => {
     localStorage.setItem("mairin:completedChapters", "[0]");
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
@@ -110,6 +123,7 @@ describe("App", () => {
   });
 
   it("returns to start from chapter select", () => {
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     expect(
@@ -120,6 +134,7 @@ describe("App", () => {
   });
 
   it("returns to chapter select from the game", () => {
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
@@ -133,6 +148,7 @@ describe("App", () => {
 
   it("returns to chapter select after completing the final level", () => {
     localStorage.setItem("mairin:completedChapters", "[0]");
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
@@ -146,6 +162,7 @@ describe("App", () => {
 
   it("loads completed chapters from localStorage on mount", () => {
     localStorage.setItem("mairin:completedChapters", "[0]");
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
 
@@ -156,6 +173,7 @@ describe("App", () => {
   });
 
   it("records completion and unlocks the next chapter", () => {
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
@@ -173,6 +191,7 @@ describe("App", () => {
   });
 
   it("deduplicates repeated chapter completions", () => {
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
     fireEvent.click(
@@ -189,6 +208,7 @@ describe("App", () => {
   });
 
   it("keeps working in-session when localStorage writes fail", () => {
+    givenIntroSeen();
     vi.spyOn(localStorage, "setItem").mockImplementation(() => {
       throw new Error("Quota exceeded");
     });
@@ -209,6 +229,7 @@ describe("App", () => {
 
   it("treats malformed completed chapters as empty", () => {
     localStorage.setItem("mairin:completedChapters", "not-json");
+    givenIntroSeen();
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
 
@@ -216,5 +237,47 @@ describe("App", () => {
       name: /El saludo de Mairin/i,
     }) as HTMLButtonElement;
     expect(unlockedCard.disabled).toBe(false);
+  });
+
+  it("shows the intro to a new player and completes to chapter select", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+
+    expect(
+      screen.getByText(
+        "La vida de las personas se divide en momentos clave que guardamos en cuadros",
+      ),
+    ).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /Saltar/i }));
+    expect(
+      screen.getByRole("heading", { name: /Capítulos/i }),
+    ).toBeTruthy();
+  });
+
+  it("skips the intro for a returning player", () => {
+    localStorage.setItem("mairin:introSeen", "true");
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+
+    expect(
+      screen.getByRole("heading", { name: /Capítulos/i }),
+    ).toBeTruthy();
+  });
+
+  it("skips the intro when continuing a game", () => {
+    localStorage.setItem("mairin:completedChapters", "[0]");
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Continuar/i }));
+
+    expect(screen.getByTestId("game-board")).toBeTruthy();
+  });
+
+  it("persists introSeen after the intro completes", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Saltar/i }));
+
+    expect(localStorage.getItem("mairin:introSeen")).toBe("true");
   });
 });
