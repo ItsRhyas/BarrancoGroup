@@ -156,10 +156,13 @@ export function GameBoard({
       <main className="game-board">
         <header className="game-header">
           <h1>{level.title}</h1>
-          <p>{level.narrative}</p>
         </header>
 
-        <section className="board-area" aria-label="Tablero de escenas">
+        <section
+          className="board-area"
+          aria-label="Tablero de escenas"
+          data-scene-count={level.sceneSlots.length}
+        >
           {level.sceneSlots.map((sceneSlot) => (
             <SceneSlot
               key={sceneSlot.id}
