@@ -17,6 +17,8 @@
   --mustard: #C9A227;
   --mustard-soft: #E4C76B;
   --bg-beige: #F4F0E6;
+  --bg-soft: var(--bg-beige);
+  --element-area-radius: 24px;
   --text-unavailable: #9CA3AF;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -49,6 +51,7 @@
     --success: #34d399;
     --danger: #f87171;
     --social-bg: rgba(47, 48, 58, 0.5);
+    --bg-soft: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
