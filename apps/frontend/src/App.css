@@ -91,6 +91,7 @@
   height: 100%;
   display: grid;
   place-items: center;
+  overflow: hidden;
   font-size: clamp(40px, 13.3cqh, 96px);
 }
 
@@ -143,6 +144,11 @@
     }
   }
 
+  img {
+    min-width: 100%;
+    min-height: 100%;
+  }
+
   .asset-emoji {
     font-size: clamp(16px, 4.44cqh, 32px);
   }
@@ -185,6 +191,8 @@
   gap: clamp(6px, 1.11cqh, 8px);
   padding: clamp(8px, 1.67cqh, 12px);
   min-width: clamp(64px, 11.1cqh, 80px);
+  max-width: clamp(64px, 11.1cqh, 80px);
+  aspect-ratio: 1;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--bg);
@@ -271,6 +279,7 @@
   width: clamp(48px, 11.1cqh, 80px);
   height: clamp(48px, 11.1cqh, 80px);
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .end-dialog-description {
@@ -688,6 +697,7 @@
 .intro-screen__image {
   max-height: 50cqh;
   width: auto;
+  overflow: hidden;
   animation: intro-fade 250ms ease-in;
 
   img {
