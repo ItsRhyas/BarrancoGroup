@@ -2,10 +2,20 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { chapterSchema } from "./build-levels.schema.ts";
+import {
+  chapterSchema,
+  introDocumentSchema,
+} from "./build-levels.schema.ts";
 import type { AssetEntry, AssetRegistry, Level } from "../src/game/types.ts";
 
 export interface BuildOptions {
+  storyDir: string;
+  imagesDir: string;
+  outPath: string;
+  strictImages: boolean;
+}
+
+export interface BuildIntroOptions {
   storyDir: string;
   imagesDir: string;
   outPath: string;
@@ -61,6 +71,13 @@ function inferAssetEntry(assetId: string, role: AssetRole): AssetEntry {
 
 function tsString(value: string): string {
   return JSON.stringify(value);
+}
+
+function serializeIntroItem(
+  item: { text: string; imageSrc: string },
+  indent: string,
+): string {
+  return `${indent}{\n${indent}  text: ${tsString(item.text)},\n${indent}  imageSrc: ${tsString(item.imageSrc)},\n${indent}}`;
 }
 
 function serializeRecord(
@@ -391,6 +408,73 @@ function readChapter(
   return { order: chapter.order ?? 0, level };
 }
 
+export function buildIntro(options: BuildIntroOptions): string {
+  const { storyDir, imagesDir, outPath, strictImages } = options;
+  const introPath = path.join(storyDir, "intro.md");
+
+  let raw: string;
+  try {
+    raw = fs.readFileSync(introPath, "utf-8");
+  } catch (error) {
+    const cause = error instanceof Error ? error.message : String(error);
+    fail(`intro.md: unable to read file (${cause})`, 2);
+  }
+
+  const parsed = matter(raw);
+  const frontmatter = introDocumentSchema.safeParse(parsed.data);
+  if (!frontmatter.success) {
+    fail(`intro.md: ${frontmatter.error.message}`);
+  }
+
+  const items = frontmatter.data.items;
+  const missing = new Set<string>();
+  for (const item of items) {
+    const fileName = path.basename(item.image);
+    const filePath = path.join(imagesDir, fileName);
+    if (!fs.existsSync(filePath)) {
+      missing.add(filePath);
+    }
+  }
+
+  if (missing.size > 0) {
+    const sorted = [...missing].sort((a, b) => a.localeCompare(b));
+    if (strictImages) {
+      fail(
+        `build: missing intro image files:\n${sorted.map((f) => `  - ${f}`).join("\n")}`,
+      );
+    }
+    warn(
+      `build: ${missing.size} referenced intro image file(s) are missing; pass --strict-images to fail. Missing:\n${sorted.map((f) => `  - ${f}`).join("\n")}`,
+    );
+  }
+
+  const introItems = items.map((item) => ({
+    text: item.text,
+    imageSrc: item.image,
+  }));
+
+  const serializedItems = introItems
+    .map((item) => serializeIntroItem(item, "  "))
+    .join(",\n");
+
+  const output =
+    `export interface IntroItem {\n` +
+    `  text: string;\n` +
+    `  imageSrc: string;\n` +
+    `}\n\n` +
+    `export const introItems: IntroItem[] = [\n${serializedItems},\n];\n`;
+
+  try {
+    fs.writeFileSync(outPath, output, "utf-8");
+  } catch (error) {
+    const cause = error instanceof Error ? error.message : String(error);
+    fail(`Unable to write ${outPath} (${cause})`, 2);
+  }
+
+  console.log(`Generated ${outPath} (${items.length} intro items)`);
+  return output;
+}
+
 export function buildLevels(options: BuildOptions): string {
   const { storyDir, imagesDir, outPath, strictImages } = options;
 
@@ -455,6 +539,12 @@ function main(): void {
       storyDir: path.join(root, "content", "story"),
       imagesDir: path.join(root, "public", "images"),
       outPath: path.join(root, "src", "game", "levels.generated.ts"),
+      strictImages,
+    });
+    buildIntro({
+      storyDir: path.join(root, "content", "story"),
+      imagesDir: path.join(root, "public", "images"),
+      outPath: path.join(root, "src", "game", "intro.generated.ts"),
       strictImages,
     });
   } catch (error) {

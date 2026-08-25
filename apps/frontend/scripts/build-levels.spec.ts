@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { buildLevels } from "./build-levels.ts";
+import { buildIntro, buildLevels } from "./build-levels.ts";
 
 const repoRoot = path.resolve(import.meta.dirname, "..");
 const realStoryDir = path.join(repoRoot, "content", "story");
@@ -310,5 +310,102 @@ describe("buildLevels failure modes", () => {
         strictImages: true,
       }),
     ).toThrow("anchorX");
+  });
+});
+
+function introMarkdown(): string {
+  return `---\nitems:\n  - text: "Phrase one"\n    image: /images/intro-1.svg\n  - text: "Phrase two"\n    image: /images/intro-2.svg\n---\n\nIntro narrative.\n`;
+}
+
+describe("buildIntro happy path", () => {
+  it("parses intro.md and emits intro.generated.ts with the same shape", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    fs.writeFileSync(path.join(storyDir, "intro.md"), introMarkdown(), "utf-8");
+    fs.writeFileSync(
+      path.join(imagesDir, "intro-1.svg"),
+      "<svg/>",
+      "utf-8",
+    );
+    fs.writeFileSync(
+      path.join(imagesDir, "intro-2.svg"),
+      "<svg/>",
+      "utf-8",
+    );
+
+    const output = buildIntro({
+      storyDir,
+      imagesDir,
+      outPath,
+      strictImages: true,
+    });
+
+    expect(output).toContain("export interface IntroItem");
+    expect(output).toContain("export const introItems: IntroItem[]");
+    expect(output).toContain('text: "Phrase one"');
+    expect(output).toContain('imageSrc: "/images/intro-1.svg"');
+    expect(output).toContain('text: "Phrase two"');
+    expect(output).toContain('imageSrc: "/images/intro-2.svg"');
+  });
+});
+
+describe("buildIntro failure modes", () => {
+  it("fails in strict mode when a referenced intro SVG is missing", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    fs.writeFileSync(path.join(storyDir, "intro.md"), introMarkdown(), "utf-8");
+    fs.writeFileSync(
+      path.join(imagesDir, "intro-1.svg"),
+      "<svg/>",
+      "utf-8",
+    );
+
+    expect(() =>
+      buildIntro({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("missing intro image files");
+  });
+
+  it("fails when an intro image is not an SVG", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    fs.writeFileSync(
+      path.join(storyDir, "intro.md"),
+      `---\nitems:\n  - text: "Phrase one"\n    image: /images/intro-1.png\n---\n`,
+      "utf-8",
+    );
+
+    expect(() =>
+      buildIntro({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("image must be an SVG file");
+  });
+
+  it("fails when intro images are not unique", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    fs.writeFileSync(
+      path.join(storyDir, "intro.md"),
+      `---\nitems:\n  - text: "Phrase one"\n    image: /images/intro-1.svg\n  - text: "Phrase two"\n    image: /images/intro-1.svg\n---\n`,
+      "utf-8",
+    );
+    fs.writeFileSync(
+      path.join(imagesDir, "intro-1.svg"),
+      "<svg/>",
+      "utf-8",
+    );
+
+    expect(() =>
+      buildIntro({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("intro images must be unique");
   });
 });

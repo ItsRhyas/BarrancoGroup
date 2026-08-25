@@ -62,3 +62,21 @@ export const chapterSchema = z.object({
   ),
   order: z.number().int().optional(),
 });
+
+export const introItemSchema = z.object({
+  text: z.string().min(1),
+  image: z
+    .string()
+    .min(1)
+    .regex(/\.svg$/i, "image must be an SVG file"),
+});
+
+export const introDocumentSchema = z.object({
+  items: z
+    .array(introItemSchema)
+    .min(1)
+    .refine(
+      (items) => new Set(items.map((item) => item.image)).size === items.length,
+      { message: "intro images must be unique" },
+    ),
+});
