@@ -10,12 +10,16 @@ import {
   readCompletedChapters,
   writeCompletedChapters,
   __resetCompletedStorage,
+  readIntroSeen,
+  writeIntroSeen,
+  __resetIntroStorage,
 } from "./session";
 
 describe("completed chapters storage", () => {
   beforeEach(() => {
     localStorage.clear();
     __resetCompletedStorage();
+    __resetIntroStorage();
   });
 
   afterEach(() => {
@@ -87,5 +91,58 @@ describe("completed chapters storage", () => {
     });
 
     expect(readCompletedChapters()).toEqual([]);
+  });
+});
+
+describe("intro seen storage", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    __resetIntroStorage();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("returns false by default", () => {
+    expect(readIntroSeen()).toBe(false);
+  });
+
+  it("round-trips the intro seen flag", () => {
+    writeIntroSeen();
+    expect(readIntroSeen()).toBe(true);
+  });
+
+  it("treats malformed localStorage values as not seen", () => {
+    localStorage.setItem("mairin:introSeen", "not-boolean");
+    expect(readIntroSeen()).toBe(false);
+  });
+
+  it("falls back to memory when localStorage writes fail", () => {
+    vi.spyOn(localStorage, "setItem").mockImplementation(() => {
+      throw new Error("Quota exceeded");
+    });
+
+    expect(() => writeIntroSeen()).not.toThrow();
+    expect(readIntroSeen()).toBe(true);
+  });
+
+  it("falls back to false when localStorage reads fail", () => {
+    vi.spyOn(localStorage, "getItem").mockImplementation(() => {
+      throw new Error("Storage disabled");
+    });
+
+    expect(readIntroSeen()).toBe(false);
+  });
+
+  it("resets the in-memory fallback", () => {
+    vi.spyOn(localStorage, "setItem").mockImplementation(() => {
+      throw new Error("Quota exceeded");
+    });
+    writeIntroSeen();
+    expect(readIntroSeen()).toBe(true);
+
+    __resetIntroStorage();
+    expect(readIntroSeen()).toBe(false);
   });
 });

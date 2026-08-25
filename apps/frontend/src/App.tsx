@@ -1,20 +1,25 @@
 import { useCallback, useMemo, useState } from "react";
 import { ChapterSelect } from "./components/ChapterSelect";
 import { GameBoard } from "./components/GameBoard";
+import { IntroScreen } from "./components/IntroScreen";
 import { Overlay } from "./components/Overlay";
 import { RotateDevice } from "./components/RotateDevice";
 import { StartScreen } from "./components/StartScreen";
 import {
   readCompletedChapters,
+  readIntroSeen,
   writeCompletedChapters,
+  writeIntroSeen,
   writeLastChapter,
 } from "./lib/session";
+import { introItems } from "./game/intro.generated";
 import { isChapterUnlocked } from "./game/unlock";
 import { levels } from "./game/levels";
 import "./App.css";
 
 type Screen =
   | { kind: "start" }
+  | { kind: "intro" }
   | { kind: "chapter-select" }
   | { kind: "game" };
 
@@ -40,6 +45,7 @@ function App() {
   const [completedChapters, setCompletedChapters] = useState<number[]>(() =>
     readCompletedChapters(),
   );
+  const [introSeen, setIntroSeen] = useState<boolean>(() => readIntroSeen());
 
   const resumeTarget = useMemo(
     () => computeResumeTarget(completedChapters),
@@ -47,6 +53,16 @@ function App() {
   );
 
   const startNew = useCallback(() => {
+    if (!introSeen) {
+      setScreen({ kind: "intro" });
+    } else {
+      setScreen({ kind: "chapter-select" });
+    }
+  }, [introSeen]);
+
+  const handleIntroComplete = useCallback(() => {
+    writeIntroSeen();
+    setIntroSeen(true);
     setScreen({ kind: "chapter-select" });
   }, []);
 
@@ -73,7 +89,7 @@ function App() {
     }
   }, [screen.kind]);
 
-  const canGoBack = screen.kind !== "start";
+  const canGoBack = screen.kind !== "start" && screen.kind !== "intro";
 
   const advanceLevel = useCallback(() => {
     setSelectedLevel((prev) => prev + 1);
@@ -97,6 +113,9 @@ function App() {
             onContinue={continueGame}
             resumeTarget={resumeTarget}
           />
+        )}
+        {screen.kind === "intro" && (
+          <IntroScreen items={introItems} onComplete={handleIntroComplete} />
         )}
         {screen.kind === "chapter-select" && (
           <ChapterSelect

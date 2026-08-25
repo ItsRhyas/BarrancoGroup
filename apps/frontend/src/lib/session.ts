@@ -89,3 +89,55 @@ export function writeCompletedChapters(index: number): void {
 export function __resetCompletedStorage(): void {
   inMemoryCompletedChapters = null;
 }
+
+const INTRO_SEEN_KEY = "mairin:introSeen";
+
+let inMemoryIntroSeen: boolean | null = null;
+
+/**
+ * Reads whether the player has already seen the intro.
+ * Returns false when the value is missing or malformed, or when storage is
+ * unavailable (private mode). In-memory fallback is used once storage has been
+ * observed to fail.
+ */
+export function readIntroSeen(): boolean {
+  if (inMemoryIntroSeen !== null) {
+    return inMemoryIntroSeen;
+  }
+
+  try {
+    const raw = localStorage.getItem(INTRO_SEEN_KEY);
+    if (raw === null) {
+      return false;
+    }
+    return raw === "true";
+  } catch {
+    inMemoryIntroSeen = false;
+    return inMemoryIntroSeen;
+  }
+}
+
+/**
+ * Persists that the player has seen the intro. If localStorage is unavailable,
+ * the flag is kept in memory for the current session.
+ */
+export function writeIntroSeen(): void {
+  try {
+    localStorage.setItem(INTRO_SEEN_KEY, "true");
+  } catch {
+    inMemoryIntroSeen = true;
+  }
+}
+
+/**
+ * Resets the in-memory fallback used for the intro seen flag. Exposed only for
+ * tests so each spec starts from a clean state.
+ */
+export function __resetIntroStorage(): void {
+  inMemoryIntroSeen = null;
+  try {
+    localStorage.removeItem(INTRO_SEEN_KEY);
+  } catch {
+    // Ignore private-mode errors.
+  }
+}
