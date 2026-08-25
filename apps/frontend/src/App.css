@@ -355,7 +355,7 @@
   gap: clamp(6px, 1.11cqh, 8px);
   padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
   border-radius: 12px;
-  background: rgba(244, 240, 230, 0.55);
+  background: rgba(247, 244, 236, 0.55);
 
   h1 {
     margin: 0;
@@ -496,7 +496,7 @@
   gap: clamp(6px, 1.11cqh, 8px);
   padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
   border-radius: 12px;
-  background: rgba(244, 240, 230, 0.55);
+  background: rgba(247, 244, 236, 0.55);
 
   h2 {
     margin: 0;
@@ -702,7 +702,7 @@
   max-width: min(90%, 900px);
   padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
   border-radius: 12px;
-  background: rgba(244, 240, 230, 0.55);
+  background: rgba(247, 244, 236, 0.55);
 }
 
 .intro-screen__phrase {
