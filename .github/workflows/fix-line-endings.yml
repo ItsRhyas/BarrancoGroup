@@ -1,0 +1,30 @@
+name: Fix Line Endings
+
+on:
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  dos2unix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install line converter
+        run: sudo apt-get install -y dos2unix
+
+      - name: Convert files to LF
+        run: |
+          dos2unix .env.example
+          find . -type f -name ".env*" -exec dos2unix {} +
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: format environment files to LF line endings"
