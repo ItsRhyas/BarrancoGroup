@@ -19,6 +19,7 @@
   --mustard: #C9A227;
   --mustard-soft: #E4C76B;
   --text-unavailable: #B8B0A0;
+  --element-area-radius: 24px;
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
