@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { buildIntro, buildLevels } from "./build-levels.ts";
+import { buildIntro, buildLevels, serializeLevel } from "./build-levels.ts";
+import type { Level } from "../src/game/types.ts";
 
 const repoRoot = path.resolve(import.meta.dirname, "..");
 const realStoryDir = path.join(repoRoot, "content", "story");
@@ -19,9 +20,11 @@ interface ChapterFixture {
   anchorX?: number;
   extraExpectedCharSlot?: string;
   unrecognizedAssetId?: string;
+  context?: string;
+  narrative?: string;
 }
 
-function chapterMarkdown(fixture: ChapterFixture = {}): string {
+function chapterJson(fixture: ChapterFixture = {}): string {
   const sceneAssetId = fixture.sceneAssetId ?? "scene:test";
   const characterAssetId = fixture.characterAssetId ?? "char:test";
   const correctEndingAssetId =
@@ -36,10 +39,12 @@ function chapterMarkdown(fixture: ChapterFixture = {}): string {
     expectedChars[fixture.extraExpectedCharSlot] = "char:test";
   }
 
-  const frontmatter = {
+  return JSON.stringify({
     id: fixture.id,
     title: "Test Chapter",
     order: 1,
+    context: fixture.context ?? "Test context.",
+    narrative: fixture.narrative ?? "Test narrative.",
     sceneSlots: [{ id: "slot-1", label: "Slot" }],
     scenes: [
       {
@@ -77,9 +82,7 @@ function chapterMarkdown(fixture: ChapterFixture = {}): string {
         imageAssetId: incorrectEndingAssetId,
       },
     ],
-  };
-
-  return `---\n${JSON.stringify(frontmatter)}\n---\n\nTest narrative.\n`;
+  });
 }
 
 function makeTempDirs(): {
@@ -139,12 +142,46 @@ describe("buildLevels happy path", () => {
     expect(fs.readFileSync(realOutPath, "utf-8")).toBe(first);
   });
 
+  it("serializes context when present", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    fs.writeFileSync(
+      path.join(storyDir, "chapter-context.json"),
+      chapterJson({ id: "level-context", context: "Mairin backstory." }),
+      "utf-8",
+    );
+
+    for (const assetId of ["scene:test", "char:test", "ending:correct-test", "ending:incorrect-test"]) {
+      fs.writeFileSync(
+        path.join(imagesDir, `${assetId.replace(/:/g, "-")}.svg`),
+        "<svg/>",
+        "utf-8",
+      );
+    }
+
+    const output = buildLevels({
+      storyDir,
+      imagesDir,
+      outPath,
+      strictImages: true,
+    });
+    expect(output).toContain('context: "Mairin backstory."');
+  });
+
+  it("does not emit a context line when context is absent", () => {
+    const parsed = JSON.parse(chapterJson({ id: "level-no-context" }));
+    delete parsed.context;
+    const output = serializeLevel(parsed as Level);
+    expect(output).not.toContain("context:");
+  });
+
   it("serializes iconAssetId and sceneAssetId and registers icon assets as 1:1", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
-    const frontmatter = {
+    const chapter = {
       id: "level-icon-model",
       title: "Icon Model Test",
       order: 1,
+      context: "Test context.",
+      narrative: "Test narrative.",
       sceneSlots: [{ id: "slot-1", label: "Slot" }],
       scenes: [
         {
@@ -189,8 +226,8 @@ describe("buildLevels happy path", () => {
     };
 
     fs.writeFileSync(
-      path.join(storyDir, "chapter-icon-model.md"),
-      `---\n${JSON.stringify(frontmatter)}\n---\n\nTest narrative.\n`,
+      path.join(storyDir, "chapter-icon-model.json"),
+      JSON.stringify(chapter),
       "utf-8",
     );
 
@@ -237,8 +274,8 @@ describe("buildLevels failure modes", () => {
   it("fails in strict mode when a referenced SVG is missing", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
     fs.writeFileSync(
-      path.join(storyDir, "chapter-test.md"),
-      chapterMarkdown({ id: "level-missing-svg" }),
+      path.join(storyDir, "chapter-test.json"),
+      chapterJson({ id: "level-missing-svg" }),
       "utf-8",
     );
 
@@ -255,8 +292,8 @@ describe("buildLevels failure modes", () => {
   it("fails when an assetId uses an unrecognized prefix", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
     fs.writeFileSync(
-      path.join(storyDir, "chapter-test.md"),
-      chapterMarkdown({
+      path.join(storyDir, "chapter-test.json"),
+      chapterJson({
         id: "level-bad-prefix",
         unrecognizedAssetId: "unknown:asset",
       }),
@@ -276,8 +313,8 @@ describe("buildLevels failure modes", () => {
   it("fails when expected character slots do not match scene slots", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
     fs.writeFileSync(
-      path.join(storyDir, "chapter-test.md"),
-      chapterMarkdown({
+      path.join(storyDir, "chapter-test.json"),
+      chapterJson({
         id: "level-broken-slots",
         extraExpectedCharSlot: "char-slot-missing",
       }),
@@ -297,8 +334,8 @@ describe("buildLevels failure modes", () => {
   it("fails when a character anchor is out of range", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
     fs.writeFileSync(
-      path.join(storyDir, "chapter-test.md"),
-      chapterMarkdown({ id: "level-bad-anchor", anchorX: 150 }),
+      path.join(storyDir, "chapter-test.json"),
+      chapterJson({ id: "level-bad-anchor", anchorX: 150 }),
       "utf-8",
     );
 
@@ -311,16 +348,94 @@ describe("buildLevels failure modes", () => {
       }),
     ).toThrow("anchorX");
   });
+
+  it("fails when a chapter JSON file is invalid and names the file", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    fs.writeFileSync(
+      path.join(storyDir, "chapter-bad.json"),
+      "{ invalid json",
+      "utf-8",
+    );
+
+    expect(() =>
+      buildLevels({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("chapter-bad.json");
+  });
+
+  it("fails when a chapter file cannot be read and names the file", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    // A directory named like a chapter file triggers a read error that names the file.
+    fs.mkdirSync(path.join(storyDir, "chapter-unreadable.json"));
+
+    expect(() =>
+      buildLevels({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("chapter-unreadable.json");
+  });
+
+  it("fails validation when context is missing", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    const parsed = JSON.parse(chapterJson({ id: "level-missing-context" }));
+    delete parsed.context;
+    fs.writeFileSync(
+      path.join(storyDir, "chapter-missing-context.json"),
+      JSON.stringify(parsed),
+      "utf-8",
+    );
+
+    expect(() =>
+      buildLevels({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("context");
+  });
+
+  it("fails validation when narrative is missing", () => {
+    const { storyDir, imagesDir, outPath } = makeTempDirs();
+    const parsed = JSON.parse(chapterJson({ id: "level-missing-narrative" }));
+    delete parsed.narrative;
+    fs.writeFileSync(
+      path.join(storyDir, "chapter-missing-narrative.json"),
+      JSON.stringify(parsed),
+      "utf-8",
+    );
+
+    expect(() =>
+      buildLevels({
+        storyDir,
+        imagesDir,
+        outPath,
+        strictImages: true,
+      }),
+    ).toThrow("narrative");
+  });
 });
 
-function introMarkdown(): string {
-  return `---\nitems:\n  - text: "Phrase one"\n    image: /images/intro-1.svg\n  - text: "Phrase two"\n    image: /images/intro-2.svg\n---\n\nIntro narrative.\n`;
+function introJson(): string {
+  return JSON.stringify({
+    items: [
+      { text: "Phrase one", image: "/images/intro-1.svg" },
+      { text: "Phrase two", image: "/images/intro-2.svg" },
+    ],
+  });
 }
 
 describe("buildIntro happy path", () => {
-  it("parses intro.md and emits intro.generated.ts with the same shape", () => {
+  it("parses intro.json and emits intro.generated.ts with the same shape", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
-    fs.writeFileSync(path.join(storyDir, "intro.md"), introMarkdown(), "utf-8");
+    fs.writeFileSync(path.join(storyDir, "intro.json"), introJson(), "utf-8");
     fs.writeFileSync(
       path.join(imagesDir, "intro-1.svg"),
       "<svg/>",
@@ -351,7 +466,7 @@ describe("buildIntro happy path", () => {
 describe("buildIntro failure modes", () => {
   it("fails in strict mode when a referenced intro SVG is missing", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
-    fs.writeFileSync(path.join(storyDir, "intro.md"), introMarkdown(), "utf-8");
+    fs.writeFileSync(path.join(storyDir, "intro.json"), introJson(), "utf-8");
     fs.writeFileSync(
       path.join(imagesDir, "intro-1.svg"),
       "<svg/>",
@@ -371,8 +486,10 @@ describe("buildIntro failure modes", () => {
   it("fails when an intro image is not an SVG", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
     fs.writeFileSync(
-      path.join(storyDir, "intro.md"),
-      `---\nitems:\n  - text: "Phrase one"\n    image: /images/intro-1.png\n---\n`,
+      path.join(storyDir, "intro.json"),
+      JSON.stringify({
+        items: [{ text: "Phrase one", image: "/images/intro-1.png" }],
+      }),
       "utf-8",
     );
 
@@ -389,8 +506,13 @@ describe("buildIntro failure modes", () => {
   it("fails when intro images are not unique", () => {
     const { storyDir, imagesDir, outPath } = makeTempDirs();
     fs.writeFileSync(
-      path.join(storyDir, "intro.md"),
-      `---\nitems:\n  - text: "Phrase one"\n    image: /images/intro-1.svg\n  - text: "Phrase two"\n    image: /images/intro-1.svg\n---\n`,
+      path.join(storyDir, "intro.json"),
+      JSON.stringify({
+        items: [
+          { text: "Phrase one", image: "/images/intro-1.svg" },
+          { text: "Phrase two", image: "/images/intro-1.svg" },
+        ],
+      }),
       "utf-8",
     );
     fs.writeFileSync(

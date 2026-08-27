@@ -45,6 +45,8 @@ export const expectedSolutionSchema = z.object({
 export const chapterSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
+  context: z.string().min(1),
+  narrative: z.string().min(1),
   sceneSlots: z.array(sceneSlotDefSchema),
   scenes: z.array(sceneDefSchema),
   characters: z.array(characterDefSchema),
