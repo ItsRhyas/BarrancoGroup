@@ -21,6 +21,20 @@
     font-size: clamp(28px, 4.44cqh, 32px);
     margin: 0 0 clamp(6px, 1.11cqh, 8px);
   }
+
+  .game-context {
+    font-size: clamp(13px, 1.94cqh, 14px);
+    font-style: italic;
+    color: var(--text-unavailable);
+    margin: 0 0 clamp(6px, 1.11cqh, 8px);
+  }
+
+  .game-narrative {
+    font-size: clamp(14px, 2.5cqh, 18px);
+    font-weight: 400;
+    color: var(--text);
+    margin: 0 0 clamp(8px, 1.67cqh, 12px);
+  }
 }
 
 .board-area {
