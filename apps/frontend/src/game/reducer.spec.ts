@@ -98,6 +98,33 @@ describe("boardReducer", () => {
     expect(state[sceneSlotId].characters[charSlotId]).toBe("char:mairin");
   });
 
+  it("PLACE_CHARACTER overwrites a filled character slot", () => {
+    const level = findLevel("level-1");
+    const sceneSlotId = level.sceneSlots[0].id;
+    const charSlotId = level.scenes[0].characterSlots[0].id;
+    let state = createInitialBoard(level);
+    state = boardReducer(state, {
+      type: "PLACE_SCENE",
+      sceneSlotId,
+      sceneId: level.scenes[0].id,
+      characterSlotIds: level.scenes[0].characterSlots.map((s) => s.id),
+    });
+    state = boardReducer(state, {
+      type: "PLACE_CHARACTER",
+      sceneSlotId,
+      charSlotId,
+      characterId: "char:first",
+    });
+    state = boardReducer(state, {
+      type: "PLACE_CHARACTER",
+      sceneSlotId,
+      charSlotId,
+      characterId: "char:second",
+    });
+    expect(state[sceneSlotId].characters[charSlotId]).toBe("char:second");
+    expect(state[sceneSlotId].characters[charSlotId]).not.toBe("char:first");
+  });
+
   it("PLACE_CHARACTER ignores an unknown character slot", () => {
     const level = findLevel("level-1");
     const sceneSlotId = level.sceneSlots[0].id;
