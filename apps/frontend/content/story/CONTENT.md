@@ -1,69 +1,91 @@
 # Story content format
 
-Each chapter is a Markdown file in this folder. The build script reads every `.md` file, validates the frontmatter, and generates `src/game/levels.generated.ts`.
+Chapters and the intro are JSON files in this folder. The build script (`scripts/build-levels.ts`) reads them with `JSON.parse`, validates them against zod schemas, and generates:
 
-## File name
+- `src/game/levels.generated.ts`
+- `src/game/intro.generated.ts`
 
-Use `chapter-{N}.md`. Files are sorted by the `order` field first, then by filename.
+Run `pnpm --filter frontend run build:levels` (or `npm run build:levels` inside `apps/frontend`) after editing content.
 
-## Structure
+## Chapter files
 
-```markdown
----
-id: level-1
-title: "El saludo de Mairin"
-order: 1
-sceneSlots:
-  - id: slot-scene-1
-    label: Aula
-scenes:
-  - id: scene:classroom
-    assetId: scene:classroom
-    label: Aula
-    characterSlots:
-      - id: char-slot-1
-        anchorX: 25
-        anchorY: 55
-characters:
-  - id: char:mairin
-    assetId: char:mairin
-    label: Mairin
-expected:
-  scenes:
-    slot-scene-1: scene:classroom
-  characters:
-    char-slot-1: char:mairin
-  correctEndingId: ending:correct-1
-endings:
-  - id: ending:correct-1
-    type: correct
-    title: "¡Muy bien!"
-    description: "..."
-    imageAssetId: ending:correct-1
-  - id: ending:incorrect-1
-    type: incorrect
-    title: "Inténtalo de nuevo"
-    description: "..."
-    imageAssetId: ending:incorrect-1
----
+Use `chapter-{N}.json` (for example, `chapter-1.json`). Files are discovered automatically and sorted by the `order` field first, then by filename.
 
-Mairin llega al aula. Reconstruye la escena colocando el salón y los personajes que muestran respeto.
+### Structure
+
+```json
+{
+  "id": "level-1",
+  "title": "El saludo de Mairin",
+  "order": 1,
+  "context": "Mairin es una estudiante nueva...",
+  "narrative": "Mairin llega al aula...",
+  "sceneSlots": [
+    { "id": "slot-scene-1", "label": "Aula" }
+  ],
+  "scenes": [
+    {
+      "id": "scene:classroom",
+      "assetId": "scene:classroom",
+      "label": "Aula",
+      "characterSlots": [
+        { "id": "char-slot-1", "anchorX": 25, "anchorY": 55 }
+      ]
+    }
+  ],
+  "characters": [
+    { "id": "char:mairin", "assetId": "char:mairin", "label": "Mairin" }
+  ],
+  "expected": {
+    "scenes": { "slot-scene-1": "scene:classroom" },
+    "characters": { "char-slot-1": "char:mairin" },
+    "correctEndingId": "ending:correct-1"
+  },
+  "endings": [
+    {
+      "id": "ending:correct-1",
+      "type": "correct",
+      "title": "¡Muy bien!",
+      "description": "...",
+      "imageAssetId": "ending:correct-1"
+    },
+    {
+      "id": "ending:incorrect-1",
+      "type": "incorrect",
+      "title": "Inténtalo de nuevo",
+      "description": "...",
+      "imageAssetId": "ending:incorrect-1"
+    }
+  ]
+}
 ```
 
-## Field reference
+### Field reference
 
 | Field | Required | Description |
 |---|---|---|
 | `id` | yes | Unique level identifier. |
 | `title` | yes | Chapter title shown in the chapter select and header. |
 | `order` | yes | Integer that determines chapter order. |
-| `sceneSlots` | yes | Drop zones for scenes. Usually one per level. |
-| `scenes` | yes | Available scenes, their slots, and character anchor positions (0–100). |
+| `context` | yes | 1–3 sentence self-contained backstory that explains who Mairin is, the situation, and the value at stake. Rendered in the game header (PR4). |
+| `narrative` | yes | Short instruction shown to the player. Rendered in the game header (PR4). |
+| `sceneSlots` | yes | Drop zones for scenes. Usually one per level, but later levels use more. |
+| `scenes` | yes | Available scenes, their slots, and character anchor positions (`0–100`). |
 | `characters` | yes | Draggable characters for this level. |
 | `expected` | yes | Correct solution: which scene goes in each slot, which character goes in each slot, and the correct ending id. |
 | `endings` | yes | Exactly one `correct` ending and at least one `incorrect` ending. |
 
-## Asset ids
+### Scene-count constraints
+
+The current story arc uses these counts:
+
+| Chapter | Scenes |
+|---|---|
+| 1 | 1 |
+| 2–3 | 2 |
+| 4–5 | 3 |
+
+### Asset ids
 
 Asset ids must use one of these prefixes. The build script maps each id to a file in `public/images/`.
 
@@ -73,44 +95,40 @@ Asset ids must use one of these prefixes. The build script maps each id to a fil
 | `char:` | 1:1 | `char:mairin` | `public/images/char-mairin.svg` |
 | `ending:` | 1:1 | `ending:correct-1` | `public/images/ending-correct-1.svg` |
 
-Add the matching SVG file before running `pnpm run build:levels`. The script runs in strict mode and fails if any referenced image is missing.
+Add the matching SVG file before running the build. The script runs in strict mode and fails if any referenced image is missing.
 
-## Body text
+### How to add a chapter
 
-Everything after the closing `---` becomes the level narrative. Keep it concise; it appears in the game header.
-
-## How to add a chapter
-
-1. Copy `chapter-1.md` to `chapter-N.md`.
+1. Copy `chapter-1.json` to `chapter-N.json`.
 2. Update `id`, `title`, and `order`.
-3. Add or reuse scenes, characters, and endings with valid asset ids.
-4. Make sure `expected.characters` keys match the `characterSlots` ids in the expected scene.
-5. Add any new SVG files to `public/images/`.
-6. Run `pnpm --filter frontend run build:levels` and commit the regenerated `levels.generated.ts`.
+3. Write a `context` and `narrative` in Spanish.
+4. Add or reuse scenes, characters, and endings with valid asset ids.
+5. Make sure `expected.characters` keys match the `characterSlots` ids in the expected scene.
+6. Add any new SVG files to `public/images/`.
+7. Run `pnpm --filter frontend run build:levels` and commit the regenerated `levels.generated.ts`.
 
-# Intro format
+### Regeneration guarantee
 
-The intro sequence is defined in `intro.md`. The build script reads this file, validates the frontmatter, and generates `src/game/intro.generated.ts`.
+The serializer emits stable, sorted-key output. Regenerating `levels.generated.ts` from the committed JSON source must produce byte-identical output. The byte-identical test in `scripts/build-levels.spec.ts` enforces this.
 
-## Structure
+## Intro file
 
-```markdown
----
-items:
-  - text: "La vida de las personas se divide en momentos clave que guardamos en cuadros"
-    image: /images/intro-1.svg
-  - text: "Cuando un cuadro se rompe, la historia se desmorona"
-    image: /images/intro-2.svg
-  - text: "Quieres ayudarnos a reconstruir esta historia?"
-    image: /images/intro-3.svg
-  - text: "Arrastra cada elemento adonde pertenece"
-    image: /images/intro-4.svg
----
+The intro sequence is defined in `intro.json`.
 
-Optional narrative body.
+### Structure
+
+```json
+{
+  "items": [
+    {
+      "text": "La vida de las personas se divide en momentos clave...",
+      "image": "/images/intro-1.svg"
+    }
+  ]
+}
 ```
 
-## Field reference
+### Field reference
 
 | Field | Required | Description |
 |---|---|---|
@@ -118,13 +136,9 @@ Optional narrative body.
 | `items[].text` | yes | Phrase shown on the slide. |
 | `items[].image` | yes | Path to an SVG in `public/images/`. Must be unique across items and end in `.svg`. |
 
-## Images
+### How to edit the intro
 
-Each `image` value must point to an existing SVG file in `public/images/`. The path in the frontmatter is preserved as the runtime `src`, so use the public URL form `/images/intro-N.svg`.
-
-## How to edit the intro
-
-1. Open `content/story/intro.md`.
+1. Open `content/story/intro.json`.
 2. Edit the `text` of any item, or add/remove/reorder items.
 3. Ensure every `image` references an existing `public/images/*.svg` file.
 4. Keep all `image` values unique.
