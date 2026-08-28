@@ -144,6 +144,8 @@ export function GameBoard({
       <main className="game-board">
         <header className="game-header">
           <h1>{level.title}</h1>
+          <p className="game-context">{level.context}</p>
+          <p className="game-narrative">{level.narrative}</p>
         </header>
 
         <section
