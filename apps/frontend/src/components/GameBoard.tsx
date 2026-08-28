@@ -13,14 +13,13 @@ import { validate } from "../game/validation";
 import { levels } from "../game/levels";
 import type {
   AssetId,
-  DragType,
   Level,
   ValidationResult,
 } from "../game/types";
 import { ElementArea } from "./ElementArea";
 import { EndDialog } from "./EndDialog";
 import { SceneSlot } from "./SceneSlot";
-import { inflatedPointerWithin } from "./collisionDetection";
+import { nearestValidTarget } from "./collisionDetection";
 
 interface GameBoardProps {
   levelIndex: number;
@@ -38,10 +37,6 @@ function resolveCharacterAssetId(
   }
   const character = level.characters.find((c) => c.id === characterId);
   return character?.sceneAssetId ?? character?.assetId ?? null;
-}
-
-function isDragType(value: unknown): value is DragType {
-  return value === "scene" || value === "character";
 }
 
 export function GameBoard({
@@ -87,13 +82,6 @@ export function GameBoard({
     }
 
     const dragType = active.data.current?.dragType;
-    const accepts = over.data.current?.accepts;
-    if (!isDragType(dragType) || !isDragType(accepts)) {
-      return;
-    }
-    if (dragType !== accepts) {
-      return;
-    }
 
     if (dragType === "scene") {
       const sceneSlotId = over.data.current?.sceneSlotId;
@@ -149,7 +137,7 @@ export function GameBoard({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={inflatedPointerWithin}
+      collisionDetection={nearestValidTarget}
       autoScroll={false}
       onDragEnd={handleDragEnd}
     >
