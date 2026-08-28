@@ -111,6 +111,10 @@ Add the matching SVG file before running the build. The script runs in strict mo
 
 The serializer emits stable, sorted-key output. Regenerating `levels.generated.ts` from the committed JSON source must produce byte-identical output. The byte-identical test in `scripts/build-levels.spec.ts` enforces this.
 
+## AI story generation prompt
+
+For a complete, paste-ready prompt that embeds the exact chapter schema above, the asset conventions, the scene-count constraints, and the `context` requirement, see `../../story-prompt.txt` at the repository root. The prompt is written in Spanish and is intended for a story-specialized AI that generates the full five-chapter arc in one call. The `context` field requirement documented here is the same one enforced in that prompt.
+
 ## Intro file
 
 The intro sequence is defined in `intro.json`.
