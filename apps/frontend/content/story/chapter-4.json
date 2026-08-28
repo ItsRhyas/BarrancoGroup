@@ -1,0 +1,123 @@
+{
+  "id": "level-4",
+  "title": "Capítulo 4",
+  "order": 4,
+  "context": "Mairin camina por su barrio para hacer unos mandados. Conoce a vecinos de distintos oficios y edades, y se da cuenta de que el respeto mutuo hace que la comunidad funcione.",
+  "narrative": "Mairin recorre el barrio y descubre que cada persona tiene un papel importante en la comunidad.",
+  "sceneSlots": [
+    {
+      "id": "slot-scene-4a",
+      "label": "Mercado"
+    },
+    {
+      "id": "slot-scene-4b",
+      "label": "Tienda"
+    },
+    {
+      "id": "slot-scene-4c",
+      "label": "Plaza"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene:market",
+      "assetId": "scene:market",
+      "label": "Mercado",
+      "characterSlots": [
+        {
+          "id": "ch4-market-a",
+          "anchorX": 20,
+          "anchorY": 60
+        },
+        {
+          "id": "ch4-market-b",
+          "anchorX": 80,
+          "anchorY": 60
+        }
+      ]
+    },
+    {
+      "id": "scene:shop",
+      "assetId": "scene:shop",
+      "label": "Tienda",
+      "characterSlots": [
+        {
+          "id": "ch4-shop-a",
+          "anchorX": 35,
+          "anchorY": 55
+        },
+        {
+          "id": "ch4-shop-b",
+          "anchorX": 65,
+          "anchorY": 55
+        }
+      ]
+    },
+    {
+      "id": "scene:plaza",
+      "assetId": "scene:plaza",
+      "label": "Plaza",
+      "characterSlots": [
+        {
+          "id": "ch4-plaza-a",
+          "anchorX": 30,
+          "anchorY": 60
+        },
+        {
+          "id": "ch4-plaza-b",
+          "anchorX": 70,
+          "anchorY": 60
+        }
+      ]
+    }
+  ],
+  "characters": [
+    {
+      "id": "char:mairin",
+      "assetId": "char:mairin",
+      "label": "Mairin"
+    },
+    {
+      "id": "char:ch4-vendor",
+      "assetId": "char:ch4-vendor",
+      "label": "Vendedor"
+    },
+    {
+      "id": "char:ch4-neighbor",
+      "assetId": "char:ch4-neighbor",
+      "label": "Vecina"
+    }
+  ],
+  "expected": {
+    "scenes": {
+      "slot-scene-4a": "scene:market",
+      "slot-scene-4b": "scene:shop",
+      "slot-scene-4c": "scene:plaza"
+    },
+    "characters": {
+      "ch4-market-a": "char:ch4-vendor",
+      "ch4-market-b": "char:mairin",
+      "ch4-shop-a": "char:ch4-neighbor",
+      "ch4-shop-b": "char:mairin",
+      "ch4-plaza-a": "char:ch4-vendor",
+      "ch4-plaza-b": "char:ch4-neighbor"
+    },
+    "correctEndingId": "ending:correct-4"
+  },
+  "endings": [
+    {
+      "id": "ending:correct-4",
+      "type": "correct",
+      "title": "¡Comunidad unida!",
+      "description": "Mairin conoció a sus vecinos y valoró el trabajo de todos en el barrio.",
+      "imageAssetId": "ending:correct-4"
+    },
+    {
+      "id": "ending:incorrect-4",
+      "type": "incorrect",
+      "title": "Inténtalo de nuevo",
+      "description": "La escena no refleja respeto por la comunidad. ¿Quiénes hacen parte del barrio?",
+      "imageAssetId": "ending:incorrect-4"
+    }
+  ]
+}

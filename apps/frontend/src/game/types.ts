@@ -63,6 +63,7 @@ export interface Level {
   id: string;
   title: string;
   narrative: string;
+  context: string;
   sceneSlots: SceneSlotDef[];
   scenes: SceneDef[];
   characters: CharacterDef[];
