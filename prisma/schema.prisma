@@ -9,6 +9,22 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  ADMIN
+  USUARIO
+  AUDITOR
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  role         Role     @default(USUARIO)
+  createdAt    DateTime @default(now())
+
+  @@map("users")
+}
+
 model GameSession {
   id           String    @id @default(uuid())
   sessionToken String    @unique

@@ -1,7 +1,6 @@
-import { IsString, MaxLength } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 export class GetProgressQuery {
-  @IsString()
-  @MaxLength(128)
+  @IsUUID(undefined, { message: 'sessionToken debe ser un UUID válido' })
   sessionToken: string;
 }

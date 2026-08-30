@@ -1,8 +1,7 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsUUID } from 'class-validator';
 
 export class CreateSessionDto {
   @IsOptional()
-  @IsString()
-  @MaxLength(128)
+  @IsUUID(undefined, { message: 'sessionToken debe ser un UUID válido' })
   sessionToken?: string;
 }

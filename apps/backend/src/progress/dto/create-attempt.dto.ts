@@ -1,12 +1,17 @@
-import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
 
 export class CreateAttemptDto {
-  @IsString()
-  @MaxLength(128)
+  @IsUUID(undefined, { message: 'sessionToken debe ser un UUID válido' })
   sessionToken: string;
 
   @IsString()
-  @MaxLength(128)
+  @Length(1, 128)
   levelId: string;
 
   @IsBoolean()
@@ -14,6 +19,6 @@ export class CreateAttemptDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(128)
+  @Length(1, 128)
   endingId?: string;
 }
