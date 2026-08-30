@@ -16,18 +16,30 @@ export class ProgressService {
   async ensureSession(sessionToken?: string) {
     const token = sessionToken ?? randomUUID();
 
+    const user = await this.prisma.user.upsert({
+      where: { id: token },
+      create: { id: token },
+      update: {},
+    });
+
     return this.prisma.gameSession.upsert({
       where: { sessionToken: token },
-      create: { sessionToken: token },
+      create: { sessionToken: token, userId: user.id },
       update: {},
     });
   }
 
   async recordAttempt(input: RecordAttemptInput) {
     return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.upsert({
+        where: { id: input.sessionToken },
+        create: { id: input.sessionToken },
+        update: {},
+      });
+
       const session = await tx.gameSession.upsert({
         where: { sessionToken: input.sessionToken },
-        create: { sessionToken: input.sessionToken },
+        create: { sessionToken: input.sessionToken, userId: user.id },
         update: {},
       });
 

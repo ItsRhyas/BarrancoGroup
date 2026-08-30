@@ -16,21 +16,25 @@ enum Role {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  username     String   @unique
-  passwordHash String
-  role         Role     @default(USUARIO)
-  createdAt    DateTime @default(now())
+  id           String         @id @default(uuid())
+  username     String?        @unique
+  passwordHash String?
+  role         Role           @default(USUARIO)
+  createdAt    DateTime       @default(now())
+  sessions     GameSession[]
 
   @@map("users")
 }
 
 model GameSession {
   id           String    @id @default(uuid())
+  userId       String
   sessionToken String    @unique
   createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   attempts     Attempt[]
 
+  @@index([userId])
   @@map("game_sessions")
 }
 

@@ -44,14 +44,22 @@ export class AuthService {
       where: { username: dto.username },
     });
 
-    if (!user || !this.passwords.verify(dto.password, user.passwordHash)) {
+    if (
+      !user ||
+      !user.passwordHash ||
+      !this.passwords.verify(dto.password, user.passwordHash)
+    ) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
     return this.issueToken(user);
   }
 
-  private issueToken(user: { id: string; username: string; role: Role }) {
+  private issueToken(user: {
+    id: string;
+    username: string | null;
+    role: Role;
+  }) {
     const payload: JwtPayload = {
       sub: user.id,
       username: user.username,
