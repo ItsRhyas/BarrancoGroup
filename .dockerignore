@@ -1,0 +1,38 @@
+# Dependencies (host ones are platform-specific and would clobber Linux deps)
+**/node_modules
+
+# Build outputs
+**/dist
+**/build
+**/*.tsbuildinfo
+**/coverage
+.next
+
+# Prisma generated client (regenerated inside the image with `prisma generate`)
+apps/backend/src/generated
+
+# Environment & secrets (never bake into the image)
+.env
+.env.*
+*.env
+
+# VCS
+.git
+.gitignore
+**/.gitignore
+.github
+
+# Docker / CI
+docker
+docker-compose.yml
+**/Dockerfile
+**/docker-compose*.yml
+
+# Docs / misc
+docs
+README.md
+.atl
+.cache
+temp
+logs
+*.log
