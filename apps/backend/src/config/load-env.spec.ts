@@ -1,7 +1,7 @@
-const mockedExistsSync = jest.fn();
+const mockedExistsSync = jest.fn((path: unknown) => Boolean(path));
 
 jest.mock('node:fs', () => ({
-  existsSync: (...args: unknown[]) => mockedExistsSync(...args),
+  existsSync: (path: unknown) => mockedExistsSync(path),
 }));
 
 describe('loadEnv', () => {
@@ -15,6 +15,7 @@ describe('loadEnv', () => {
     mockedExistsSync.mockReset();
 
     jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const mod = require('./load-env') as typeof import('./load-env');
       loadEnv = mod.loadEnv;
     });
