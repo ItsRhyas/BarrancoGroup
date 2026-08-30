@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "scripts": {
-    "dev": "node scripts/ensure-db.mjs",
+    "dev:startup": "bash scripts/dev.sh",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
@@ -13,7 +13,8 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "docker:prod": "docker compose -f docker-compose.yml -f docker/compose/prod.yml up -d"
+    "docker:prod": "docker compose -f docker-compose.yml -f docker/compose/prod.yml up -d",
+    "docker:down": "docker compose down"
   },
   "devDependencies": {
     "@prisma/client": "7.8.0",

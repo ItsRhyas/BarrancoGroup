@@ -7,11 +7,18 @@ describe("level data integrity", () => {
     expect(levels.length).toBe(5);
   });
 
+  it("has scene slot counts of 1, 2, 2, 3, 3 across levels", () => {
+    expect(levels.map((level) => level.sceneSlots.length)).toEqual([
+      1, 2, 2, 3, 3,
+    ]);
+  });
+
   for (const level of levels) {
     describe(`level ${level.id}`, () => {
-      it("has a title and narrative", () => {
+      it("has a title, narrative, and context", () => {
         expect(level.title.length).toBeGreaterThan(0);
         expect(level.narrative.length).toBeGreaterThan(0);
+        expect(level.context.length).toBeGreaterThan(0);
       });
 
       it("references only registered assets", () => {

@@ -1,7 +1,6 @@
 /* global console process */
 import fs from "node:fs";
 import path from "node:path";
-import matter from "gray-matter";
 import {
   chapterSchema,
   introDocumentSchema,
@@ -117,12 +116,15 @@ function serializeAssetRegistry(registry: AssetRegistry): string {
   return lines.join("\n");
 }
 
-function serializeLevel(level: Level): string {
+export function serializeLevel(level: Level): string {
   const lines: string[] = [];
   lines.push(`  {`);
   lines.push(`    id: ${tsString(level.id)},`);
   lines.push(`    title: ${tsString(level.title)},`);
   lines.push(`    narrative: ${tsString(level.narrative)},`);
+  if (level.context) {
+    lines.push(`    context: ${tsString(level.context)},`);
+  }
 
   lines.push(`    sceneSlots: [`);
   for (const slot of level.sceneSlots) {
@@ -382,22 +384,25 @@ function readChapter(
     fail(`${file}: unable to read file (${cause})`, 2);
   }
 
-  const parsed = matter(raw);
-  const frontmatter = chapterSchema.safeParse(parsed.data);
-  if (!frontmatter.success) {
-    fail(`${file}: ${frontmatter.error.message}`);
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    const cause = error instanceof Error ? error.message : String(error);
+    fail(`${file}: ${cause}`);
   }
 
-  const narrative = parsed.content.trim();
-  if (narrative.length === 0) {
-    fail(`${file}: narrative body is empty`);
+  const frontmatter = chapterSchema.safeParse(parsed);
+  if (!frontmatter.success) {
+    fail(`${file}: ${frontmatter.error.message}`);
   }
 
   const chapter = frontmatter.data;
   const level: Level = {
     id: chapter.id,
     title: chapter.title,
-    narrative,
+    narrative: chapter.narrative,
+    context: chapter.context,
     sceneSlots: chapter.sceneSlots,
     scenes: chapter.scenes,
     characters: chapter.characters,
@@ -410,20 +415,27 @@ function readChapter(
 
 export function buildIntro(options: BuildIntroOptions): string {
   const { storyDir, imagesDir, outPath, strictImages } = options;
-  const introPath = path.join(storyDir, "intro.md");
+  const introPath = path.join(storyDir, "intro.json");
 
   let raw: string;
   try {
     raw = fs.readFileSync(introPath, "utf-8");
   } catch (error) {
     const cause = error instanceof Error ? error.message : String(error);
-    fail(`intro.md: unable to read file (${cause})`, 2);
+    fail(`intro.json: unable to read file (${cause})`, 2);
   }
 
-  const parsed = matter(raw);
-  const frontmatter = introDocumentSchema.safeParse(parsed.data);
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    const cause = error instanceof Error ? error.message : String(error);
+    fail(`intro.json: ${cause}`);
+  }
+
+  const frontmatter = introDocumentSchema.safeParse(parsed);
   if (!frontmatter.success) {
-    fail(`intro.md: ${frontmatter.error.message}`);
+    fail(`intro.json: ${frontmatter.error.message}`);
   }
 
   const items = frontmatter.data.items;
@@ -484,11 +496,11 @@ export function buildLevels(options: BuildOptions): string {
 
   const files = fs
     .readdirSync(storyDir)
-    .filter((file) => file.startsWith("chapter-") && file.endsWith(".md"))
+    .filter((file) => file.startsWith("chapter-") && file.endsWith(".json"))
     .sort((a, b) => a.localeCompare(b));
 
   if (files.length === 0) {
-    fail(`No markdown files found in ${storyDir}`, 2);
+    fail(`No JSON files found in ${storyDir}`, 2);
   }
 
   const chapters = files.map((file) => {

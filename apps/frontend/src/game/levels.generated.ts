@@ -6,6 +6,7 @@ export const levels: Level[] = [
     id: "level-1",
     title: "El saludo de Mairin",
     narrative: "Mairin llega al aula. Reconstruye la escena colocando el salón y los personajes que muestran respeto.",
+    context: "Mairin es una estudiante nueva que acaba de llegar al aula. Hoy es su primer día y no conoce a nadie. En la escuela, saludar con respeto es la primera regla.",
     sceneSlots: [
       { id: "slot-scene-1", label: "Aula" },
     ],
@@ -56,6 +57,7 @@ export const levels: Level[] = [
     id: "level-2",
     title: "Un juego para todos",
     narrative: "En el parque, Mairin quiere que todos puedan jugar. Coloca la escena y los personajes que muestran equidad.",
+    context: "Mairin está en el parque con sus amigos, incluido un amigo que usa silla de ruedas. Quiere que todos puedan jugar juntos, así que el juego debe adaptarse para que nadie quede afuera.",
     sceneSlots: [
       { id: "slot-scene-2", label: "Parque" },
       { id: "slot-scene-2b", label: "Patio de juegos" },
@@ -122,6 +124,7 @@ export const levels: Level[] = [
     id: "level-3",
     title: "Capítulo 3",
     narrative: "Mairin aprende que compartir con quienes nos rodea hace más fuertes los lazos familiares.",
+    context: "Mairin ha llegado a su casa después de un día en la escuela y el parque. Ahora debe decidir cómo compartir su tiempo con su familia y sus amigos. El valor en juego es la inclusión: todos merecen sentirse parte.",
     sceneSlots: [
       { id: "slot-scene-3a", label: "Casa" },
       { id: "slot-scene-3b", label: "Calle" },
@@ -186,6 +189,7 @@ export const levels: Level[] = [
     id: "level-4",
     title: "Capítulo 4",
     narrative: "Mairin recorre el barrio y descubre que cada persona tiene un papel importante en la comunidad.",
+    context: "Mairin camina por su barrio para hacer unos mandados. Conoce a vecinos de distintos oficios y edades, y se da cuenta de que el respeto mutuo hace que la comunidad funcione.",
     sceneSlots: [
       { id: "slot-scene-4a", label: "Mercado" },
       { id: "slot-scene-4b", label: "Tienda" },
@@ -262,6 +266,7 @@ export const levels: Level[] = [
     id: "level-5",
     title: "Capítulo 5",
     narrative: "Mairin descubre que escuchar a quienes tienen más experiencia nos ayuda a tomar mejores decisiones.",
+    context: "Mairin se prepara para una presentación en la escuela sobre los valores que ha aprendido. Su abuelo le ofrece consejos basados en años de experiencia, y Mairin debe decidir si lo escucha con respeto.",
     sceneSlots: [
       { id: "slot-scene-5a", label: "Jardín" },
       { id: "slot-scene-5b", label: "Cuarto" },

@@ -21,11 +21,25 @@
     font-size: clamp(28px, 4.44cqh, 32px);
     margin: 0 0 clamp(6px, 1.11cqh, 8px);
   }
+
+  .game-context {
+    font-size: clamp(13px, 1.94cqh, 14px);
+    font-style: italic;
+    color: var(--text-unavailable);
+    margin: 0 0 clamp(6px, 1.11cqh, 8px);
+  }
+
+  .game-narrative {
+    font-size: clamp(14px, 2.5cqh, 18px);
+    font-weight: 400;
+    color: var(--text);
+    margin: 0 0 clamp(8px, 1.67cqh, 12px);
+  }
 }
 
 .board-area {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: clamp(12px, 3.33cqh, 24px);
   justify-items: center;
   flex: 1 1 auto;
@@ -84,6 +98,8 @@
   position: relative;
   width: 100%;
   height: 100%;
+  container-type: inline-size;
+  container-name: scene;
 }
 
 .scene-asset {
@@ -91,6 +107,7 @@
   height: 100%;
   display: grid;
   place-items: center;
+  overflow: hidden;
   font-size: clamp(40px, 13.3cqh, 96px);
 }
 
@@ -118,8 +135,8 @@
 
 .character-slot {
   position: absolute;
-  width: clamp(28px, 6.67cqh, 48px);
-  height: clamp(28px, 6.67cqh, 48px);
+  width: clamp(16px, 9cqi, 48px);
+  aspect-ratio: 1 / 1;
   transform: translate(-50%, -50%);
   border: 2px dashed var(--accent-border);
   border-radius: 50%;
@@ -141,6 +158,11 @@
     &:hover:not(.is-over) {
       border-color: var(--accent);
     }
+  }
+
+  img {
+    min-width: 100%;
+    min-height: 100%;
   }
 
   .asset-emoji {
@@ -185,6 +207,8 @@
   gap: clamp(6px, 1.11cqh, 8px);
   padding: clamp(8px, 1.67cqh, 12px);
   min-width: clamp(64px, 11.1cqh, 80px);
+  max-width: clamp(64px, 11.1cqh, 80px);
+  aspect-ratio: 1;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--bg);
@@ -271,6 +295,7 @@
   width: clamp(48px, 11.1cqh, 80px);
   height: clamp(48px, 11.1cqh, 80px);
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .end-dialog-description {
@@ -355,7 +380,7 @@
   gap: clamp(6px, 1.11cqh, 8px);
   padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
   border-radius: 12px;
-  background: rgba(244, 240, 230, 0.55);
+  background: rgba(247, 244, 236, 0.55);
 
   h1 {
     margin: 0;
@@ -496,7 +521,7 @@
   gap: clamp(6px, 1.11cqh, 8px);
   padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
   border-radius: 12px;
-  background: rgba(244, 240, 230, 0.55);
+  background: rgba(247, 244, 236, 0.55);
 
   h2 {
     margin: 0;
@@ -672,6 +697,12 @@
   }
 }
 
+@container scene (max-width: 160px) {
+  .character-slot {
+    width: 12px;
+  }
+}
+
 .intro-screen {
   position: relative;
   display: flex;
@@ -688,6 +719,7 @@
 .intro-screen__image {
   max-height: 50cqh;
   width: auto;
+  overflow: hidden;
   animation: intro-fade 250ms ease-in;
 
   img {
@@ -702,7 +734,7 @@
   max-width: min(90%, 900px);
   padding: clamp(12px, 2.78cqh, 20px) clamp(24px, 5.56cqh, 40px);
   border-radius: 12px;
-  background: rgba(244, 240, 230, 0.55);
+  background: rgba(247, 244, 236, 0.55);
 }
 
 .intro-screen__phrase {

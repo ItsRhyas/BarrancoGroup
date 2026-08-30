@@ -1,3 +1,6 @@
+import { loadEnv } from './config/load-env';
+loadEnv();
+
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
