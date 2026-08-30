@@ -1,0 +1,30 @@
+---
+title: "Título del trabajo"
+subtitle: "Subtítulo (opcional)"
+author: "Nombre del autor"
+institution: "Universidad"
+carnet: "Carnet del autor"
+docente: "Nombre del docente"
+date: "2026-08-20"
+lang: es
+format:
+  apa7-typst: default
+---
+
+# Introducción
+
+Texto de la introducción. Coloque `portada.png` y `logo.png` en esta misma
+carpeta para que la portada institucional se renderice a página completa.
+
+# Marco Teórico
+
+# Metodología
+
+# Resultados
+
+# Discusión
+
+# Referencias
+
+Sin contenido; Quarto genera las referencias desde `bibliography` si se
+configura (ver README de la extensión).

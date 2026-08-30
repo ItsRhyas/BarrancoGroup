@@ -54,3 +54,6 @@ temp/
 
 # Story generation prompt (working artifact; not committed)
 /story-prompt.txt
+
+/.quarto/
+**/*.quarto_ipynb
