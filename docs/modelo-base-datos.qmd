@@ -19,21 +19,21 @@ format:
 ```
 
 El modelo de datos de la plataforma **Mairin: El retrato roto** se compone de
-tres entidades: `User` (usuario autenticado), `GameSession` (sesión de juego) y
-`Attempt` (intento). La primera sustenta la autenticación y el control de acceso
-por roles; las otras dos registran el progreso del jugador.
+tres entidades: `User` (jugador), `GameSession` (sesión de juego) y `Attempt`
+(intento). La primera representa al jugador, anónimo o autenticado; las otras
+dos registran su progreso.
 
 ![Modelo Entidad-Relación](er-model.png)
 
-El diagrama muestra tres entidades. `users` identifica a quienes acceden al
-sistema y les asigna un rol —administrador, usuario o auditor—; conserva su
-nombre de usuario, su contraseña cifrada y la fecha de creación. `game_sessions`
-representa la sesión anónima de juego y `attempts`, cada intento del jugador,
-guardando el nivel jugado, el resultado, el final alcanzado, el número de intento
-y la fecha de finalización. Las dos últimas se relacionan de uno a muchos: una
-sesión puede acumular varios intentos, pero cada intento pertenece a una sola
-sesión. La entidad `users` se mantiene independiente, ya que las sesiones siguen
-siendo anónimas y aún no se vinculan a un usuario autenticado.
+El diagrama muestra tres entidades encadenadas. `users` identifica al jugador y
+conserva, cuando existe, su nombre de usuario y su contraseña cifrada, además
+del rol que determina su nivel de acceso. `game_sessions` representa cada sesión
+de juego: guarda el token anónimo que la identifica, la fecha de creación y el
+usuario al que pertenece. `attempts` registra cada intento, con el nivel jugado,
+el resultado, el final alcanzado, el número de intento y la fecha de
+finalización. Las relaciones son de uno a muchos: un usuario puede abrir muchas
+sesiones y una sesión puede acumular muchos intentos; a la inversa, cada sesión
+pertenece a un único usuario y cada intento a una única sesión.
 
 # Relaciones
 
@@ -45,17 +45,16 @@ La conexión entre las entidades se detalla a continuación.
 
 | Relación | Cardinalidad | Implementación |
 |----------|--------------|----------------|
+| User → GameSession | 1:N | `game_sessions.userId` → `users.id` |
 | GameSession → Attempt | 1:N | `attempts.sessionId` → `game_sessions.id` |
 
-**Cardinalidad 1:N.** Una fila de `game_sessions` puede estar referenciada por
-muchas filas de `attempts` (un jugador realiza varios intentos a lo largo de su
-sesión). A la inversa, cada fila de `attempts` referencia exactamente una fila
-de `game_sessions`, porque `sessionId` es una clave foránea no nula hacia
-`game_sessions.id`.
+**Cardinalidad 1:N (User → GameSession).** Un jugador —anónimo o autenticado—
+puede abrir muchas sesiones a lo largo del tiempo, pero cada sesión pertenece a
+un único usuario, porque `userId` es una clave foránea no nula hacia `users.id`.
 
-La tabla `users` no mantiene una clave foránea hacia las demás: su propósito es
-únicamente la autenticación y la asignación de roles, mientras que el progreso
-se registra por sesión anónima (`sessionToken`).
+**Cardinalidad 1:N (GameSession → Attempt).** Una sesión puede acumular varios
+intentos, pero cada intento referencia exactamente una sesión, porque
+`sessionId` es una clave foránea no nula hacia `game_sessions.id`.
 
 # Llaves
 
@@ -68,6 +67,7 @@ se registra por sesión anónima (`sessionToken`).
 | users | id | PK | — |
 | users | username | UK | — |
 | game_sessions | id | PK | — |
+| game_sessions | userId | FK | users.id |
 | game_sessions | sessionToken | UK | — |
 | attempts | id | PK | — |
 | attempts | sessionId | FK | game_sessions.id |
@@ -100,7 +100,7 @@ compuestas. En este modelo:
   dependencia parcial: todo atributo no clave (`username`, `passwordHash`,
   `role`, `createdAt`) depende de la clave completa.
 - `game_sessions` también tiene clave primaria simple (`id`): sus atributos no
-  clave (`sessionToken`, `createdAt`) dependen de la clave completa.
+  clave (`userId`, `sessionToken`, `createdAt`) dependen de la clave completa.
 - `attempts` tiene clave primaria simple (`id`). Además posee una clave candidata
   compuesta `(sessionId, levelId, attemptNumber)`; aun considerándola, ningún
   atributo no clave (`success`, `endingId`, `completedAt`) depende de una *parte*
@@ -120,10 +120,10 @@ primarias compuestas, el modelo cumple la **Segunda Forma Normal (2FN)**.
 
 | Campo | Tipo PostgreSQL | Prisma | PK | FK | Nulo | Único | Default | Descripción |
 |-------|-----------------|--------|----|----|------|-------|---------|-------------|
-| id | TEXT | String | Sí | No | No | No | `uuid()` | Identificador único del usuario |
-| username | TEXT | String | No | No | No | Sí | — | Nombre de usuario único |
-| passwordHash | TEXT | String | No | No | No | No | — | Contraseña cifrada (scrypt + salt) |
-| role | "Role" | Role | No | No | No | No | `USUARIO` | Rol del usuario (ADMIN / USUARIO / AUDITOR) |
+| id | TEXT | String | Sí | No | No | No | `uuid()` | Identificador único del jugador |
+| username | TEXT | String | No | No | Sí | Sí | — | Nombre de usuario (solo para autenticados) |
+| passwordHash | TEXT | String | No | No | Sí | No | — | Contraseña cifrada (scrypt + salt) |
+| role | "Role" | Role | No | No | No | No | `USUARIO` | Rol (ADMIN / USUARIO / AUDITOR) |
 | createdAt | TIMESTAMP(3) | DateTime | No | No | No | No | `now()` | Fecha de creación |
 
 ## Tabla `game_sessions`
@@ -131,7 +131,8 @@ primarias compuestas, el modelo cumple la **Segunda Forma Normal (2FN)**.
 | Campo | Tipo PostgreSQL | Prisma | PK | FK | Nulo | Único | Default | Descripción |
 |-------|-----------------|--------|----|----|------|-------|---------|-------------|
 | id | TEXT | String | Sí | No | No | No | `uuid()` | Identificador único de la sesión |
-| sessionToken | TEXT | String | No | No | No | Sí | — | Token anónimo del jugador |
+| userId | TEXT | String | No | Sí | No | No | — | Jugador al que pertenece (→ users.id) |
+| sessionToken | TEXT | String | No | No | No | Sí | — | Token anónimo de la sesión |
 | createdAt | TIMESTAMP(3) | DateTime | No | No | No | No | `now()` | Fecha de creación |
 
 ## Tabla `attempts`
@@ -149,4 +150,6 @@ primarias compuestas, el modelo cumple la **Segunda Forma Normal (2FN)**.
 *Nota:* `attempts` define la clave única compuesta `(sessionId, levelId,
 attemptNumber)`, que impide registrar dos intentos con el mismo número para la
 misma sesión y nivel. El tipo enumerado `"Role"` es un tipo de dato personalizado
-de PostgreSQL con los valores `ADMIN`, `USUARIO` y `AUDITOR`.
+de PostgreSQL con los valores `ADMIN`, `USUARIO` y `AUDITOR`. Los usuarios
+anónimos —generados automáticamente al comenzar a jugar— no poseen `username` ni
+`passwordHash`, por lo que ambos campos admiten valor nulo.
