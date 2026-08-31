@@ -27,12 +27,11 @@ model User {
 }
 
 model GameSession {
-  id           String    @id @default(uuid())
-  userId       String
-  sessionToken String    @unique
-  createdAt    DateTime  @default(now())
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  attempts     Attempt[]
+  id        String    @id @default(uuid())
+  userId    String
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempts  Attempt[]
 
   @@index([userId])
   @@map("game_sessions")

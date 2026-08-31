@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.service';
 
 export interface RecordAttemptInput {
-  sessionToken: string;
   levelId: string;
   success: boolean;
   endingId?: string;
@@ -13,35 +11,22 @@ export interface RecordAttemptInput {
 export class ProgressService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async ensureSession(sessionToken?: string) {
-    const token = sessionToken ?? randomUUID();
-
-    const user = await this.prisma.user.upsert({
-      where: { id: token },
-      create: { id: token },
-      update: {},
-    });
-
-    return this.prisma.gameSession.upsert({
-      where: { sessionToken: token },
-      create: { sessionToken: token, userId: user.id },
-      update: {},
+  async createSession(userId: string) {
+    return this.prisma.gameSession.create({
+      data: { userId },
     });
   }
 
-  async recordAttempt(input: RecordAttemptInput) {
+  async recordAttempt(userId: string, input: RecordAttemptInput) {
     return this.prisma.$transaction(async (tx) => {
-      const user = await tx.user.upsert({
-        where: { id: input.sessionToken },
-        create: { id: input.sessionToken },
-        update: {},
+      let session = await tx.gameSession.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
       });
 
-      const session = await tx.gameSession.upsert({
-        where: { sessionToken: input.sessionToken },
-        create: { sessionToken: input.sessionToken, userId: user.id },
-        update: {},
-      });
+      if (!session) {
+        session = await tx.gameSession.create({ data: { userId } });
+      }
 
       const count = await tx.attempt.count({
         where: { sessionId: session.id, levelId: input.levelId },
@@ -59,14 +44,14 @@ export class ProgressService {
     });
   }
 
-  async getProgress(sessionToken: string) {
+  async getProgress(userId: string) {
     const attempts = await this.prisma.attempt.findMany({
-      where: { session: { sessionToken }, success: true },
+      where: { session: { userId }, success: true },
       select: { levelId: true },
     });
 
     const completedLevels = [...new Set(attempts.map((a) => a.levelId))].sort();
 
-    return { sessionToken, completedLevels };
+    return { completedLevels };
   }
 }
