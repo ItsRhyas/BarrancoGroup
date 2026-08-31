@@ -28,12 +28,12 @@ dos registran su progreso.
 El diagrama muestra tres entidades encadenadas. `users` identifica al jugador y
 conserva, cuando existe, su nombre de usuario y su contraseña cifrada, además
 del rol que determina su nivel de acceso. `game_sessions` representa cada sesión
-de juego: guarda el token anónimo que la identifica, la fecha de creación y el
-usuario al que pertenece. `attempts` registra cada intento, con el nivel jugado,
-el resultado, el final alcanzado, el número de intento y la fecha de
-finalización. Las relaciones son de uno a muchos: un usuario puede abrir muchas
-sesiones y una sesión puede acumular muchos intentos; a la inversa, cada sesión
-pertenece a un único usuario y cada intento a una única sesión.
+de juego: guarda la fecha de creación y el usuario al que pertenece. `attempts`
+registra cada intento, con el nivel jugado, el resultado, el final alcanzado, el
+número de intento y la fecha de finalización. Las relaciones son de uno a
+muchos: un usuario puede abrir muchas sesiones y una sesión puede acumular
+muchos intentos; a la inversa, cada sesión pertenece a un único usuario y cada
+intento a una única sesión.
 
 # Relaciones
 
@@ -68,7 +68,6 @@ intentos, pero cada intento referencia exactamente una sesión, porque
 | users | username | UK | — |
 | game_sessions | id | PK | — |
 | game_sessions | userId | FK | users.id |
-| game_sessions | sessionToken | UK | — |
 | attempts | id | PK | — |
 | attempts | sessionId | FK | game_sessions.id |
 | attempts | (sessionId, levelId, attemptNumber) | UK compuesta | — |
@@ -132,7 +131,6 @@ primarias compuestas, el modelo cumple la **Segunda Forma Normal (2FN)**.
 |-------|-----------------|--------|----|----|------|-------|---------|-------------|
 | id | TEXT | String | Sí | No | No | No | `uuid()` | Identificador único de la sesión |
 | userId | TEXT | String | No | Sí | No | No | — | Jugador al que pertenece (→ users.id) |
-| sessionToken | TEXT | String | No | No | No | Sí | — | Token anónimo de la sesión |
 | createdAt | TIMESTAMP(3) | DateTime | No | No | No | No | `now()` | Fecha de creación |
 
 ## Tabla `attempts`
@@ -150,6 +148,5 @@ primarias compuestas, el modelo cumple la **Segunda Forma Normal (2FN)**.
 *Nota:* `attempts` define la clave única compuesta `(sessionId, levelId,
 attemptNumber)`, que impide registrar dos intentos con el mismo número para la
 misma sesión y nivel. El tipo enumerado `"Role"` es un tipo de dato personalizado
-de PostgreSQL con los valores `ADMIN`, `USUARIO` y `AUDITOR`. Los usuarios
-anónimos —generados automáticamente al comenzar a jugar— no poseen `username` ni
-`passwordHash`, por lo que ambos campos admiten valor nulo.
+de PostgreSQL con los valores `ADMIN`, `USUARIO` y `AUDITOR`. Los campos
+`username` y `passwordHash` admiten valor nulo.

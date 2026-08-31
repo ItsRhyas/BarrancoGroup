@@ -141,21 +141,18 @@ propias de PostgreSQL: unicidad y claves foráneas.
 
 | Validación | Ejemplo real | Dónde |
 |------------|--------------|-------|
-| Campo requerido | `sessionToken` obligatorio en un intento | DTO |
-| Formato | `sessionToken` debe ser un UUID válido | DTO |
+| Campo requerido | `levelId` obligatorio en un intento | DTO |
+| Formato | `username` solo admite letras, números y `._-` | DTO |
 | Tipo de dato | `success` debe ser booleano | DTO |
 | Longitud | `username` (3–32) y `password` (8–128) | DTO |
 | Rol permitido | `role` ∈ ADMIN / USUARIO / AUDITOR | DTO |
-| Valor único | `username` y `sessionToken` no se repiten | PostgreSQL |
+| Valor único | `username` no se repite | PostgreSQL |
 | Clave foránea | `attempts.sessionId` debe existir en `game_sessions` | PostgreSQL |
 
 El siguiente fragmento es el DTO que valida la creación de un intento:
 
 ```ts
 export class CreateAttemptDto {
-  @IsUUID(undefined, { message: 'sessionToken debe ser un UUID válido' })
-  sessionToken: string;
-
   @IsString()
   @Length(1, 128)
   levelId: string;

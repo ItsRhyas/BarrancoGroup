@@ -29,7 +29,7 @@ digraph MairinER {
 
   game_sessions [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
     <tr><td bgcolor="#2f855a" width="170"><font color="white"><b>GAME_SESSION</b></font></td></tr>
-    <tr><td align="left">PK id<br/>FK userId<br/>sessionToken UQ<br/>createdAt</td></tr>
+    <tr><td align="left">PK id<br/>FK userId<br/>createdAt</td></tr>
   </table>>];
 
   attempts [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
