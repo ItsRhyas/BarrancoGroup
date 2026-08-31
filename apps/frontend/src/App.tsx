@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChapterSelect } from "./components/ChapterSelect";
 import { GameBoard } from "./components/GameBoard";
 import { IntroScreen } from "./components/IntroScreen";
@@ -6,12 +6,22 @@ import { Overlay } from "./components/Overlay";
 import { RotateDevice } from "./components/RotateDevice";
 import { StartScreen } from "./components/StartScreen";
 import {
+  getOrCreateSessionToken,
   readCompletedChapters,
   readIntroSeen,
   writeCompletedChapters,
+  writeCompletedChaptersAll,
   writeIntroSeen,
   writeLastChapter,
 } from "./lib/session";
+import { ensureSession, recordAttempt } from "./lib/api";
+import {
+  backfillMissing,
+  hydrateProgress,
+  levelIdForIndex,
+} from "./lib/progress";
+import { ensureAccessToken } from "./lib/auth";
+import type { ValidationResult } from "./game/types";
 import { introItems } from "./game/intro.generated";
 import { isChapterUnlocked } from "./game/unlock";
 import { levels } from "./game/levels";
@@ -30,6 +40,10 @@ function mergeCompletedChapters(
   return Array.from(new Set([...completed, index])).sort((a, b) => a - b);
 }
 
+function mergeCompletedLists(a: number[], b: number[]): number[] {
+  return Array.from(new Set([...a, ...b])).sort((x, y) => x - y);
+}
+
 function computeResumeTarget(completed: number[]): number | null {
   for (let i = levels.length - 1; i >= 0; i--) {
     if (isChapterUnlocked(i, completed, levels.length)) {
@@ -46,19 +60,56 @@ function App() {
     readCompletedChapters(),
   );
   const [introSeen, setIntroSeen] = useState<boolean>(() => readIntroSeen());
+  const [sessionToken] = useState<string>(() => getOrCreateSessionToken());
 
   const resumeTarget = useMemo(
     () => computeResumeTarget(completedChapters),
     [completedChapters],
   );
 
+  // On mount, authenticate (silently) and reconcile local progress with the
+  // server (offline-first). The server never revokes locally-completed
+  // chapters; it only adds new ones.
+  useEffect(() => {
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        await ensureAccessToken();
+        if (cancelled) {
+          return;
+        }
+        const serverCompleted = await hydrateProgress(sessionToken);
+        if (cancelled) {
+          return;
+        }
+        const localCompleted = readCompletedChapters();
+        const merged = mergeCompletedLists(localCompleted, serverCompleted);
+        if (merged.length > localCompleted.length) {
+          writeCompletedChaptersAll(merged);
+          setCompletedChapters(merged);
+        }
+        await backfillMissing(sessionToken, localCompleted, serverCompleted);
+      } catch {
+        // Offline: keep the local progress as-is.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionToken]);
+
   const startNew = useCallback(() => {
+    void ensureAccessToken()
+      .then(() => ensureSession(sessionToken))
+      .catch(() => {});
     if (!introSeen) {
       setScreen({ kind: "intro" });
     } else {
       setScreen({ kind: "chapter-select" });
     }
-  }, [introSeen]);
+  }, [introSeen, sessionToken]);
 
   const handleIntroComplete = useCallback(() => {
     writeIntroSeen();
@@ -104,6 +155,26 @@ function App() {
     setCompletedChapters((prev) => mergeCompletedChapters(prev, index));
   }, []);
 
+  const handleAttempt = useCallback(
+    (result: ValidationResult, index: number) => {
+      const levelId = levelIdForIndex(index);
+      if (!levelId) {
+        return;
+      }
+      void ensureAccessToken()
+        .then(() =>
+          recordAttempt({
+            sessionToken,
+            levelId,
+            success: result.correct,
+            endingId: result.endingId,
+          }),
+        )
+        .catch(() => {});
+    },
+    [sessionToken],
+  );
+
   return (
     <>
       <div className="stage">
@@ -131,6 +202,7 @@ function App() {
             onAdvance={advanceLevel}
             onComplete={completeGame}
             onChapterCompleted={handleChapterCompleted}
+            onAttempt={handleAttempt}
           />
         )}
         <RotateDevice />

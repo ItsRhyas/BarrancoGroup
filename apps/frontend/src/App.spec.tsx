@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import App from "./App";
 import { __resetIntroStorage } from "./lib/session";
 
@@ -9,6 +9,10 @@ interface MockGameBoardProps {
   onComplete: () => void;
   onChapterCompleted?: (index: number) => void;
 }
+
+vi.mock("./lib/auth", () => ({
+  ensureAccessToken: vi.fn(async () => "test-token"),
+}));
 
 vi.mock("./components/GameBoard", () => ({
   GameBoard: (props: MockGameBoardProps) => (
@@ -41,10 +45,19 @@ describe("App", () => {
     sessionStorage.clear();
     localStorage.clear();
     __resetIntroStorage();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({ sessionToken: "t", completedLevels: [] }),
+      })),
+    );
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
 
   function givenIntroSeen(): void {
@@ -279,5 +292,53 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: /Saltar/i }));
 
     expect(localStorage.getItem("mairin:introSeen")).toBe("true");
+  });
+
+  it("hydrates completed chapters from the server", async () => {
+    givenIntroSeen();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          sessionToken: "t",
+          completedLevels: ["level-1"],
+        }),
+      })),
+    );
+
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+
+    await waitFor(() => {
+      const unlockedCard = screen.getByRole("button", {
+        name: /Un juego para todos/i,
+      }) as HTMLButtonElement;
+      expect(unlockedCard.disabled).toBe(false);
+    });
+
+    expect(JSON.parse(localStorage.getItem("mairin:completedChapters") ?? "[]")).toEqual([
+      0,
+    ]);
+  });
+
+  it("keeps working when the progress endpoint is unreachable", async () => {
+    givenIntroSeen();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw new Error("network down");
+      }),
+    );
+
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: /Nuevo juego/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: /Capítulos/i }),
+      ).toBeTruthy();
+    });
   });
 });
