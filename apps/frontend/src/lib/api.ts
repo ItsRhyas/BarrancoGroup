@@ -1,12 +1,10 @@
 export interface RecordAttemptInput {
-  sessionToken: string;
   levelId: string;
   success: boolean;
   endingId?: string;
 }
 
 export interface ProgressResponse {
-  sessionToken: string;
   completedLevels: string[];
 }
 
@@ -77,10 +75,10 @@ export async function register(
   });
 }
 
-export function ensureSession(sessionToken: string): Promise<unknown> {
+export function ensureSession(): Promise<unknown> {
   return request("/sessions", {
     method: "POST",
-    body: JSON.stringify({ sessionToken }),
+    body: JSON.stringify({}),
   });
 }
 
@@ -91,18 +89,10 @@ export function recordAttempt(input: RecordAttemptInput): Promise<unknown> {
   });
 }
 
-export async function getProgress(
-  sessionToken: string,
-): Promise<ProgressResponse> {
-  const query = new URLSearchParams({ sessionToken });
-  const data = await request<{
-    sessionToken?: unknown;
-    completedLevels?: unknown;
-  }>(`/progress?${query.toString()}`);
+export async function getProgress(): Promise<ProgressResponse> {
+  const data = await request<{ completedLevels?: unknown }>("/progress");
 
   return {
-    sessionToken:
-      typeof data.sessionToken === "string" ? data.sessionToken : sessionToken,
     completedLevels: Array.isArray(data.completedLevels)
       ? data.completedLevels.filter(
           (level): level is string => typeof level === "string",

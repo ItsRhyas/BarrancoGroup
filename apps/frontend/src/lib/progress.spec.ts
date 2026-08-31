@@ -36,11 +36,10 @@ describe("levelIdForIndex", () => {
 describe("hydrateProgress", () => {
   it("fetches progress and maps to indices", async () => {
     vi.spyOn(api, "getProgress").mockResolvedValue({
-      sessionToken: "t",
       completedLevels: ["level-1", "level-2"],
     });
 
-    await expect(hydrateProgress("t")).resolves.toEqual([0, 1]);
+    await expect(hydrateProgress()).resolves.toEqual([0, 1]);
   });
 });
 
@@ -50,11 +49,10 @@ describe("backfillMissing", () => {
       .spyOn(api, "recordAttempt")
       .mockResolvedValue({});
 
-    await backfillMissing("t", [0, 1], [1]);
+    await backfillMissing([0, 1], [1]);
 
     expect(recordAttempt).toHaveBeenCalledTimes(1);
     expect(recordAttempt).toHaveBeenCalledWith({
-      sessionToken: "t",
       levelId: "level-1",
       success: true,
     });
@@ -65,7 +63,7 @@ describe("backfillMissing", () => {
       .spyOn(api, "recordAttempt")
       .mockResolvedValue({});
 
-    await backfillMissing("t", [0], [0]);
+    await backfillMissing([0], [0]);
 
     expect(recordAttempt).not.toHaveBeenCalled();
   });
@@ -73,6 +71,6 @@ describe("backfillMissing", () => {
   it("swallows network errors", async () => {
     vi.spyOn(api, "recordAttempt").mockRejectedValue(new Error("offline"));
 
-    await expect(backfillMissing("t", [0], [])).resolves.toBeUndefined();
+    await expect(backfillMissing([0], [])).resolves.toBeUndefined();
   });
 });

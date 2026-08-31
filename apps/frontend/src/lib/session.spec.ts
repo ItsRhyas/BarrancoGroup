@@ -14,10 +14,6 @@ import {
   readIntroSeen,
   writeIntroSeen,
   __resetIntroStorage,
-  createSessionToken,
-  getOrCreateSessionToken,
-  readSessionToken,
-  __resetSessionTokenStorage,
 } from "./session";
 
 describe("completed chapters storage", () => {
@@ -149,55 +145,6 @@ describe("intro seen storage", () => {
 
     __resetIntroStorage();
     expect(readIntroSeen()).toBe(false);
-  });
-});
-
-describe("session token storage", () => {
-  beforeEach(() => {
-    localStorage.clear();
-    __resetSessionTokenStorage();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("creates a stable UUID and persists it", () => {
-    const token = getOrCreateSessionToken();
-    expect(token).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-    );
-    expect(readSessionToken()).toBe(token);
-    expect(getOrCreateSessionToken()).toBe(token);
-  });
-
-  it("returns the persisted token across calls", () => {
-    const token = getOrCreateSessionToken();
-    expect(getOrCreateSessionToken()).toBe(token);
-    expect(localStorage.getItem("mairin:sessionToken")).toBe(token);
-  });
-
-  it("ignores a malformed stored token and regenerates", () => {
-    localStorage.setItem("mairin:sessionToken", "not-a-uuid");
-    const token = getOrCreateSessionToken();
-    expect(token).toMatch(/^[0-9a-f]{8}-/);
-    expect(localStorage.getItem("mairin:sessionToken")).toBe(token);
-  });
-
-  it("falls back to memory when localStorage writes fail", () => {
-    vi.spyOn(localStorage, "setItem").mockImplementation(() => {
-      throw new Error("Quota exceeded");
-    });
-
-    const token = getOrCreateSessionToken();
-    expect(readSessionToken()).toBe(token);
-  });
-
-  it("createSessionToken returns a valid v4 UUID", () => {
-    const token = createSessionToken();
-    expect(token).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-    );
   });
 });
 

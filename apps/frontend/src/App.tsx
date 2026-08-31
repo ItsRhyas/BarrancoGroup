@@ -6,7 +6,6 @@ import { Overlay } from "./components/Overlay";
 import { RotateDevice } from "./components/RotateDevice";
 import { StartScreen } from "./components/StartScreen";
 import {
-  getOrCreateSessionToken,
   readCompletedChapters,
   readIntroSeen,
   writeCompletedChapters,
@@ -60,7 +59,6 @@ function App() {
     readCompletedChapters(),
   );
   const [introSeen, setIntroSeen] = useState<boolean>(() => readIntroSeen());
-  const [sessionToken] = useState<string>(() => getOrCreateSessionToken());
 
   const resumeTarget = useMemo(
     () => computeResumeTarget(completedChapters),
@@ -79,7 +77,7 @@ function App() {
         if (cancelled) {
           return;
         }
-        const serverCompleted = await hydrateProgress(sessionToken);
+        const serverCompleted = await hydrateProgress();
         if (cancelled) {
           return;
         }
@@ -89,7 +87,7 @@ function App() {
           writeCompletedChaptersAll(merged);
           setCompletedChapters(merged);
         }
-        await backfillMissing(sessionToken, localCompleted, serverCompleted);
+        await backfillMissing(localCompleted, serverCompleted);
       } catch {
         // Offline: keep the local progress as-is.
       }
@@ -98,18 +96,18 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, [sessionToken]);
+  }, []);
 
   const startNew = useCallback(() => {
     void ensureAccessToken()
-      .then(() => ensureSession(sessionToken))
+      .then(() => ensureSession())
       .catch(() => {});
     if (!introSeen) {
       setScreen({ kind: "intro" });
     } else {
       setScreen({ kind: "chapter-select" });
     }
-  }, [introSeen, sessionToken]);
+  }, [introSeen]);
 
   const handleIntroComplete = useCallback(() => {
     writeIntroSeen();
@@ -164,7 +162,6 @@ function App() {
       void ensureAccessToken()
         .then(() =>
           recordAttempt({
-            sessionToken,
             levelId,
             success: result.correct,
             endingId: result.endingId,
@@ -172,7 +169,7 @@ function App() {
         )
         .catch(() => {});
     },
-    [sessionToken],
+    [],
   );
 
   return (

@@ -34,29 +34,27 @@ afterEach(() => {
 });
 
 describe("getProgress", () => {
-  it("serializes the session token as a query param", async () => {
-    const fetchMock = stubFetch({ sessionToken: "t", completedLevels: ["level-1"] });
+  it("fetches completed levels", async () => {
+    const fetchMock = stubFetch({ completedLevels: ["level-1"] });
 
-    const result = await getProgress("token-123");
+    const result = await getProgress();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0]?.[0]).toContain(
-      "/api/progress?sessionToken=token-123",
-    );
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/progress");
     expect(result.completedLevels).toEqual(["level-1"]);
   });
 
   it("filters non-string level ids", async () => {
     stubFetch({ completedLevels: ["level-1", 2, null, "level-2"] });
 
-    const result = await getProgress("t");
+    const result = await getProgress();
     expect(result.completedLevels).toEqual(["level-1", "level-2"]);
   });
 
   it("defaults completedLevels to an empty array when missing", async () => {
     stubFetch({});
 
-    const result = await getProgress("t");
+    const result = await getProgress();
     expect(result.completedLevels).toEqual([]);
   });
 });
@@ -66,7 +64,6 @@ describe("recordAttempt", () => {
     const fetchMock = stubFetch({});
 
     await recordAttempt({
-      sessionToken: "t",
       levelId: "level-1",
       success: true,
       endingId: "ending:correct-1",
@@ -75,7 +72,6 @@ describe("recordAttempt", () => {
     const init = fetchMock.mock.calls[0]?.[1];
     expect(init?.method).toBe("POST");
     expect(JSON.parse(init?.body as string)).toEqual({
-      sessionToken: "t",
       levelId: "level-1",
       success: true,
       endingId: "ending:correct-1",
@@ -84,14 +80,14 @@ describe("recordAttempt", () => {
 });
 
 describe("ensureSession", () => {
-  it("posts the session token", async () => {
+  it("posts an empty body to create a session", async () => {
     const fetchMock = stubFetch({});
 
-    await ensureSession("t");
+    await ensureSession();
 
     const init = fetchMock.mock.calls[0]?.[1];
     expect(init?.method).toBe("POST");
-    expect(JSON.parse(init?.body as string)).toEqual({ sessionToken: "t" });
+    expect(JSON.parse(init?.body as string)).toEqual({});
   });
 });
 
@@ -99,13 +95,13 @@ describe("ApiError", () => {
   it("throws on non-2xx responses", async () => {
     stubFetch({}, 500);
 
-    await expect(getProgress("t")).rejects.toThrow("status 500");
+    await expect(getProgress()).rejects.toThrow("status 500");
   });
 
   it("exposes status and path", async () => {
     stubFetch({}, 404);
 
-    await expect(getProgress("t")).rejects.toBeInstanceOf(ApiError);
+    await expect(getProgress()).rejects.toBeInstanceOf(ApiError);
   });
 });
 
@@ -140,7 +136,7 @@ describe("authorization header", () => {
     setAccessToken("my-jwt");
     const fetchMock = stubFetch({});
 
-    await getProgress("t");
+    await getProgress();
 
     const init = fetchMock.mock.calls[0]?.[1];
     expect((init?.headers as Record<string, string>).Authorization).toBe(
@@ -151,7 +147,7 @@ describe("authorization header", () => {
   it("omits the Authorization header when no token is set", async () => {
     const fetchMock = stubFetch({});
 
-    await getProgress("t");
+    await getProgress();
 
     const init = fetchMock.mock.calls[0]?.[1];
     expect((init?.headers as Record<string, string>).Authorization).toBeUndefined();

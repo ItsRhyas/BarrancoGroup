@@ -50,7 +50,7 @@ describe("App", () => {
       vi.fn(async () => ({
         ok: true,
         status: 200,
-        json: async () => ({ sessionToken: "t", completedLevels: [] }),
+        json: async () => ({ completedLevels: [] }),
       })),
     );
   });
@@ -302,7 +302,6 @@ describe("App", () => {
         ok: true,
         status: 200,
         json: async () => ({
-          sessionToken: "t",
           completedLevels: ["level-1"],
         }),
       })),

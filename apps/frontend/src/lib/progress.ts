@@ -17,11 +17,11 @@ export function levelIdForIndex(index: number): string | null {
 }
 
 /**
- * Fetches the completed levels for a session and returns them as chapter
- * indices.
+ * Fetches the completed levels for the authenticated user and returns them as
+ * chapter indices.
  */
-export async function hydrateProgress(sessionToken: string): Promise<number[]> {
-  const { completedLevels } = await api.getProgress(sessionToken);
+export async function hydrateProgress(): Promise<number[]> {
+  const { completedLevels } = await api.getProgress();
   return serverLevelsToIndices(completedLevels);
 }
 
@@ -32,7 +32,6 @@ export async function hydrateProgress(sessionToken: string): Promise<number[]> {
  * local progress is never lost.
  */
 export async function backfillMissing(
-  sessionToken: string,
   localCompleted: number[],
   serverCompleted: number[],
 ): Promise<void> {
@@ -45,8 +44,6 @@ export async function backfillMissing(
     if (!levelId) {
       continue;
     }
-    await api
-      .recordAttempt({ sessionToken, levelId, success: true })
-      .catch(() => {});
+    await api.recordAttempt({ levelId, success: true }).catch(() => {});
   }
 }
