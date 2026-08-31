@@ -182,9 +182,9 @@ El proyecto sigue Git Flow simplificado (`main` / `develop` / `feature/*` / `bug
 **Un solo comando** (crea `.env`, instala dependencias, genera el cliente Prisma, levanta PostgreSQL y arranca frontend + backend):
 
 ```bash
-pnpm start
+pnpm dev-startup
 ```
 
-El script `scripts/dev.sh` es idempotente: cada paso solo se ejecuta si hace falta (por ejemplo, `.env` se crea la primera vez, `pnpm install` solo corre si faltan dependencias). Es seguro ejecutarlo tantas veces como quieras.
+El script `scripts/dev-startup.mjs` es idempotente: cada paso solo se ejecuta si hace falta (por ejemplo, `.env` se crea la primera vez, `pnpm install` solo corre si faltan dependencias). Es seguro ejecutarlo tantas veces como quieras. Está escrito en Node, así que funciona en cualquier terminal (PowerShell, Git Bash, WSL, bash).
 
 Requisitos: Node.js 24+, pnpm 10, Docker (para la base de datos).
