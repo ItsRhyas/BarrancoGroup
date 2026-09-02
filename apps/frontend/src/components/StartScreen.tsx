@@ -15,13 +15,21 @@ export function StartScreen({
     <section className="start-screen" aria-label="Pantalla de inicio">
       <img
         className="start-screen__bg"
-        src="/images/start-bg.svg"
+        src="/images/Fondo.svg"
         alt=""
         aria-hidden="true"
       />
       <div className="start-screen__title-block">
-        <h1>Mairin</h1>
-        <h2>Retratos Rotos</h2>
+        <h1>
+          <img className="Title__img" src="/images/Title.svg" alt="Mairin" />
+        </h1>
+        <h2>
+          <img
+            className="Subtitle__img"
+            src="/images/Subtitle.svg"
+            alt="Retratos Rotos"
+          />
+        </h2>
       </div>
       <div className="start-screen-actions">
         <button
@@ -30,7 +38,11 @@ export function StartScreen({
           data-state="available"
           onClick={onNewGame}
         >
-          Nuevo juego
+          <img
+            className="New_Game__img"
+            src="/images/Nuevo Juego.svg"
+            alt="Nuevo Juego"
+          />
         </button>
         <button
           type="button"
@@ -40,7 +52,11 @@ export function StartScreen({
           disabled={!canContinue}
           aria-disabled={!canContinue}
         >
-          Continuar
+          <img
+            className="Continue__img"
+            src="/images/Continuar.svg"
+            alt="Continuar"
+          />
         </button>
       </div>
     </section>
