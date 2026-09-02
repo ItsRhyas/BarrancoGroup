@@ -92,7 +92,12 @@ async function main() {
   // 4. Start db (Docker) and wait for it.
   await ensureDb();
 
-  // 5. Run backend + frontend on the host (hybrid).
+  // 5. Apply pending migrations (idempotent: no-op when already applied).
+  console.log("[..] Applying database migrations (prisma migrate deploy)...");
+  const migrate = await run("pnpm", ["exec", "prisma", "migrate", "deploy"]);
+  if (migrate.code !== 0) process.exit(migrate.code ?? 1);
+
+  // 6. Run backend + frontend on the host (hybrid).
   const dev = spawn("pnpm", ["-r", "--parallel", "dev"], {
     cwd: root,
     stdio: "inherit",
