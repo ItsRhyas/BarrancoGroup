@@ -88,4 +88,54 @@ describe("StartScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: /Continuar/i }));
     expect(onContinue).toHaveBeenCalledTimes(1);
   });
+
+  it("swaps the Nuevo Juego image while hovered", () => {
+    const { container } = render(
+      <StartScreen onNewGame={vi.fn()} onContinue={vi.fn()} resumeTarget={0} />,
+    );
+    const image = container.querySelector(
+      ".New_Game__img",
+    ) as HTMLImageElement;
+    const button = screen.getByRole("button", { name: /Nuevo juego/i });
+
+    expect(image.getAttribute("src")).toBe("/images/Nuevo Juego.svg");
+    fireEvent.mouseEnter(button);
+    expect(image.getAttribute("src")).toBe("/images/Nuevo Juego Click.svg");
+    fireEvent.mouseLeave(button);
+    expect(image.getAttribute("src")).toBe("/images/Nuevo Juego.svg");
+  });
+
+  it("swaps the Continuar image while hovered", () => {
+    const { container } = render(
+      <StartScreen onNewGame={vi.fn()} onContinue={vi.fn()} resumeTarget={0} />,
+    );
+    const image = container.querySelector(
+      ".Continue__img",
+    ) as HTMLImageElement;
+    const button = screen.getByRole("button", { name: /Continuar/i });
+
+    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+    fireEvent.mouseEnter(button);
+    expect(image.getAttribute("src")).toBe("/images/Continuar Click.svg");
+    fireEvent.mouseLeave(button);
+    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+  });
+
+  it("does not swap the Continuar image when disabled", () => {
+    const { container } = render(
+      <StartScreen
+        onNewGame={vi.fn()}
+        onContinue={vi.fn()}
+        resumeTarget={null}
+      />,
+    );
+    const image = container.querySelector(
+      ".Continue__img",
+    ) as HTMLImageElement;
+    const button = screen.getByRole("button", { name: /Continuar/i });
+
+    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+    fireEvent.mouseEnter(button);
+    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+  });
 });

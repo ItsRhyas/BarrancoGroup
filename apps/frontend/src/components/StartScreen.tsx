@@ -1,8 +1,28 @@
+import { useState } from "react";
+
 interface StartScreenProps {
   onNewGame: () => void;
   onContinue: () => void;
   resumeTarget: number | null;
 }
+
+type ActionKey = "new" | "continue";
+
+const BUTTON_IMAGES: Record<
+  ActionKey,
+  { base: string; active: string; alt: string }
+> = {
+  new: {
+    base: "/images/Nuevo Juego.svg",
+    active: "/images/Nuevo Juego Click.svg",
+    alt: "Nuevo Juego",
+  },
+  continue: {
+    base: "/images/Continuar.svg",
+    active: "/images/Continuar Click.svg",
+    alt: "Continuar",
+  },
+};
 
 export function StartScreen({
   onNewGame,
@@ -10,6 +30,20 @@ export function StartScreen({
   resumeTarget,
 }: StartScreenProps) {
   const canContinue = resumeTarget !== null;
+  const [hovered, setHovered] = useState<ActionKey | null>(null);
+
+  const hoverProps = (key: ActionKey, enabled: boolean) =>
+    enabled
+      ? {
+          onMouseEnter: () => setHovered(key),
+          onMouseLeave: () => setHovered(null),
+          onFocus: () => setHovered(key),
+          onBlur: () => setHovered(null),
+        }
+      : {};
+
+  const srcFor = (key: ActionKey) =>
+    hovered === key ? BUTTON_IMAGES[key].active : BUTTON_IMAGES[key].base;
 
   return (
     <section className="start-screen" aria-label="Pantalla de inicio">
@@ -37,11 +71,12 @@ export function StartScreen({
           className="start-button"
           data-state="available"
           onClick={onNewGame}
+          {...hoverProps("new", true)}
         >
           <img
             className="New_Game__img"
-            src="/images/Nuevo Juego.svg"
-            alt="Nuevo Juego"
+            src={srcFor("new")}
+            alt={BUTTON_IMAGES.new.alt}
           />
         </button>
         <button
@@ -51,11 +86,12 @@ export function StartScreen({
           onClick={onContinue}
           disabled={!canContinue}
           aria-disabled={!canContinue}
+          {...hoverProps("continue", canContinue)}
         >
           <img
             className="Continue__img"
-            src="/images/Continuar.svg"
-            alt="Continuar"
+            src={srcFor("continue")}
+            alt={BUTTON_IMAGES.continue.alt}
           />
         </button>
       </div>
