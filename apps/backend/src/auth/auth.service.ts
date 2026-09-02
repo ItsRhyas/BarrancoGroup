@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PasswordService } from './password.service';
 import { RegisterDto } from './dto/register.dto';
@@ -28,15 +29,25 @@ export class AuthService {
       throw new ConflictException('El nombre de usuario ya está en uso');
     }
 
-    const user = await this.prisma.user.create({
-      data: {
-        username: dto.username,
-        passwordHash: this.passwords.hash(dto.password),
-        role: dto.role ?? Role.USUARIO,
-      },
-    });
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          username: dto.username,
+          passwordHash: this.passwords.hash(dto.password),
+          role: dto.role ?? Role.USUARIO,
+        },
+      });
 
-    return this.issueToken(user);
+      return this.issueToken(user);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('El nombre de usuario ya está en uso');
+      }
+      throw error;
+    }
   }
 
   async login(dto: LoginDto) {
