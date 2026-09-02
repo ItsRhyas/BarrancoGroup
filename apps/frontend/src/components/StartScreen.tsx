@@ -13,13 +13,13 @@ const BUTTON_IMAGES: Record<
   { base: string; active: string; alt: string }
 > = {
   new: {
-    base: "/images/Nuevo Juego.svg",
-    active: "/images/Nuevo Juego Click.svg",
+    base: "/images/new_game.svg",
+    active: "/images/new_game_click.svg",
     alt: "Nuevo Juego",
   },
   continue: {
-    base: "/images/Continuar.svg",
-    active: "/images/Continuar Click.svg",
+    base: "/images/continue.svg",
+    active: "/images/continue_click.svg",
     alt: "Continuar",
   },
 };
@@ -49,18 +49,18 @@ export function StartScreen({
     <section className="start-screen" aria-label="Pantalla de inicio">
       <img
         className="start-screen__bg"
-        src="/images/Fondo.svg"
+        src="/images/bg.svg"
         alt=""
         aria-hidden="true"
       />
       <div className="start-screen__title-block">
         <h1>
-          <img className="Title__img" src="/images/Title.svg" alt="Mairin" />
+          <img className="Title__img" src="/images/title.svg" alt="Mairin" />
         </h1>
         <h2>
           <img
-            className="Subtitle__img"
-            src="/images/Subtitle.svg"
+            className="subtitle__img"
+            src="/images/subtitle.svg"
             alt="Retratos Rotos"
           />
         </h2>
@@ -70,6 +70,7 @@ export function StartScreen({
           type="button"
           className="start-button"
           data-state="available"
+          style={{ display: 'flex', justifyContent: 'center' }} 
           onClick={onNewGame}
           {...hoverProps("new", true)}
         >
@@ -84,6 +85,7 @@ export function StartScreen({
           className="start-button"
           data-state={canContinue ? "available" : "unavailable"}
           onClick={onContinue}
+          style={{ display: 'flex', justifyContent: 'center' }} 
           disabled={!canContinue}
           aria-disabled={!canContinue}
           {...hoverProps("continue", canContinue)}

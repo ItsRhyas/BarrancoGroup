@@ -16,7 +16,7 @@ export function ChapterSelect({
     <section className="chapter-select" aria-label="Selección de capítulo">
       <img
         className="chapter-select__bg"
-        src="/images/chapter-select-bg.svg"
+        src="/images/chapter_selection.svg"
         alt=""
         aria-hidden="true"
       />
