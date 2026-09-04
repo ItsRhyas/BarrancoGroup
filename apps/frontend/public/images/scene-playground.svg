@@ -1,8 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Patio de juegos">
-  <rect width="1600" height="900" fill="#e8f5e9"/>
-  <rect x="0" y="700" width="1600" height="200" fill="#a5d6a7"/>
-  <rect x="600" y="450" width="400" height="250" fill="#ffcc80"/>
-  <circle cx="800" cy="350" r="100" fill="#ef9a9a"/>
-  <text x="800" y="180" text-anchor="middle" font-size="48" fill="#1b5e20">Patio de juegos</text>
-  <!-- TODO: replace with final illustration -->
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F9E6C8"/>
+    <stop offset="1" stop-color="#F4D5A8"/>
+  </linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#C9925F"/>
+    <stop offset="1" stop-color="#A96E3D"/>
+  </linearGradient>
+  <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="7" result="noise"/>
+    <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+    <feComponentTransfer in="gray">
+      <feFuncA type="table" tableValues="0 .055"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" mode="multiply"/>
+  </filter>
+  <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="5"/>
+  </filter>
+</defs>
+
+<!-- Visual language inspired by the supplied base SVG: warm parchment, muted terracotta/olive accents, rounded hand-drawn forms. -->
+<rect width="1512" height="982" fill="url(#wall)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680 V982 H0Z" fill="url(#floor)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680" stroke="#8F6942" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+
+<g>
+ <rect x="170" y="250" width="260" height="360" rx="30" fill="#C98956" stroke="#8F6942" stroke-width="9"/>
+ <path d="M215 300 H385 V470 H215Z" fill="#F7E7C9" stroke="#8F6942" stroke-width="7"/>
+ <path d="M300 470 V610" stroke="#74513A" stroke-width="16"/>
+ <path d="M200 610 H400" stroke="#74513A" stroke-width="16" stroke-linecap="round"/>
+ <path d="M430 335 L590 180 L750 335" stroke="#8F6942" stroke-width="18" fill="none"/>
+ <path d="M470 335 V620 M710 335 V620" stroke="#74513A" stroke-width="18"/>
+</g>
+<g>
+ <path d="M750 340 H1060" stroke="#74513A" stroke-width="18"/>
+ <path d="M780 340 L980 620" stroke="#C98956" stroke-width="50" stroke-linecap="round"/>
+ <path d="M1030 340 V610" stroke="#74513A" stroke-width="18"/>
+ <path d="M980 620 H1080" stroke="#74513A" stroke-width="18" stroke-linecap="round"/>
+</g>
+<g>
+ <path d="M1120 250 Q1250 165 1380 250 V560 H1120Z" fill="#E9B56F" stroke="#8F6942" stroke-width="9"/>
+ <path d="M1160 290 Q1250 235 1340 290 V500 H1160Z" fill="#D8E4D1" stroke="#8F6942" stroke-width="7"/>
+ <circle cx="1250" cy="395" r="45" fill="#A96E3D" stroke="#8F6942" stroke-width="7"/>
+</g>
+<g fill="#8C7E52" stroke="#745854" stroke-width="7">
+ <path d="M35 650 q65-150 130 0 q-65 55-130 0Z"/><path d="M1340 700 q65-150 130 0 q-65 55-130 0Z"/>
+</g>
+<g fill="#E9B56F" stroke="#8F6942" stroke-width="7">
+ <circle cx="250" cy="730" r="45"/><circle cx="390" cy="790" r="32"/><circle cx="1180" cy="760" r="38"/>
+</g>
+
+<rect x="0" y="0" width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".25"/>
 </svg>

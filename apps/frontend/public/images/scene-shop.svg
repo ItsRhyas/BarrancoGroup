@@ -1,8 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Tienda">
-  <rect width="1600" height="900" fill="#fce4ec"/>
-  <rect x="500" y="350" width="600" height="400" fill="#f48fb1"/>
-  <rect x="550" y="400" width="200" height="200" fill="#fff"/>
-  <rect x="850" y="400" width="200" height="200" fill="#fff"/>
-  <text x="800" y="200" text-anchor="middle" font-size="48" fill="#880e4f">Tienda</text>
-  <!-- TODO: replace with final illustration -->
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F9E6C8"/>
+    <stop offset="1" stop-color="#F4D5A8"/>
+  </linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#C9925F"/>
+    <stop offset="1" stop-color="#A96E3D"/>
+  </linearGradient>
+  <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="7" result="noise"/>
+    <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+    <feComponentTransfer in="gray">
+      <feFuncA type="table" tableValues="0 .055"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" mode="multiply"/>
+  </filter>
+  <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="5"/>
+  </filter>
+</defs>
+
+<!-- Visual language inspired by the supplied base SVG: warm parchment, muted terracotta/olive accents, rounded hand-drawn forms. -->
+<rect width="1512" height="982" fill="url(#wall)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680 V982 H0Z" fill="url(#floor)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680" stroke="#8F6942" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+
+<path d="M110 255 L180 105 H1330 L1400 255Z" fill="#C98956" stroke="#8F6942" stroke-width="8"/>
+<path d="M110 255 H1400 V365 H110Z" fill="#E9B56F" stroke="#8F6942" stroke-width="8"/>
+<path d="M180 105 H1330 V255 H180Z" fill="#F7E7C9" stroke="#8F6942" stroke-width="8"/>
+<text x="755" y="205" text-anchor="middle" font-family="sans-serif" font-size="66" font-weight="700" fill="#8B5F44">LITTLE MARKET</text>
+<g>
+ <rect x="150" y="385" width="360" height="290" rx="22" fill="#C9A17F" stroke="#8F6942" stroke-width="8"/>
+ <rect x="195" y="430" width="270" height="85" rx="14" fill="#F4D5A8" stroke="#8F6942" stroke-width="6"/>
+ <rect x="195" y="555" width="270" height="75" rx="14" fill="#F4D5A8" stroke="#8F6942" stroke-width="6"/>
+ <circle cx="250" cy="472" r="25" fill="#A96E3D"/><circle cx="325" cy="472" r="25" fill="#8C7E52"/><circle cx="400" cy="472" r="25" fill="#B98250"/>
+ <path d="M220 590 q35-70 70 0 q35-70 70 0 q35-70 70 0" stroke="#A96E3D" stroke-width="10" fill="none"/>
+</g>
+<g>
+ <rect x="570" y="405" width="385" height="245" rx="24" fill="#E5C18E" stroke="#8F6942" stroke-width="8"/>
+ <path d="M605 455 H920 M605 525 H920 M605 595 H920" stroke="#A96E3D" stroke-width="8"/>
+ <g fill="#A96E3D" stroke="#8F6942" stroke-width="5">
+  <circle cx="650" cy="440" r="23"/><circle cx="715" cy="440" r="23"/><circle cx="780" cy="440" r="23"/><circle cx="845" cy="440" r="23"/>
+ </g>
+ <g fill="#8C7E52" stroke="#8F6942" stroke-width="5">
+  <path d="M640 485 q20-45 40 0 l-8 30 h-24Z"/><path d="M770 555 q20-45 40 0 l-8 30 h-24Z"/><path d="M865 485 q20-45 40 0 l-8 30 h-24Z"/>
+ </g>
+</g>
+<g>
+ <rect x="1015" y="380" width="330" height="305" rx="20" fill="#F7E7C9" stroke="#8F6942" stroke-width="8"/>
+ <rect x="1060" y="425" width="240" height="155" rx="14" fill="#D8E4D1" stroke="#8F6942" stroke-width="7"/>
+ <path d="M1060 550 Q1120 480 1180 545 T1300 530" stroke="#8C7E52" stroke-width="14" fill="none"/>
+ <circle cx="1120" cy="485" r="22" fill="#E9B56F"/><circle cx="1240" cy="475" r="28" fill="#A96E3D"/>
+ <rect x="1090" y="600" width="180" height="48" rx="12" fill="#C98956" stroke="#8F6942" stroke-width="6"/>
+</g>
+<g fill="#8C7E52" stroke="#745854" stroke-width="6">
+ <path d="M70 805 q65-130 130 0 q-65 55-130 0Z"/><path d="M1330 805 q65-130 130 0 q-65 55-130 0Z"/>
+</g>
+
+<rect x="0" y="0" width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".25"/>
 </svg>

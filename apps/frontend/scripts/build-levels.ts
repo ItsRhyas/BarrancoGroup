@@ -39,18 +39,27 @@ function warn(message: string): void {
   console.warn(message);
 }
 
-function assetIdToFilename(assetId: string): string {
-  return `${assetId.replace(/:/g, "-")}.svg`;
-}
+const ASSET_EXTENSIONS = [".svg", ".png"] as const;
 
-function assetIdToSrc(assetId: string): string {
-  return `/images/${assetIdToFilename(assetId)}`;
+function resolveAssetFilename(assetId: string, imagesDir: string): string {
+  const base = assetId.replace(/:/g, "-");
+  for (const ext of ASSET_EXTENSIONS) {
+    const filename = `${base}${ext}`;
+    if (fs.existsSync(path.join(imagesDir, filename))) {
+      return filename;
+    }
+  }
+  return `${base}.svg`;
 }
 
 type AssetRole = "icon" | "char" | "scene" | "ending";
 
-function inferAssetEntry(assetId: string, role: AssetRole): AssetEntry {
-  const src = assetIdToSrc(assetId);
+function inferAssetEntry(
+  assetId: string,
+  role: AssetRole,
+  imagesDir: string,
+): AssetEntry {
+  const src = `/images/${resolveAssetFilename(assetId, imagesDir)}`;
   if (role === "icon") {
     return { type: "image", src, aspectRatio: 1 };
   }
@@ -212,13 +221,16 @@ export function serializeLevel(level: Level): string {
   return lines.join("\n");
 }
 
-function collectAssetEntries(level: Level): Map<string, AssetEntry> {
+function collectAssetEntries(
+  level: Level,
+  imagesDir: string,
+): Map<string, AssetEntry> {
   const entries = new Map<string, AssetEntry>();
   function add(assetId: string | undefined, role: AssetRole): void {
     if (!assetId || entries.has(assetId)) {
       return;
     }
-    entries.set(assetId, inferAssetEntry(assetId, role));
+    entries.set(assetId, inferAssetEntry(assetId, role, imagesDir));
   }
   for (const scene of level.scenes) {
     add(scene.iconAssetId, "icon");
@@ -236,7 +248,7 @@ function collectAssetEntries(level: Level): Map<string, AssetEntry> {
   return entries;
 }
 
-function validateLevel(level: Level, source: string): void {
+function validateLevel(level: Level, source: string, imagesDir: string): void {
   const seenCharSlotIds = new Set<string>();
   for (const scene of level.scenes) {
     for (const slot of scene.characterSlots) {
@@ -319,7 +331,7 @@ function validateLevel(level: Level, source: string): void {
     );
   }
 
-  for (const assetId of collectAssetEntries(level).keys()) {
+  for (const assetId of collectAssetEntries(level, imagesDir).keys()) {
     if (
       !assetId.startsWith("scene:") &&
       !assetId.startsWith("char:") &&
@@ -339,7 +351,7 @@ function checkImageFiles(
 ): void {
   const missing = new Set<string>();
   for (const assetId of assetIds) {
-    const filePath = path.join(imagesDir, assetIdToFilename(assetId));
+    const filePath = path.join(imagesDir, resolveAssetFilename(assetId, imagesDir));
     if (!fs.existsSync(filePath)) {
       missing.add(filePath);
     }
@@ -361,10 +373,10 @@ function checkImageFiles(
   );
 }
 
-function buildAssetRegistry(levels: Level[]): AssetRegistry {
+function buildAssetRegistry(levels: Level[], imagesDir: string): AssetRegistry {
   const registry: AssetRegistry = {};
   for (const level of levels) {
-    for (const [assetId, entry] of collectAssetEntries(level)) {
+    for (const [assetId, entry] of collectAssetEntries(level, imagesDir)) {
       registry[assetId] = entry;
     }
   }
@@ -517,10 +529,10 @@ export function buildLevels(options: BuildOptions): string {
 
   const levels = chapters.map((chapter) => chapter.level);
   for (const chapter of chapters) {
-    validateLevel(chapter.level, chapter.source);
+    validateLevel(chapter.level, chapter.source, imagesDir);
   }
 
-  const registry = buildAssetRegistry(levels);
+  const registry = buildAssetRegistry(levels, imagesDir);
   checkImageFiles(Object.keys(registry), imagesDir, strictImages);
 
   const serializedLevels = levels.map(serializeLevel).join("\n");

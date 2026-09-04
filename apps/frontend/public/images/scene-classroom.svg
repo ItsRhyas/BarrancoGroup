@@ -1,40 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
-  <!-- Walls and floor -->
-  <rect width="1600" height="900" fill="#f4f3ec"/>
-  <rect x="0" y="520" width="1600" height="380" fill="#e8e4d9"/>
-  <rect x="0" y="520" width="1600" height="24" fill="#d4cfc3"/>
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-  <!-- Window -->
-  <rect x="140" y="120" width="320" height="220" fill="#dff6ff"/>
-  <rect x="130" y="110" width="340" height="240" fill="none" stroke="#8b6f47" stroke-width="16"/>
-  <line x1="300" y1="110" x2="300" y2="350" stroke="#8b6f47" stroke-width="10"/>
-  <line x1="130" y1="230" x2="470" y2="230" stroke="#8b6f47" stroke-width="10"/>
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F9E6C8"/>
+    <stop offset="1" stop-color="#F4D5A8"/>
+  </linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#C9925F"/>
+    <stop offset="1" stop-color="#A96E3D"/>
+  </linearGradient>
+  <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="7" result="noise"/>
+    <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+    <feComponentTransfer in="gray">
+      <feFuncA type="table" tableValues="0 .055"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" mode="multiply"/>
+  </filter>
+  <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="5"/>
+  </filter>
+</defs>
 
-  <!-- Blackboard -->
-  <rect x="620" y="140" width="560" height="280" rx="8" fill="#2d2a26"/>
-  <rect x="604" y="124" width="592" height="312" rx="12" fill="none" stroke="#8b6f47" stroke-width="20"/>
-  <rect x="580" y="440" width="640" height="16" fill="#8b6f47"/>
+<!-- Visual language inspired by the supplied base SVG: warm parchment, muted terracotta/olive accents, rounded hand-drawn forms. -->
+<rect width="1512" height="982" fill="url(#wall)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680 V982 H0Z" fill="url(#floor)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680" stroke="#8F6942" stroke-width="7" stroke-linecap="round" opacity=".55"/>
 
-  <!-- Desks -->
-  <g fill="#c49a6c">
-    <rect x="260" y="640" width="200" height="80" rx="8"/>
-    <rect x="580" y="640" width="200" height="80" rx="8"/>
-    <rect x="900" y="640" width="200" height="80" rx="8"/>
-    <rect x="1220" y="640" width="200" height="80" rx="8"/>
-  </g>
-  <g fill="#a67c52">
-    <rect x="300" y="720" width="24" height="100"/>
-    <rect x="396" y="720" width="24" height="100"/>
-    <rect x="620" y="720" width="24" height="100"/>
-    <rect x="716" y="720" width="24" height="100"/>
-    <rect x="940" y="720" width="24" height="100"/>
-    <rect x="1036" y="720" width="24" height="100"/>
-    <rect x="1260" y="720" width="24" height="100"/>
-    <rect x="1356" y="720" width="24" height="100"/>
-  </g>
+<rect x="70" y="95" width="1370" height="535" rx="34" fill="#F7E1BE" stroke="#8F6942" stroke-width="7"/>
+<rect x="105" y="130" width="580" height="335" rx="18" fill="#D8E4D1" stroke="#8F6942" stroke-width="7"/>
+<path d="M125 155H665 M125 205H665 M125 255H665 M125 305H665 M125 355H665 M125 405H665" stroke="#B6C9AF" stroke-width="5"/>
+<text x="395" y="192" text-anchor="middle" font-family="sans-serif" font-size="42" fill="#745854">TODAY'S LESSON</text>
+<circle cx="280" cy="330" r="48" fill="#E9B56F" stroke="#8F6942" stroke-width="7"/>
+<path d="M250 330 Q280 295 310 330 Q280 365 250 330Z" fill="#A96E3D"/>
+<rect x="785" y="132" width="575" height="210" rx="24" fill="#C9A17F" stroke="#8F6942" stroke-width="7"/>
+<rect x="815" y="162" width="515" height="150" rx="12" fill="#F7E7C9"/>
+<text x="1072" y="222" text-anchor="middle" font-family="sans-serif" font-size="38" fill="#8B5F44">WELCOME</text>
+<text x="1072" y="270" text-anchor="middle" font-family="sans-serif" font-size="30" fill="#A96E3D">LEARN • PLAY • CREATE</text>
+<g>
+  <rect x="135" y="525" width="270" height="115" rx="22" fill="#B98250" stroke="#8F6942" stroke-width="7"/>
+  <path d="M170 640L150 735 M370 640L390 735" stroke="#74513A" stroke-width="16" stroke-linecap="round"/>
+  <rect x="475" y="525" width="270" height="115" rx="22" fill="#B98250" stroke="#8F6942" stroke-width="7"/>
+  <path d="M510 640L490 735 M710 640L730 735" stroke="#74513A" stroke-width="16" stroke-linecap="round"/>
+  <rect x="815" y="525" width="270" height="115" rx="22" fill="#B98250" stroke="#8F6942" stroke-width="7"/>
+  <path d="M850 640L830 735 M1050 640L1070 735" stroke="#74513A" stroke-width="16" stroke-linecap="round"/>
+</g>
+<g>
+ <rect x="1135" y="495" width="205" height="150" rx="18" fill="#A96E3D" stroke="#8F6942" stroke-width="7"/>
+ <rect x="1165" y="525" width="145" height="45" rx="10" fill="#E8C28D"/>
+ <path d="M1175 595 Q1235 550 1300 595" stroke="#F4D5A8" stroke-width="10" fill="none"/>
+ <path d="M1210 645L1200 735 M1280 645L1290 735" stroke="#74513A" stroke-width="14" stroke-linecap="round"/>
+</g>
+<g fill="#8C7E52" stroke="#745854" stroke-width="5">
+ <path d="M75 820 q55-105 110 0 q-55 45-110 0Z"/>
+ <path d="M1280 800 q55-120 110 0 q-55 45-110 0Z"/>
+</g>
 
-  <!-- Accent detail: clock -->
-  <circle cx="1300" cy="260" r="50" fill="#fff" stroke="#aa3bff" stroke-width="8"/>
-  <line x1="1300" y1="230" x2="1300" y2="260" stroke="#08060d" stroke-width="6" stroke-linecap="round"/>
-  <line x1="1300" y1="260" x2="1320" y2="275" stroke="#08060d" stroke-width="6" stroke-linecap="round"/>
+<rect x="0" y="0" width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".25"/>
 </svg>

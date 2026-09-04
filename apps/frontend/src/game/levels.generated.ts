@@ -383,7 +383,7 @@ export const assetRegistry: AssetRegistry = {
   },
   "char:friend-wheelchair": {
     type: "image",
-    src: "/images/char-friend-wheelchair.svg",
+    src: "/images/char-friend-wheelchair.png",
     aspectRatio: 1,
   },
   "char:mairin": {
