@@ -20,9 +20,12 @@ export function ChapterSelect({
         alt=""
         aria-hidden="true"
       />
-      <div className="chapter-select__title-block">
-        <h2>Capítulos</h2>
-        <p>Elige un capítulo</p>
+      <div className="chapter-select__title-block" style={{ display: "contents" }}>
+        <img
+          className="chapter-select__title"
+          src="/images/chapter_selection_title.svg"
+          alt="Selección de capítulo"
+        />
       </div>
       <div className="chapter-select__frames">
         {levels.map((level, index) => {
