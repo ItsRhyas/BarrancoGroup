@@ -98,11 +98,11 @@ describe("StartScreen", () => {
     ) as HTMLImageElement;
     const button = screen.getByRole("button", { name: /Nuevo juego/i });
 
-    expect(image.getAttribute("src")).toBe("/images/Nuevo Juego.svg");
+    expect(image.getAttribute("src")).toBe("/images/new_game.svg");
     fireEvent.mouseEnter(button);
-    expect(image.getAttribute("src")).toBe("/images/Nuevo Juego Click.svg");
+    expect(image.getAttribute("src")).toBe("/images/new_game_click.svg");
     fireEvent.mouseLeave(button);
-    expect(image.getAttribute("src")).toBe("/images/Nuevo Juego.svg");
+    expect(image.getAttribute("src")).toBe("/images/new_game.svg");
   });
 
   it("swaps the Continuar image while hovered", () => {
@@ -114,11 +114,11 @@ describe("StartScreen", () => {
     ) as HTMLImageElement;
     const button = screen.getByRole("button", { name: /Continuar/i });
 
-    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+    expect(image.getAttribute("src")).toBe("/images/continue.svg");
     fireEvent.mouseEnter(button);
-    expect(image.getAttribute("src")).toBe("/images/Continuar Click.svg");
+    expect(image.getAttribute("src")).toBe("/images/continue_click.svg");
     fireEvent.mouseLeave(button);
-    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+    expect(image.getAttribute("src")).toBe("/images/continue.svg");
   });
 
   it("does not swap the Continuar image when disabled", () => {
@@ -134,8 +134,8 @@ describe("StartScreen", () => {
     ) as HTMLImageElement;
     const button = screen.getByRole("button", { name: /Continuar/i });
 
-    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+    expect(image.getAttribute("src")).toBe("/images/continue.svg");
     fireEvent.mouseEnter(button);
-    expect(image.getAttribute("src")).toBe("/images/Continuar.svg");
+    expect(image.getAttribute("src")).toBe("/images/continue.svg");
   });
 });

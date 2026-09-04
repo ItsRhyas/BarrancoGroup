@@ -4,7 +4,7 @@ import { ChapterSelect } from "./ChapterSelect";
 import { levels } from "../game/levels";
 
 describe("ChapterSelect", () => {
-  it("renders the title block heading and subtitle", () => {
+  it("renders the title image with an accessible name", () => {
     const { container } = render(
       <ChapterSelect
         onSelectChapter={vi.fn()}
@@ -12,12 +12,14 @@ describe("ChapterSelect", () => {
         totalLevels={levels.length}
       />,
     );
+    const title = container.querySelector(
+      ".chapter-select__title",
+    ) as HTMLImageElement;
+    expect(title).not.toBeNull();
+    expect(title.getAttribute("src")).toBe("/images/chapter_selection_title.svg");
     expect(
-      screen.getByRole("heading", { name: /Capítulos/i }),
+      screen.getByRole("img", { name: /Selección de capítulo/i }),
     ).toBeTruthy();
-    expect(
-      container.querySelector(".chapter-select__title-block p")?.textContent,
-    ).toBe("Elige un capítulo");
   });
 
   it("renders the decorative background image", () => {
@@ -30,7 +32,7 @@ describe("ChapterSelect", () => {
     );
     const bg = container.querySelector(".chapter-select__bg");
     expect(bg).not.toBeNull();
-    expect(bg?.getAttribute("src")).toContain("chapter-select-bg.svg");
+    expect(bg?.getAttribute("src")).toContain("chapter_selection.svg");
     expect(bg?.getAttribute("alt")).toBe("");
     expect(bg?.getAttribute("aria-hidden")).toBe("true");
   });
