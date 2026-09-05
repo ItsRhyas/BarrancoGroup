@@ -1,10 +1,11 @@
 FROM node:24-alpine AS base
+RUN corepack enable
 WORKDIR /app
 
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY apps/frontend/package.json apps/frontend/package.json
-RUN corepack enable && pnpm install --frozen-lockfile --filter frontend --ignore-scripts
+RUN pnpm install --frozen-lockfile --filter frontend --ignore-scripts
 
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules

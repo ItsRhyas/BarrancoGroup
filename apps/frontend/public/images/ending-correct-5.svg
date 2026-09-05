@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Valores en acción">
+  <circle cx="256" cy="256" r="240" fill="#fff9c4"/>
+  <circle cx="256" cy="220" r="90" fill="#fff176"/>
+  <path d="M200 300 Q256 380 312 300" stroke="#f57f17" stroke-width="12" fill="none"/>
+  <text x="256" y="470" text-anchor="middle" font-size="36" fill="#f57f17">¡Valores en acción!</text>
+  <!-- TODO: replace with final illustration -->
+</svg>

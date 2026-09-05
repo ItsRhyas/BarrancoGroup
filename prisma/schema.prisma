@@ -1,16 +1,54 @@
 generator client {
   provider            = "prisma-client"
-  output            = "../apps/backend/src/generated/prisma"
+  output              = "../apps/backend/src/generated/prisma"
   importFileExtension = ""
+  moduleFormat        = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  ADMIN
+  USUARIO
+  AUDITOR
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
+  id           String         @id @default(uuid())
+  username     String?        @unique
+  passwordHash String?
+  role         Role           @default(USUARIO)
+  createdAt    DateTime       @default(now())
+  sessions     GameSession[]
+
+  @@map("users")
+}
+
+model GameSession {
+  id        String    @id @default(uuid())
+  userId    String
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempts  Attempt[]
+
+  @@index([userId])
+  @@map("game_sessions")
+}
+
+model Attempt {
+  id            String      @id @default(uuid())
+  sessionId     String
+  levelId       String
+  success       Boolean
+  endingId      String?
+  attemptNumber Int
+  completedAt   DateTime    @default(now())
+  session       GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, levelId, attemptNumber])
+  @@index([sessionId])
+  @@index([levelId])
+  @@map("attempts")
 }

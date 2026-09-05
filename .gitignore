@@ -51,3 +51,9 @@ Thumbs.db
 .cache/
 temp/
 .atl/
+
+# Story generation prompt (working artifact; not committed)
+/story-prompt.txt
+
+/.quarto/
+**/*.quarto_ipynb

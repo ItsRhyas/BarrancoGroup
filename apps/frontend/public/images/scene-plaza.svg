@@ -1,0 +1,51 @@
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#C9925F"/><stop offset="1" stop-color="#A96E3D"/></linearGradient>
+<filter id="paper"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" result="n"/><feBlend in="SourceGraphic" in2="n" mode="soft-light"/></filter>
+</defs>
+<rect width="1512" height="982" fill="#F4D5A8"/>
+<rect y="695" width="1512" height="287" fill="url(#floor)"/>
+<path d="M0 695H1512" stroke="#8F6942" stroke-width="9"/>
+
+<rect x="105" y="120" width="1302" height="575" rx="32" fill="#F7E1BE" stroke="#8F6942" stroke-width="8"/>
+<path d="M105 575 Q350 500 570 575 T1030 565 T1407 545 V695 H105Z" fill="#A8B889"/>
+<circle cx="756" cy="470" r="255" fill="#D8B17E" stroke="#8F6942" stroke-width="8"/>
+<circle cx="756" cy="470" r="195" fill="#E8C28D" stroke="#A96E3D" stroke-width="7"/>
+<path d="M470 760 Q756 650 1042 760" stroke="#8F6942" stroke-width="8" fill="none"/>
+<!-- fountain basin -->
+<ellipse cx="756" cy="530" rx="245" ry="72" fill="#B98250" stroke="#74513A" stroke-width="9"/>
+<ellipse cx="756" cy="505" rx="205" ry="58" fill="#B8D0C6" stroke="#8F6942" stroke-width="7"/>
+<!-- fountain pedestal -->
+<path d="M680 505 Q756 465 832 505 L815 390 Q756 355 697 390Z" fill="#C98956" stroke="#8F6942" stroke-width="8"/>
+<ellipse cx="756" cy="390" rx="95" ry="34" fill="#E9B56F" stroke="#8F6942" stroke-width="7"/>
+<!-- water jets -->
+<path d="M756 390 C756 330 710 280 680 250" stroke="#AFCBC5" stroke-width="12" stroke-linecap="round"/>
+<path d="M756 390 C756 320 756 270 756 220" stroke="#AFCBC5" stroke-width="13" stroke-linecap="round"/>
+<path d="M756 390 C756 330 802 280 832 250" stroke="#AFCBC5" stroke-width="12" stroke-linecap="round"/>
+<circle cx="680" cy="250" r="10" fill="#B8D0C6"/><circle cx="756" cy="220" r="11" fill="#B8D0C6"/><circle cx="832" cy="250" r="10" fill="#B8D0C6"/>
+<!-- benches -->
+<g>
+<rect x="245" y="510" width="245" height="52" rx="20" fill="#A96E3D" stroke="#74513A" stroke-width="7"/>
+<path d="M275 562V650 M455 562V650" stroke="#74513A" stroke-width="14" stroke-linecap="round"/>
+</g>
+<g>
+<rect x="1022" y="510" width="245" height="52" rx="20" fill="#A96E3D" stroke="#74513A" stroke-width="7"/>
+<path d="M1052 562V650 M1232 562V650" stroke="#74513A" stroke-width="14" stroke-linecap="round"/>
+</g>
+<!-- trees -->
+<g stroke="#74513A" stroke-width="20" stroke-linecap="round">
+<path d="M170 420V690"/><path d="M1340 420V690"/>
+</g>
+<g fill="#8C7E52" stroke="#745854" stroke-width="7">
+<circle cx="170" cy="340" r="105"/><circle cx="105" cy="410" r="75"/><circle cx="235" cy="410" r="75"/>
+<circle cx="1340" cy="330" r="110"/><circle cx="1270" cy="405" r="78"/><circle cx="1410" cy="405" r="78"/>
+</g>
+<!-- paving -->
+<path d="M500 720 Q756 635 1012 720" stroke="#E9B56F" stroke-width="38" fill="none" stroke-linecap="round"/>
+<g fill="#C98956">
+<circle cx="510" cy="735" r="14"/><circle cx="585" cy="710" r="14"/><circle cx="927" cy="710" r="14"/><circle cx="1002" cy="735" r="14"/>
+</g>
+<text x="756" y="170" text-anchor="middle" font-family="sans-serif" font-size="55" font-weight="800" fill="#745854">PLAZA</text>
+
+<rect width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".08"/>
+</svg>

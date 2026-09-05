@@ -1,0 +1,18 @@
+
+digraph RequestFlow {
+  rankdir=TB;
+  nodesep=0.35;
+  ranksep=0.5;
+  graph [fontname="Segoe UI", bgcolor="white"];
+  node  [fontname="Segoe UI", shape=box, style="rounded,filled", fontsize=12, margin="0.22,0.14"];
+  edge  [fontname="Segoe UI", color="#4a5568", arrowsize=0.9];
+
+  controller [label="Controller\n(recibe y responde HTTP)", fillcolor="#ebf4ff", color="#2b6cb0", fontcolor="#1a365d"];
+  service    [label="Service\n(lógica de negocio)", fillcolor="#e6fffa", color="#2f855a", fontcolor="#234e52"];
+  prisma     [label="Prisma\n(acceso a datos / ORM)", fillcolor="#faf5ff", color="#805ad5", fontcolor="#44337a"];
+  postgres   [label="PostgreSQL\n(almacenamiento persistente)", fillcolor="#fffaf0", color="#dd6b20", fontcolor="#7b341e"];
+
+  controller -> service;
+  service -> prisma;
+  prisma -> postgres;
+}

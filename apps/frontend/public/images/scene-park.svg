@@ -1,0 +1,56 @@
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F9E6C8"/>
+    <stop offset="1" stop-color="#F4D5A8"/>
+  </linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#C9925F"/>
+    <stop offset="1" stop-color="#A96E3D"/>
+  </linearGradient>
+  <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="7" result="noise"/>
+    <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+    <feComponentTransfer in="gray">
+      <feFuncA type="table" tableValues="0 .055"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" mode="multiply"/>
+  </filter>
+  <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+    <feGaussianBlur stdDeviation="5"/>
+  </filter>
+</defs>
+
+<!-- Visual language inspired by the supplied base SVG: warm parchment, muted terracotta/olive accents, rounded hand-drawn forms. -->
+<rect width="1512" height="982" fill="url(#wall)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680 V982 H0Z" fill="url(#floor)"/>
+<path d="M0 710 C250 675 470 720 760 695 C1050 670 1280 705 1512 680" stroke="#8F6942" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+
+<path d="M0 530 Q210 400 420 525 T850 500 T1200 530 T1512 475 V700 H0Z" fill="#A8B889"/>
+<g stroke="#74513A" stroke-width="22" stroke-linecap="round">
+ <path d="M210 410 V720"/><path d="M1280 390 V720"/><path d="M470 420 V720"/>
+</g>
+<g fill="#8C7E52" stroke="#745854" stroke-width="7">
+ <circle cx="210" cy="350" r="105"/><circle cx="135" cy="410" r="90"/><circle cx="290" cy="410" r="90"/>
+ <circle cx="1280" cy="335" r="115"/><circle cx="1195" cy="410" r="95"/><circle cx="1370" cy="410" r="95"/>
+ <circle cx="470" cy="350" r="105"/><circle cx="400" cy="415" r="85"/><circle cx="545" cy="415" r="85"/>
+</g>
+<g>
+ <path d="M575 630 Q760 470 945 630" stroke="#8F6942" stroke-width="18" fill="none"/>
+ <path d="M605 610 V745 M915 610 V745" stroke="#74513A" stroke-width="14"/>
+ <rect x="675" y="605" width="160" height="85" rx="18" fill="#C98956" stroke="#8F6942" stroke-width="7"/>
+ <path d="M690 690 L675 775 M820 690 L835 775" stroke="#74513A" stroke-width="14"/>
+</g>
+<g>
+ <circle cx="1050" cy="650" r="105" fill="#D8E4D1" stroke="#8F6942" stroke-width="8"/>
+ <path d="M1050 545 V755 M945 650 H1155" stroke="#8F6942" stroke-width="10"/>
+ <path d="M1050 650 L1110 590" stroke="#A96E3D" stroke-width="16" stroke-linecap="round"/>
+</g>
+<g>
+ <path d="M90 775 Q250 700 410 775" stroke="#C9A17F" stroke-width="55" fill="none" stroke-linecap="round"/>
+ <path d="M1100 820 Q1260 745 1420 820" stroke="#C9A17F" stroke-width="55" fill="none" stroke-linecap="round"/>
+</g>
+
+<rect x="0" y="0" width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".25"/>
+</svg>

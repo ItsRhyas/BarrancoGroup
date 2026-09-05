@@ -1,77 +1,72 @@
-# React + TypeScript + Vite
+# Mairin — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Cliente web de **Mairin**, videojuego de drag & drop para el reto "Plataforma de
+aprendizaje basado en juegos" (Ideathon 2026). El jugador reconstruye escenas de
+la historia de Mairin arrastrando escenarios y personajes a sus lugares
+correctos. Los cinco capítulos abordan valores sociales: respeto, inclusión,
+comunidad y escucha de las personas mayores.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** + **TypeScript** + **Vite 8** (Rolldown) con React Compiler.
+- **@dnd-kit/core** para drag & drop (puntero + táctil).
+- **Vitest** + **Testing Library** (entorno jsdom).
+- Lógica de juego en funciones puras (`src/game`) separada de los componentes.
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Estructura
 
 ```
+src/
+  game/          Estado del juego (reducer, selectors, validación, desbloqueo)
+  components/    Componentes React (tablero, pantallas, diálogos, DnD)
+  lib/           Persistencia local (session) y cliente de API (api, auth, progress)
+content/story/   Historia en JSON (capítulos + intro)
+scripts/         Build de niveles (JSON → código tipado)
+public/images/   SVGs de escenas, personajes y finales
+```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Contenido (historia)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Los capítulos viven en `content/story/*.json`. Al editar, regenerá el código con:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+pnpm --filter frontend run build:levels
+```
 
+El script valida con zod y falla si falta algún SVG referenciado.
+
+## Progreso y backend
+
+El progreso se guarda primero en `localStorage` (offline-first) y se sincroniza
+con la API de progreso del backend usando una cuenta anónima por dispositivo:
+
+- `POST /auth/register` / `POST /auth/login` — crean/autentican una cuenta anónima
+  generada en el cliente (username + password aleatorios persistidos en `localStorage`);
+  devuelven un JWT (`accessToken`).
+- `POST /sessions` — registra una sesión de juego (autenticado con Bearer token).
+- `POST /attempts` — registra cada intento (éxito/fallo + endingId).
+- `GET  /progress` — devuelve los niveles completados del usuario autenticado.
+
+El token JWT se guarda en `localStorage`/memoria; al expirar, el cliente
+re-autentica con las mismas credenciales anónimas. Al cargar, el cliente
+reconcilia el progreso local con el del servidor (unión; el servidor nunca
+revoca capítulos locales). Si el backend no está disponible, el juego funciona
+completo en local y el progreso se re-sincroniza después (`backfillMissing`).
+
+### Configuración
+
+| Variable | Default | Descripción |
+|---|---|---|
+| `VITE_API_URL` | `/api` | Base de la API. En producción el proxy nginx expone `/api`. |
+
+En desarrollo, Vite proxy `/api` hacia `http://localhost:3000` (configurable con
+`VITE_PROXY_TARGET`).
+
+## Scripts
+
+```sh
+pnpm --filter frontend dev       # servidor de desarrollo
+pnpm --filter frontend build     # build de producción
+pnpm --filter frontend test      # unit tests (vitest)
+pnpm --filter frontend lint      # eslint
 ```

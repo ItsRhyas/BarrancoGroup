@@ -1,0 +1,33 @@
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F9E6C8"/><stop offset="1" stop-color="#F4D5A8"/></linearGradient>
+  <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#C9925F"/><stop offset="1" stop-color="#A96E3D"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="1.2"/></filter>
+  <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="2" result="n"/><feBlend in="SourceGraphic" in2="n" mode="soft-light"/></filter>
+</defs>
+<!-- Visual language inspired by the supplied base: warm parchment, muted terracotta/olive palette, rounded hand-drawn vector forms. -->
+<rect width="1512" height="982" fill="url(#wall)"/>
+<rect y="760" width="1512" height="222" fill="url(#wood)"/>
+<path d="M0 760H1512" stroke="#8F6942" stroke-width="9"/>
+
+<rect x="130" y="155" width="1250" height="605" rx="28" fill="#F8E2BE" stroke="#8F6942" stroke-width="9"/>
+<rect x="175" y="205" width="1160" height="110" rx="18" fill="#A96E3D"/>
+<path d="M190 225H1320" stroke="#F9E6C8" stroke-width="22" stroke-dasharray="85 35"/>
+<rect x="300" y="235" width="900" height="115" rx="18" fill="#8B5F44"/>
+<text x="530" y="315" font-family="sans-serif" font-size="72" font-weight="800" fill="#F9E6C8">MARKET</text>
+<rect x="210" y="370" width="380" height="315" rx="20" fill="#D8B184" stroke="#8F6942" stroke-width="7"/>
+<rect x="650" y="370" width="280" height="315" rx="20" fill="#E8C59D" stroke="#8F6942" stroke-width="7"/>
+<rect x="990" y="370" width="305" height="315" rx="20" fill="#D8B184" stroke="#8F6942" stroke-width="7"/>
+<g fill="#C98C62">
+<rect x="245" y="410" width="95" height="70" rx="15"/><rect x="365" y="410" width="95" height="70" rx="15"/><rect x="485" y="410" width="70" height="70" rx="15"/>
+<rect x="245" y="510" width="120" height="70" rx="15"/><rect x="390" y="510" width="90" height="70" rx="15"/><rect x="500" y="510" width="55" height="70" rx="15"/>
+</g>
+<circle cx="790" cy="455" r="58" fill="#8C7E52"/><circle cx="790" cy="455" r="25" fill="#F4D5A8"/>
+<path d="M690 560H890M690 620H890" stroke="#8F6942" stroke-width="12" stroke-linecap="round"/>
+<g fill="#A96E3D">
+<circle cx="1055" cy="450" r="42"/><circle cx="1170" cy="450" r="42"/><rect x="1030" y="525" width="180" height="75" rx="20"/>
+</g>
+<path d="M170 700H1340" stroke="#8F6942" stroke-width="12"/>
+
+<rect x="0" y="0" width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".08"/>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Bench back legs -->
+  <rect x="150" y="400" width="16" height="80" fill="#8b6f47"/>
+  <rect x="346" y="400" width="16" height="80" fill="#8b6f47"/>
+  <!-- Bench seat -->
+  <rect x="130" y="390" width="252" height="22" rx="4" fill="#c49a6c"/>
+  <!-- Person legs -->
+  <rect x="210" y="412" width="34" height="90" rx="12" fill="#4a6fa5"/>
+  <rect x="268" y="412" width="34" height="90" rx="12" fill="#4a6fa5"/>
+  <!-- Torso -->
+  <path d="M190 300 L322 300 L338 400 L174 400 Z" fill="#f4a261"/>
+  <!-- Head -->
+  <circle cx="256" cy="235" r="70" fill="#f5d0b5"/>
+  <!-- Hair -->
+  <path d="M186 215 Q256 160 326 215 Q326 175 256 165 Q186 175 186 215" fill="#5a3e2b"/>
+  <!-- Eyes -->
+  <circle cx="234" cy="230" r="7" fill="#2d2a26"/>
+  <circle cx="278" cy="230" r="7" fill="#2d2a26"/>
+  <!-- Smile -->
+  <path d="M238 262 Q256 275 274 262" fill="none" stroke="#c17a61" stroke-width="5" stroke-linecap="round"/>
+  <!-- Arms on bench -->
+  <rect x="170" y="310" width="22" height="70" rx="11" fill="#f5d0b5"/>
+  <rect x="320" y="310" width="22" height="70" rx="11" fill="#f5d0b5"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg width="1512" height="982" viewBox="0 0 1512 982" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F9E6C8"/><stop offset="1" stop-color="#F4D5A8"/></linearGradient>
+  <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#C9925F"/><stop offset="1" stop-color="#A96E3D"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="1.2"/></filter>
+  <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="2" result="n"/><feBlend in="SourceGraphic" in2="n" mode="soft-light"/></filter>
+</defs>
+<!-- Visual language inspired by the supplied base: warm parchment, muted terracotta/olive palette, rounded hand-drawn vector forms. -->
+<rect width="1512" height="982" fill="url(#wall)"/>
+<rect y="760" width="1512" height="222" fill="url(#wood)"/>
+<path d="M0 760H1512" stroke="#8F6942" stroke-width="9"/>
+
+<rect y="0" width="1512" height="982" fill="#D9D3A2"/>
+<path d="M0 720C250 650 420 780 650 705C900 620 1110 730 1512 650V982H0Z" fill="#8C7E52"/>
+<path d="M560 982C620 850 690 775 760 700C825 775 900 850 955 982Z" fill="#D8B184"/>
+<rect x="0" y="0" width="1512" height="120" fill="#F4D5A8"/>
+<circle cx="190" cy="270" r="125" fill="#8C7E52"/><rect x="165" y="365" width="50" height="300" rx="25" fill="#8B5F44"/>
+<circle cx="1320" cy="250" r="140" fill="#7F8150"/><rect x="1290" y="350" width="60" height="320" rx="30" fill="#8B5F44"/>
+<circle cx="450" cy="400" r="92" fill="#A0A86B"/><rect x="430" y="465" width="40" height="180" rx="20" fill="#8B5F44"/>
+<circle cx="1040" cy="390" r="105" fill="#8C7E52"/><rect x="1018" y="460" width="44" height="190" rx="22" fill="#8B5F44"/>
+<rect x="580" y="560" width="360" height="42" rx="21" fill="#A96E3D"/>
+<rect x="610" y="595" width="35" height="120" rx="17" fill="#745854"/><rect x="875" y="595" width="35" height="120" rx="17" fill="#745854"/>
+<circle cx="760" cy="470" r="82" fill="#C98C62" stroke="#8F6942" stroke-width="8"/>
+<circle cx="760" cy="470" r="28" fill="#F9E6C8"/>
+<path d="M760 430V470L790 490" stroke="#8F6942" stroke-width="8" stroke-linecap="round"/>
+<g fill="#C98C62"><circle cx="300" cy="700" r="20"/><circle cx="370" cy="670" r="15"/><circle cx="1190" cy="690" r="22"/><circle cx="1260" cy="660" r="14"/></g>
+<text x="650" y="110" font-family="sans-serif" font-size="58" font-weight="800" fill="#745854">GARDEN</text>
+
+<rect x="0" y="0" width="1512" height="982" fill="transparent" filter="url(#paper)" opacity=".08"/>
+</svg>
