@@ -14,7 +14,7 @@ Proyecto monorepo (pnpm workspaces) con frontend React + Vite y backend NestJS +
 | Frontend | React 19, Vite, TypeScript, React Compiler, dnd-kit |
 | Backend | NestJS 11, Prisma 7 (adapter `pg`) |
 | Base de datos | PostgreSQL 17 |
-| Contenido | Markdown con frontmatter validado (Zod) → TypeScript generado |
+| Contenido | JSON validado (Zod) → TypeScript generado |
 | Tests | Vitest (frontend + scripts), Jest (backend) |
 | Infraestructura | Docker Compose, Nginx |
 
@@ -38,11 +38,53 @@ docs/         # Documentación (modelo ER)
 
 ---
 
+## Instalación
+
+Requisitos: **Node.js 24+**, **pnpm 10**, **Docker** (para la base de datos).
+
+```bash
+pnpm install        # instala dependencias de todos los workspaces
+pnpm db:generate    # genera el cliente Prisma
+```
+
+El comando `pnpm dev-startup` hace todo esto automáticamente la primera vez
+(ver [Puesta en marcha](#puesta-en-marcha)).
+
+---
+
+## Variables de entorno
+
+Copiá `.env.example` a `.env` en la raíz del monorepo (o dejá que
+`pnpm dev-startup` lo cree por vos):
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Descripción |
+|---|---|
+| `POSTGRES_USER` | Usuario de PostgreSQL (usado por Compose y por `DATABASE_URL`) |
+| `POSTGRES_PASSWORD` | Contraseña de PostgreSQL |
+| `POSTGRES_DB` | Nombre de la base de datos |
+| `DATABASE_URL` | Cadena de conexión host → BD (en dev híbrido apunta a `localhost:5432`) |
+| `PORT` | Puerto de la API backend (default `3000`) |
+| `NODE_ENV` | Entorno (`development` / `production`) |
+| `JWT_SECRET` | Secreto para firmar los tokens JWT |
+
+En el frontend (`apps/frontend/.env.example`):
+
+| Variable | Default | Descripción |
+|---|---|---|
+| `VITE_API_URL` | `/api` | Base de la API; en producción el proxy nginx expone `/api` |
+| `VITE_PROXY_TARGET` | `http://localhost:3000` | Destino del proxy de Vite en desarrollo |
+
+---
+
 ## Frontend
 
 ### Arquitectura
 
-El frontend es una SPA sin dependencia del backend para jugar: todo el juego (niveles, escenas, personajes, validación) vive en el cliente y se genera desde contenido Markdown.
+El frontend es una SPA sin dependencia del backend para jugar: todo el juego (niveles, escenas, personajes, validación) vive en el cliente y se genera desde contenido JSON.
 
 **Máquina de pantallas** (`App.tsx`): flujo `start → intro → chapter-select → game`, con botón de retroceso global (Overlay) y aviso de rotación de dispositivo (RotateDevice). La introducción solo se muestra la primera vez (flag persistido).
 
@@ -74,10 +116,10 @@ El frontend es una SPA sin dependencia del backend para jugar: todo el juego (ni
 
 ### Pipeline de contenido
 
-El contenido vive en Markdown y se convierte a TypeScript en build. Esto permite editar historia, escenas y personajes sin tocar componentes.
+El contenido vive en JSON y se convierte a TypeScript en build. Esto permite editar historia, escenas y personajes sin tocar componentes.
 
-1. **Fuente**: `apps/frontend/content/story/chapter-*.md` (un archivo por capítulo, con frontmatter YAML) e `intro.md`.
-2. **Esquemas**: `scripts/build-levels.schema.ts` valida el frontmatter con Zod (ids, ranuras, solución esperada, finales — exactamente un final correcto y al menos uno incorrecto).
+1. **Fuente**: `apps/frontend/content/story/chapter-*.json` (un archivo por capítulo) e `intro.json`.
+2. **Esquemas**: `scripts/build-levels.schema.ts` valida cada archivo con Zod (ids, ranuras, solución esperada, finales — exactamente un final correcto y al menos uno incorrecto).
 3. **Generador**: `scripts/build-levels.ts` lee los archivos, valida referencias cruzadas (ranuras vs. solución esperada), verifica que existan las imágenes y escribe:
    - `src/game/levels.generated.ts`
    - `src/game/intro.generated.ts`
@@ -91,28 +133,28 @@ El contenido vive en Markdown y se convierte a TypeScript en build. Esto permite
 
    El generador corre en modo estricto (`--strict-images`) y **falla el build si falta cualquier imagen referenciada**. Las rutas se ejecutan en `predev` y `prebuild`.
 
-El formato exacto del frontmatter está documentado en `apps/frontend/content/story/CONTENT.md`.
+El formato exacto de cada capítulo está documentado en `apps/frontend/content/story/CONTENT.md`.
 
 ---
 
 ## Backend
 
-API NestJS minimalista (módulo `AppModule` con `PrismaModule` y `AppController`).
+API NestJS con autenticación JWT y registro de progreso de partidas.
 
-- **Endpoints**: `GET /health` — verifica conectividad con la base de datos (`SELECT 1`) y devuelve estado + timestamp.
+- **Health**: `GET /health` (público) — verifica conectividad con la base de datos (`SELECT 1`) y devuelve estado + timestamp.
+- **Auth**: `POST /auth/register` y `POST /auth/login` (públicos) — emiten un JWT; el cliente usa credenciales anónimas generadas por dispositivo.
+- **Progress**: `POST /sessions`, `POST /attempts` y `GET /progress` (protegidos por JWT + roles) — registran sesiones e intentos y devuelven los niveles completados.
+- **Guards globales**: `JwtAuthGuard` + `RolesGuard` protegen toda la API salvo los endpoints marcados `@Public()`. Roles: `ADMIN`, `USUARIO`, `AUDITOR`.
 - **Prisma**: cliente generado en `apps/backend/src/generated/prisma` (regenerado con `prisma generate`; no se versiona). Usa el adapter `pg` para PostgreSQL.
 - **CORS**: habilitado (`app.enableCors()`).
 
-El esquema de datos modela el dominio del juego para telemetría y persistencia futura de intentos:
+El esquema de datos modela cuentas y telemetría de intentos (el contenido del juego vive en el frontend):
 
 | Modelo | Propósito |
 |---|---|
-| `Level` / `Scene` / `Character` | Contenido del juego |
-| `LevelItem` | Elementos disponibles por nivel |
-| `SceneSlot` / `CharacterSlot` | Ranuras de escena y de personaje (anclas %) |
-| `ExpectedPlacement` | Solución esperada por nivel |
-| `Ending` | Finales correctos/incorrectos |
-| `GameSession` / `Attempt` / `AttemptItem` | Sesiones e intentos de los jugadores |
+| `User` | Cuenta de juego (username + hash de contraseña, rol por defecto `USUARIO`) |
+| `GameSession` | Sesión de juego por usuario |
+| `Attempt` | Intento de nivel (éxito/fallo, `endingId`, número de intento) |
 
 ---
 
@@ -125,15 +167,14 @@ pnpm db:generate   # genera el cliente Prisma
 pnpm db:push       # sincroniza el esquema con la base de datos
 pnpm db:migrate    # crea/aplica migraciones de desarrollo
 pnpm db:studio     # abre Prisma Studio
-pnpm db:seed       # ejecuta el seed (prisma/seed.ts)
 ```
 
 ---
 
 ## Docker
 
-- **Dev**: `pnpm docker:dev` — levanta PostgreSQL + Nginx (el frontend corre con Vite en local).
-- **Prod**: `pnpm docker:prod` — construye y levanta PostgreSQL, backend (NestJS en Node 24), frontend (build estático servido por Nginx) y Nginx como proxy.
+- **Dev**: `pnpm dev-startup` levanta solo PostgreSQL en Docker y corre backend + frontend en el host (modo híbrido). El override dev vive en `docker/compose/dev.yml`.
+- **Prod**: `pnpm docker:prod` construye y levanta PostgreSQL, backend (NestJS en Node 24), frontend (build estático servido por Nginx) y Nginx como proxy (`docker/compose/prod.yml`).
 - `docker-compose.yml` define los servicios base; los overrides viven en `docker/compose/`.
 
 ---
@@ -143,13 +184,12 @@ pnpm db:seed       # ejecuta el seed (prisma/seed.ts)
 Desde la raíz:
 
 ```bash
-pnpm start       # levanta todo el entorno con un solo comando (ver Puesta en marcha)
-pnpm dev         # levanta todos los workspaces en paralelo (frontend + backend)
-pnpm build       # compila todos los workspaces
-pnpm lint        # ESLint en todos los workspaces
-pnpm test        # tests de todos los workspaces
-pnpm frontend ... # atajo para apps/frontend (p. ej. pnpm frontend run build:levels)
-pnpm backend ...  # atajo para apps/backend
+pnpm dev-startup   # levanta todo el entorno con un solo comando (ver Puesta en marcha)
+pnpm build         # compila todos los workspaces
+pnpm lint          # ESLint en todos los workspaces
+pnpm test          # tests de todos los workspaces
+pnpm frontend ...  # atajo para apps/frontend (p. ej. pnpm frontend run build:levels)
+pnpm backend ...   # atajo para apps/backend
 ```
 
 Dentro de `apps/frontend`:
@@ -173,7 +213,7 @@ pnpm test               # Vitest (componentes + scripts)
 
 ## Flujo de trabajo Git
 
-El proyecto sigue Git Flow simplificado (`main` / `develop` / `feature/*` / `bugfix/*` / `hotfix/*` / `release/*`) con Conventional Commits. La referencia completa está en `conventions.md`.
+El proyecto sigue Git Flow simplificado (`main` / `develop` / `feature/*` / `bugfix/*` / `hotfix/*` / `release/*`) con Conventional Commits.
 
 ---
 
@@ -188,3 +228,16 @@ pnpm dev-startup
 El script `scripts/dev-startup.mjs` es idempotente: cada paso solo se ejecuta si hace falta (por ejemplo, `.env` se crea la primera vez, `pnpm install` solo corre si faltan dependencias). Es seguro ejecutarlo tantas veces como quieras. Está escrito en Node, así que funciona en cualquier terminal (PowerShell, Git Bash, WSL, bash).
 
 Requisitos: Node.js 24+, pnpm 10, Docker (para la base de datos).
+
+---
+
+## Capturas
+
+![inicio](docs/screenshots/screenshot-1.png)
+![seleccion](docs/screenshots/screenshot-2.png)
+
+---
+
+## Licencia
+
+MIT — ver [LICENSE](LICENSE).

@@ -1,9 +1,10 @@
 # Mairin — Frontend
 
 Cliente web de **Mairin**, videojuego de drag & drop para el reto "Plataforma de
-aprendizaje basado en juegos" (Ideathon 2026). El jugador reconstruye escenas
-sobre "Derechos y Dignidad de la Mujer" arrastrando escenarios y personajes a
-sus lugares correctos.
+aprendizaje basado en juegos" (Ideathon 2026). El jugador reconstruye escenas de
+la historia de Mairin arrastrando escenarios y personajes a sus lugares
+correctos. Los cinco capítulos abordan valores sociales: respeto, inclusión,
+comunidad y escucha de las personas mayores.
 
 ## Stack
 
@@ -18,7 +19,7 @@ sus lugares correctos.
 src/
   game/          Estado del juego (reducer, selectors, validación, desbloqueo)
   components/    Componentes React (tablero, pantallas, diálogos, DnD)
-  lib/           Persistencia local (session) y cliente de API (api, progress)
+  lib/           Persistencia local (session) y cliente de API (api, auth, progress)
 content/story/   Historia en JSON (capítulos + intro)
 scripts/         Build de niveles (JSON → código tipado)
 public/images/   SVGs de escenas, personajes y finales
@@ -37,15 +38,20 @@ El script valida con zod y falla si falta algún SVG referenciado.
 ## Progreso y backend
 
 El progreso se guarda primero en `localStorage` (offline-first) y se sincroniza
-con la API de progreso del backend:
+con la API de progreso del backend usando una cuenta anónima por dispositivo:
 
-- `POST /api/sessions` — registra la sesión (al iniciar un juego nuevo).
-- `POST /api/attempts` — registra cada intento (éxito/fallo + endingId).
-- `GET  /api/progress?sessionToken=…` — devuelve los niveles completados.
+- `POST /auth/register` / `POST /auth/login` — crean/autentican una cuenta anónima
+  generada en el cliente (username + password aleatorios persistidos en `localStorage`);
+  devuelven un JWT (`accessToken`).
+- `POST /sessions` — registra una sesión de juego (autenticado con Bearer token).
+- `POST /attempts` — registra cada intento (éxito/fallo + endingId).
+- `GET  /progress` — devuelve los niveles completados del usuario autenticado.
 
-El `sessionToken` (UUID v4) se genera en el cliente y persiste en `localStorage`,
-un token estable por dispositivo. Al cargar, el cliente reconcilia el progreso
-local con el del servidor (unión; el servidor nunca revoca capítulos locales).
+El token JWT se guarda en `localStorage`/memoria; al expirar, el cliente
+re-autentica con las mismas credenciales anónimas. Al cargar, el cliente
+reconcilia el progreso local con el del servidor (unión; el servidor nunca
+revoca capítulos locales). Si el backend no está disponible, el juego funciona
+completo en local y el progreso se re-sincroniza después (`backfillMissing`).
 
 ### Configuración
 
